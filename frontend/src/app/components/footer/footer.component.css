@@ -1,0 +1,120 @@
+/* footer.component.css */
+.footer {
+    background: #456F81;
+    padding-block-start: 50px;
+    padding-block-end: 15px;
+  }
+  
+  .footer__logo i {
+    color: #fff;
+    font-weight: 400;
+  }
+  
+  .footer__logo span {
+    color: #fff;
+    font-weight: 500;
+  }
+  
+  .footer__logo-content {
+    color: rgba(255, 255, 255, 0.715);
+    margin-block-start: 15px;
+    line-height: 30px;
+  }
+  
+  .logo-background {
+    background-image: url('../../../assets/all-images/logo.jpg');
+    background-size: contain; /* Adjust to cover if you want the image to cover the entire area */
+    background-repeat: no-repeat;
+    background-position: center left; /* Adjust position as needed */
+    display: flex;
+    align-items: center;
+    gap: 4rem; /* Adjust the gap as needed */
+    padding-inline-start: 3rem;
+    padding-inline-start: 3rem; /* Adjust padding to ensure text is not over the image */
+    block-size: 50px; /* Adjust height as needed */
+    inline-size: 200px; /* Adjust width as needed */
+  }
+
+  .logo-background span {
+    font-size: 1rem; /* Adjust the font size as needed */
+    font-style: italic; /* Make the text italic */
+    line-height: 1.2; /* Adjust the line height as needed */
+  }
+  
+  .quick__link {
+    border: none !important;
+    background: transparent !important;
+  }
+  
+  .quick__link a {
+    color: rgba(255, 255, 255, 0.715);
+    text-decoration: none;
+    font-weight: 300;
+    transition: 0.3s;
+  }
+  
+  .quick__link a:hover {
+    color: #F7A600;
+  }
+  
+  .footer__link-title {
+    color: #fff;
+  }
+  
+  .office__info {
+    color: rgba(255, 255, 255, 0.715);
+    font-weight: 300;
+  }
+  
+  .newsletter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border: 1px solid #457F81;
+    border-radius: 50px;
+    background: #2f5a6d;
+  }
+  
+  .newsletter input {
+    background: transparent;
+    color: #fff;
+    border: none;
+    outline: none;
+  }
+  
+  .newsletter span i {
+    color: #fff;
+  }
+  
+  .footer__bottom {
+    border-block-start: 1px solid #7c8a972f;
+  }
+  
+  .logo img {
+    inline-size: 80px;
+    block-size: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  @media only screen and (max-inline-size: 768px) {
+   .footer__logo-content {
+      font-size: 0.8rem;
+   }
+  
+   .quick__link,
+   .office__info {
+      font-size: 0.8rem;
+      line-height: 1.5rem;
+   }
+  
+   .footer__link-title {
+      font-size: 1rem;
+      margin-block-start: 15px;
+   }
+  
+   .footer__bottom p {
+      font-size: 0.7rem;
+   }
+  }

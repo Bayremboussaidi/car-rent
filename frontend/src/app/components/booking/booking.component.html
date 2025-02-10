@@ -1,0 +1,21 @@
+<!-- Booking Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close-btn" (click)="closeModal()">&times;</span>
+    <h2>Book Your Car</h2>
+    <form (submit)="onSubmit()">
+      <label for="userId">User ID:</label>
+      <input type="text" id="userId" [(ngModel)]="bookingData.userId" name="userId" required />
+
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="bookingData.startDate" name="startDate" required />
+
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="bookingData.endDate" name="endDate" required />
+
+      <button type="submit">Confirm Booking</button>
+    </form>
+
+    <p *ngIf="responseMessage">{{ responseMessage }}</p>
+  </div>
+</div>

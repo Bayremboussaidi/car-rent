@@ -1,0 +1,26 @@
+.testimonial p {
+    font-size: 1rem; /* Adjust as needed */
+  }
+  
+  .testimonial h6 {
+    font-size: 1.2rem;
+  }
+  
+  @media only screen and (max-inline-size: 768px) {
+    .testimonial p {
+      font-size: 0.8rem;
+      line-height: 1.5rem;
+    }
+  
+    .testimonial h6 {
+      font-size: 1rem;
+    }
+  }
+  
+  @media only screen and (max-inline-size: 576px) {
+    .testimonial img {
+      inline-size: 60px !important;
+      block-size: 60px !important;
+      object-fit: cover;
+    }
+  }

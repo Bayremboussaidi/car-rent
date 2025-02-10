@@ -1,0 +1,61 @@
+<div class="card">
+  <div class="top-buttons">
+    <button class="add-record-button" (click)="openAddModal()">
+      <i class="pi pi-plus"></i> Add User
+    </button>
+  </div>
+
+  <div class="table-container"> <!-- Scrollable wrapper -->
+    <table class="p-table" *ngIf="users.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Car Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Transmission</th>
+          <th>Toit</th>
+          <th>Carburant</th>
+          <th>Price</th>
+          <th>Featured</th>
+          <th>Agency</th>
+          <th>Location</th>
+          <th>Agency Logo</th>
+          <th>Description</th>
+          <th>Availability</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td>{{ user.id }}</td>
+          <td>{{ user.carName }}</td>
+          <td>{{ user.brand }}</td>
+          <td>{{ user.category }}</td>
+          <td>{{ user.transmission }}</td>
+          <td>{{ user.toit }}</td>
+          <td>{{ user.carburant }}</td>
+          <td>{{ user.price | currency }}</td>
+          <td>{{ user.featured ? 'Yes' : 'No' }}</td>
+          <td>{{ user.agence }}</td>
+          <td>{{ user.local }}</td>
+          <td>
+            <img *ngIf="user.agenceLogo" [src]="user.agenceLogo" alt="Agency Logo" width="50">
+          </td>
+          <td>{{ user.description }}</td>
+          <td>{{ user.disponible ? 'Available' : 'Not Available' }}</td>
+          <td>{{ user.createdAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ user.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>
+            <button class="delete-button" *ngIf="user.id !== undefined" (click)="deleteUser(user.id, i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p *ngIf="users.length === 0">No users available.</p>
+</div>

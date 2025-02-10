@@ -1,0 +1,94 @@
+.form {
+  width: 90%; /* Maintain the width */
+  margin-right: 300px;
+  margin: 0 auto;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 15px;
+  background: rgba(255, 255, 255, 0.5); /* White background with 50% transparency */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 20px; /* Add padding inside the form */
+  transform: translateX(20px);
+}
+
+.form__container {
+  display: table-row-group;
+}
+
+.form__group {
+  display: table-cell;
+  vertical-align: top;
+  padding: 10px;
+  height: auto; /* Allow height to adjust based on content */
+}
+
+.form__group label {
+  display: inline-block; /* Keep label on the same line */
+  margin-right: 10px; /* Add spacing between label and input */
+  font-weight: bold;
+}
+
+.form__group input,
+.form__group select,
+.form__group button {
+  width: 100%;
+  padding: 12px; /* Increased padding for taller input fields */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form__group input:focus,
+.form__group select:focus,
+.form__group button:focus {
+  border-color: #010810;
+  outline: none;
+}
+
+.form__group button {
+  background-color: #01070e;
+  color: white;
+  cursor: pointer;
+}
+
+.form__group button:hover {
+  background-color: #bec928;
+}
+
+.form__subgroup {
+  display: flex;
+  flex-direction: column; /* Stack time input under date input */
+  gap: 10px;
+}
+
+.journey__time {
+  width: 100%;
+}
+
+
+
+
+.form__group:last-child {
+  margin-top: 24px; /* Adds space before the button */
+  transform: translateY(20px); /* Moves the button 20px lower */
+}
+
+/* Extended Input for Pick Up Location */
+.form__group--pickup {
+  grid-column: span 3; /* Extend across multiple columns */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form {
+    width: 100%;
+  }
+
+  .form__group {
+    display: block; /* Stack inputs on smaller screens */
+    width: 100%;
+  }
+
+  .form__subgroup {
+    flex-direction: column; /* Ensure time is stacked under date on small screens */
+  }
+}

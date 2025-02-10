@@ -1,0 +1,103 @@
+<div class="card">
+  <div class="top-buttons">
+    <button class="add-record-button" (click)="openAddModal()">
+      <i class="pi pi-plus"></i> Add Car
+    </button>
+    <button class="export-button">
+      <i class="pi pi-external-link"></i> Export
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="p-table" *ngIf="voitures.length > 0">
+      <thead>
+        <tr>
+          <th>Car Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Transmission</th>
+          <th>Toit</th>
+          <th>Carburant</th>
+          <th>Price</th>
+          <th>Featured</th>
+          <th>Agency</th>
+          <th>Location</th>
+          <th>Agency Logo</th>
+          <th>Description</th>
+          <th>Availability</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let voiture of voitures; let i = index">
+          <td>{{ voiture.carName }}</td>
+          <td>{{ voiture.brand }}</td>
+          <td>{{ voiture.category }}</td>
+          <td>{{ voiture.transmission }}</td>
+          <td>{{ voiture.toit }}</td>
+          <td>{{ voiture.carburant }}</td>
+          <td>{{ voiture.price | currency }}</td>
+          <td>{{ voiture.featured ? 'Yes' : 'No' }}</td>
+          <td>{{ voiture.agence }}</td>
+          <td>{{ voiture.local }}</td>
+          <td>
+            <img *ngIf="voiture.agenceLogo" [src]="voiture.agenceLogo" alt="Agency Logo" width="50">
+          </td>
+          <td>{{ voiture.description }}</td>
+          <td>{{ voiture.disponible ? 'Available' : 'Not Available' }}</td>
+          <td>{{ voiture.createdAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ voiture.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>
+            <button class="delete-button" *ngIf="voiture.id !== undefined" (click)="deleteCar(voiture.id, i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="voitures.length === 0">No cars available.</p>
+</div>
+
+<!-- Add Car Modal -->
+<p-dialog [(visible)]="isAddModalOpen" header="Add New Car" [modal]="true" [closable]="true" [dismissableMask]="true">
+  <form (ngSubmit)="onAddCar()" #addCarForm="ngForm">
+    <div class="p-field">
+      <label for="carName">Car Name</label>
+      <input type="text" id="carName" class="p-inputtext" [(ngModel)]="newCar.carName" name="carName" required />
+    </div>
+
+    <div class="p-field">
+      <label for="brand">Brand</label>
+      <input type="text" id="brand" class="p-inputtext" [(ngModel)]="newCar.brand" name="brand" required />
+    </div>
+
+    <div class="p-field">
+      <label for="category">Category</label>
+      <input type="text" id="category" class="p-inputtext" [(ngModel)]="newCar.category" name="category" required />
+    </div>
+
+    <div class="p-field">
+      <label for="price">Price</label>
+      <input type="number" id="price" class="p-inputtext" [(ngModel)]="newCar.price" name="price" required />
+    </div>
+
+    <div class="p-field-checkbox">
+      <p-checkbox [(ngModel)]="newCar.featured" name="featured" [binary]="true"></p-checkbox>
+      <label for="featured">Featured</label>
+    </div>
+
+    <div class="p-field">
+      <label for="description">Description</label>
+      <textarea id="description" class="p-inputtext" [(ngModel)]="newCar.description" name="description"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button type="submit" class="p-button p-button-success">Add Car</button>
+      <button type="button" class="p-button p-button-secondary" (click)="closeAddModal()">Cancel</button>
+    </div>
+  </form>
+</p-dialog>

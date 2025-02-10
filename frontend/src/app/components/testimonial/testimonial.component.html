@@ -1,0 +1,15 @@
+<!-- testimonial.component.html -->
+<ngx-slider >
+    <ng-container *ngFor="let testimonial of testimonials">
+      <div class="testimonial py-4 px-3">
+        <p class="section__description">{{ testimonial.message }}</p>
+        <div class="mt-3 d-flex align-items-center gap-4">
+          <img [src]="testimonial.imgUrl" alt="{{ testimonial.name }}" class="w-25 h-25 rounded-2" />
+          <div>
+            <h6 class="mb-0 mt-3">{{ testimonial.name }}</h6>
+            <p class="section__description">{{ testimonial.role }}</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ngx-slider>

@@ -1,0 +1,66 @@
+<!--section>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 m-auto">
+        <div class="login__container d-flex justify-content-between">
+          <div class="login__img">
+
+          </div>
+
+          <div class="login__form">
+            <div class="user">
+              <img src="../../assets/all-images/agns-img/agns-logo.jpg" alt="User Icon" />
+            </div>
+            <h2>Se connecter</h2>
+            <form >
+              <div class="form-group">
+                <input type="email" placeholder="Email" required id="email" [(ngModel)]="credentials.email" name="email" />
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" required id="password" [(ngModel)]="credentials.password" name="password" />
+              </div>
+              <button class="btn secondary__btn auth__btn" type="submit">
+                <p>Se connecter</p>
+              </button>
+            </form>
+            <p>Vous n'avez pas de compte ? <a routerLink="/register" class="text-black">Créer</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section-->
+
+
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 m-auto">
+        <div class="login__container d-flex justify-content-between">
+          <div class="login__img">
+            <!-- You can add an image here if needed -->
+          </div>
+
+          <div class="login__form">
+            <div class="user">
+              <img src="../../assets/all-images/agns-img/agns-logo.jpg" alt="User Icon" />
+            </div>
+            <h2>Se connecter</h2>
+            <form (ngSubmit)="handleClick($event)">
+              <div class="form-group">
+                <input type="email" placeholder="Email" required id="email" [(ngModel)]="credentials.email" name="email" />
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" required id="password" [(ngModel)]="credentials.password" name="password" />
+              </div>
+              <button class="btn secondary__btn auth__btn" type="submit">
+                <p>Se connecter</p>
+              </button>
+            </form>
+            <p>Vous n'avez pas de compte ? <a routerLink="/register" class="text-black">Créer</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
