@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class BookingService {
 
-  private apiUrl = 'http://localhost:8080/api/bookings'; // Adjust the backend URL if needed
+  private apiUrl = 'http://localhost:8084/api/bookings'; // Adjust the backend URL if needed
 
   constructor(private http: HttpClient) {}
 

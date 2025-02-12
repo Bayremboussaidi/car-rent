@@ -39,13 +39,15 @@ import { TestComponent } from './test/test.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { BookingComponent } from './components/booking/booking.component';
 import { UserListComponent } from './ADMIN/users-a/users-a.component';
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
 import { PhotoAComponent } from './ADMIN/photo-a/photo-a.component';
 import { APP_BASE_HREF } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
+import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
 //import { KeycloakService } from './services/keycloak.service';
 
 /*
@@ -85,10 +87,12 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     VideoPlayerComponent,
     BookingComponent,
     UserListComponent,
-    MainLayoutComponent,
     BookingAComponent,
     ReviewsAComponent,
     PhotoAComponent,
+    AdminLayoutComponent,
+    UserLayoutComponent,
+    HeaderAComponent,
   ],
   imports: [
     BrowserModule,

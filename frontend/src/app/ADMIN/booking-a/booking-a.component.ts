@@ -1,6 +1,6 @@
-import { BookingService } from './../../services/booking.service';
-
 import { Component, OnInit } from '@angular/core';
+import { BookingService } from './../../services/booking.service';
+import { Booking } from '../../models/booking.model';
 
 @Component({
   selector: 'app-bookings',
@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./booking-a.component.css']
 })
 export class BookingAComponent implements OnInit {
-  bookings: any[] = [];
+  bookings: Booking[] = [];
 
   constructor(private bookingService: BookingService) {}
 
@@ -18,13 +18,24 @@ export class BookingAComponent implements OnInit {
 
   loadBookings(): void {
     this.bookingService.getAllBookings().subscribe(
-      (data:any) => {
-        this.bookings = data;
-        console.log('Bookings loaded:', this.bookings);
+      (response: any) => {
+        if (response.success && Array.isArray(response.data)) {
+          this.bookings = response.data.map((booking: Booking) => ({
+            ...booking,
+            formattedDate: this.formatDate(booking.startDate, booking.endDate) // ✅ Now it exists in the model
+          }));
+        }
       },
-      (error:any) => {
+      (error: any) => {
         console.error('Error fetching bookings:', error);
       }
     );
+  }
+
+  formatDate(startDate: string | null, endDate: string | null): string {
+    if (!startDate || !endDate) {
+      return 'N/A';
+    }
+    return `${startDate} - ${endDate}`;
   }
 }

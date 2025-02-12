@@ -1,12 +1,25 @@
 package com.example.comparateur.Entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -20,10 +33,9 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
-    
 
     @Column(nullable = false)
-    private Long userId; // ✅ Changed to Long
+    private Long userId;
 
     @Column(nullable = false)
     private String username;
@@ -38,28 +50,26 @@ public class Booking {
     private int nbrJrs;
 
     @Column(nullable = false)
-    private String phone; // ✅ Changed to String
+    private String phone;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "voiture_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "voiture_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Voiture voiture;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status = BookingStatus.PENDING;
 
-    // ✅ Added default pickup and dropoff locations
     @Column(nullable = false)
     private String pickupLocation = "Lac2";
 

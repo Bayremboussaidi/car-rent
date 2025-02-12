@@ -1,10 +1,21 @@
 package com.example.comparateur.Entity;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,13 +46,12 @@ public class Voiture {
     private String agenceLogo;
     private String description;
 
-    @Lob
-    private String imgUrl; // Base64 encoded image string
+    private String imgUrl;  
 
-    private boolean disponible; // Availability property
+    private boolean disponible;
 
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "voiture", orphanRemoval = true)
     @JsonManagedReference
@@ -54,27 +64,28 @@ public class Voiture {
     @OneToMany(mappedBy = "voiture", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Booking> bookings;
 
-    // Automatically manage createdAt & updatedAt
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    // Update availability based on bookings
     public void updateDisponibilite() {
-        Date now = new Date();
-        boolean isBooked = bookings != null && bookings.stream()
-                .anyMatch(booking -> now.after(booking.getStartDate()) && now.before(booking.getEndDate()));
-        this.disponible = !isBooked;
+        LocalDate now = LocalDate.now(); // ✅ Use LocalDate for proper date comparison
+        if (bookings != null && !bookings.isEmpty()) { // ✅ Prevent null exception
+            boolean isBooked = bookings.stream()
+                .anyMatch(booking -> now.isAfter(booking.getStartDate()) && now.isBefore(booking.getEndDate()));
+            this.disponible = !isBooked;
+        } else {
+            this.disponible = true; // ✅ Default to available if no bookings exist
+        }
     }
 
-    // Dynamically return imgUrl as Base64
     public String getImgUrl() {
         if (photos != null && !photos.isEmpty()) {
             Photo firstPhoto = photos.get(0);
@@ -82,6 +93,6 @@ public class Voiture {
                 return "data:image/png;base64," + java.util.Base64.getEncoder().encodeToString(firstPhoto.getData());
             }
         }
-        return null;
+        return "/images/default-car.png";  
     }
 }

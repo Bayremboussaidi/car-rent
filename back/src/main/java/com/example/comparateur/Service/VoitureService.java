@@ -1,7 +1,8 @@
 package com.example.comparateur.Service;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.comparateur.DTO.ApiResponse;
+import com.example.comparateur.Entity.Booking;
 import com.example.comparateur.Entity.Photo;
 import com.example.comparateur.Entity.Voiture;
-import com.example.comparateur.Entity.Booking;
+import com.example.comparateur.Repository.BookingRepository;
 import com.example.comparateur.Repository.PhotoRepository;
 import com.example.comparateur.Repository.VoitureRepository;
-import com.example.comparateur.Repository.BookingRepository;
 
 @Service
 public class VoitureService {
@@ -58,7 +59,7 @@ public class VoitureService {
             existingVoiture.setLocal(voiture.getLocal());
             existingVoiture.setAgenceLogo(voiture.getAgenceLogo());
             existingVoiture.setDescription(voiture.getDescription());
-            existingVoiture.setUpdatedAt(new Date());
+            existingVoiture.setUpdatedAt(LocalDateTime.now()); // ✅ Correct type
     
             if (file != null && !file.isEmpty()) {
                 String fileName = file.getOriginalFilename();
@@ -141,11 +142,11 @@ public class VoitureService {
         Voiture voiture = voitureRepository.findById(voitureId).orElse(null);
         if (voiture == null) return;
 
-        Date now = new Date();
+        LocalDate now = LocalDate.now();
         List<Booking> bookings = bookingRepository.findByVoitureId(voitureId);
 
         boolean isBooked = bookings.stream()
-                .anyMatch(booking -> now.after(booking.getStartDate()) && now.before(booking.getEndDate()));
+                .anyMatch(booking -> now.isAfter(booking.getStartDate()) && now.isBefore(booking.getEndDate()));
 
         voiture.setDisponible(!isBooked);
         voitureRepository.save(voiture);

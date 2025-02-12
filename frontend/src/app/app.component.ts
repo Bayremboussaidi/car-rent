@@ -9,7 +9,7 @@ import * as AOS from 'aos';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'comparateur';
 
   ngOnInit(): void {
     AOS.init({
