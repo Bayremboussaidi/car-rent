@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,10 +31,11 @@ public class VoitureService {
 
     @Autowired
     private PhotoRepository photoRepository;
-    
+
     @Autowired
     private BookingRepository bookingRepository;
 
+    // ✅ Create a new Voiture
     public ResponseEntity<Object> createVoiture(Voiture voiture) {
         try {
             Voiture savedVoiture = voitureRepository.save(voiture);
@@ -42,9 +46,10 @@ public class VoitureService {
         }
     }
 
+    // ✅ Update Voiture details
     public ResponseEntity<Object> updateVoiture(Long id, Voiture voiture, MultipartFile file) {
         Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
-    
+
         if (optionalVoiture.isPresent()) {
             Voiture existingVoiture = optionalVoiture.get();
             existingVoiture.setCarName(voiture.getCarName());
@@ -59,13 +64,13 @@ public class VoitureService {
             existingVoiture.setLocal(voiture.getLocal());
             existingVoiture.setAgenceLogo(voiture.getAgenceLogo());
             existingVoiture.setDescription(voiture.getDescription());
-            existingVoiture.setUpdatedAt(LocalDateTime.now()); // ✅ Correct type
-    
+            existingVoiture.setUpdatedAt(LocalDateTime.now());
+
             if (file != null && !file.isEmpty()) {
                 String fileName = file.getOriginalFilename();
                 existingVoiture.setImgUrl("/uploads/" + fileName);
             }
-    
+
             voitureRepository.save(existingVoiture);
             updateDisponibilite(id);
             return ResponseEntity.ok().body(new ApiResponse<>(true, "Successfully updated"));
@@ -73,16 +78,23 @@ public class VoitureService {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found"));
         }
     }
-    
+
+    // ✅ Delete a Voiture and all its photos
     public ResponseEntity<Object> deleteVoiture(Long id) {
         try {
+            // First, delete all photos linked to this Voiture
+            photoRepository.deleteByVoitureId(id);
+
+            // Then delete the Voiture
             voitureRepository.deleteById(id);
+
             return ResponseEntity.ok().body(new ApiResponse<>(true, "Successfully deleted"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to delete"));
         }
     }
 
+    // ✅ Get a single Voiture
     public ResponseEntity<Object> getOneVoiture(Long id) {
         Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
         if (optionalVoiture.isPresent()) {
@@ -94,50 +106,69 @@ public class VoitureService {
         }
     }
 
+    // ✅ Get paginated list of Voitures
     public ResponseEntity<Object> getAllVoitures(int page) {
-        List<Voiture> voitures = voitureRepository.findAll()
-                .stream()
-                .skip(page * 8)
-                .limit(8)
-                .toList();
+        Pageable pageable = PageRequest.of(page, 8); // 8 voitures per page
+        Page<Voiture> voiturePage = voitureRepository.findAll(pageable);
 
-        voitures.forEach(voiture -> updateDisponibilite(voiture.getId()));
-        return ResponseEntity.ok().body(new ApiResponse<>(true, "Successful", voitures));
+        voiturePage.getContent().forEach(voiture -> updateDisponibilite(voiture.getId()));
+
+        return ResponseEntity.ok().body(new ApiResponse<>(true, "Successful", voiturePage.getContent()));
     }
 
+    // ✅ Search Voiture by location
     public ResponseEntity<Object> getVoitureBySearch(String local) {
         List<Voiture> voitures = voitureRepository.findByLocalContainingIgnoreCase(local);
         return ResponseEntity.ok().body(new ApiResponse<>(true, "Successful", voitures));
     }
 
+    // ✅ Get all featured Voitures
     public ResponseEntity<Object> getFeaturedVoitures() {
         List<Voiture> voitures = voitureRepository.findByFeatured(true);
         return ResponseEntity.ok().body(new ApiResponse<>(true, "Successful", voitures));
     }
 
+    // ✅ Get the total count of Voitures
     public ResponseEntity<Object> getVoitureCount() {
         long voitureCount = voitureRepository.count();
         return ResponseEntity.ok().body(new ApiResponse<>(true, "Successful", voitureCount));
     }
 
-    public ResponseEntity<Object> addPhotoToVoiture(Long voitureId, MultipartFile file) {
+    // ✅ Upload multiple photos for a Voiture
+    public ResponseEntity<Object> addPhotosToVoiture(Long voitureId, MultipartFile[] files) {
         try {
             Voiture voiture = voitureRepository.findById(voitureId)
                     .orElseThrow(() -> new RuntimeException("Voiture not found"));
 
-            Photo photo = new Photo();
-            photo.setName(file.getOriginalFilename());
-            photo.setType(file.getContentType());
-            photo.setData(file.getBytes());
-            photo.setVoiture(voiture);
+            for (MultipartFile file : files) {
+                Photo photo = new Photo();
+                photo.setName(file.getOriginalFilename());
+                photo.setType(file.getContentType());
+                photo.setData(file.getBytes());
+                photo.setVoiture(voiture);
 
-            Photo savedPhoto = photoRepository.save(photo);
-            return ResponseEntity.ok().body(new ApiResponse<>(true, "Photo added successfully", savedPhoto));
+                photoRepository.save(photo);
+            }
+
+            return ResponseEntity.ok().body(new ApiResponse<>(true, "Photos added successfully"));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to add photo"));
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to add photos"));
         }
     }
 
+    // ✅ Retrieve all photos of a Voiture
+    public ResponseEntity<Object> getPhotosByVoitureId(Long voitureId) {
+        List<Photo> photos = photoRepository.findAllByVoitureId(voitureId);
+        return ResponseEntity.ok().body(new ApiResponse<>(true, "Photos retrieved", photos));
+    }
+
+    // ✅ Delete all photos of a Voiture
+    public ResponseEntity<Object> deletePhotosByVoitureId(Long voitureId) {
+        photoRepository.deleteByVoitureId(voitureId);
+        return ResponseEntity.ok().body(new ApiResponse<>(true, "All photos deleted"));
+    }
+
+    // ✅ Update the availability of a Voiture
     public void updateDisponibilite(Long voitureId) {
         Voiture voiture = voitureRepository.findById(voitureId).orElse(null);
         if (voiture == null) return;
@@ -152,6 +183,7 @@ public class VoitureService {
         voitureRepository.save(voiture);
     }
 
+    // ✅ Automatically check availability every minute
     @Scheduled(fixedRate = 60000)
     public void checkDisponibiliteForAllCars() {
         List<Voiture> voitures = voitureRepository.findAll();

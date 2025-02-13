@@ -1,17 +1,23 @@
 package com.example.comparateur.Controller;
 
-import org.springframework.http.MediaType;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.comparateur.DTO.PhotoResponseDTO;
 import com.example.comparateur.Entity.Photo;
 import com.example.comparateur.Service.PhotoService;
 
-import java.io.IOException;
-import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/photos")
@@ -21,61 +27,27 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    // Endpoint to upload a photo linked to a voiture
+    // ✅ Upload multiple photos to a Voiture
     @PostMapping("/upload/{voitureId}")
-    public ResponseEntity<Photo> uploadPhoto(@PathVariable Long voitureId, @RequestParam("file") MultipartFile file) throws IOException {
-        Photo photo = photoService.savePhoto(voitureId, file);
-        return ResponseEntity.ok(photo);
+    public ResponseEntity<List<Photo>> uploadMultiplePhotos(
+        @PathVariable Long voitureId,
+        @RequestParam("files") MultipartFile[] files) throws IOException {
+        
+        List<Photo> photos = photoService.saveMultiplePhotos(voitureId, files);
+        return ResponseEntity.ok(photos);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Photo> getPhotoById(@PathVariable Long id) {
-        Photo photo = photoService.getPhotoById(id);
-        System.out.println("Photo Retrieved: " + photo);
-        return ResponseEntity.ok(photo);
-    }
-
-    @GetMapping("/{id}/data")
-    public ResponseEntity<byte[]> getPhotoData(@PathVariable Long id) {
-        Photo photo = photoService.getPhotoById(id);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(photo.getType()))
-                .body(photo.getData());
-    }
-
+    // ✅ Get all photos for a specific Voiture
     @GetMapping("/voiture/{voitureId}")
-    public ResponseEntity<PhotoResponseDTO> getPhotoByVoitureId(@PathVariable Long voitureId) {
-        Photo photo = photoService.getPhotoByVoitureId(voitureId);
-        if (photo == null) {
-        return ResponseEntity.notFound().build();  }
-                                                
-
-    // Encode the photo data as Base64
-    String base64Data = Base64.getEncoder().encodeToString(photo.getData());
-
-    // Create a PhotoResponseDTO
-    PhotoResponseDTO responseDTO = new PhotoResponseDTO(
-            photo.getId(),
-            photo.getName(),
-            photo.getType(),
-            "data:" + photo.getType() + ";base64," + base64Data
-    );
-
-    return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<List<Photo>> getPhotosByVoitureId(@PathVariable Long voitureId) {
+        List<Photo> photos = photoService.getPhotosByVoitureId(voitureId);
+        return ResponseEntity.ok(photos);
     }
 
-
-    // Endpoint to delete a photo by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePhotoById(@PathVariable Long id) {
-        photoService.deletePhotoById(id);
+    // ✅ Delete all photos of a voiture
+    @DeleteMapping("/voiture/{voitureId}")
+    public ResponseEntity<Void> deletePhotosByVoitureId(@PathVariable Long voitureId) {
+        photoService.deletePhotosByVoitureId(voitureId);
         return ResponseEntity.noContent().build();
-    }
-
-    // Endpoint to update a photo
-    @PutMapping("/{id}")
-    public ResponseEntity<Photo> updatePhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
-        Photo updatedPhoto = photoService.updatePhoto(id, file);
-        return ResponseEntity.ok(updatedPhoto);
     }
 }
