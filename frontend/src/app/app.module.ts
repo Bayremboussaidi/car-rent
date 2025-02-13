@@ -38,7 +38,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TestComponent } from './test/test.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { BookingComponent } from './components/booking/booking.component';
-import { UserListComponent } from './ADMIN/users-a/users-a.component';
+import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
 import { PhotoAComponent } from './ADMIN/photo-a/photo-a.component';
@@ -86,7 +86,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     TestComponent,
     VideoPlayerComponent,
     BookingComponent,
-    UserListComponent,
+    UserAComponent,
     BookingAComponent,
     ReviewsAComponent,
     PhotoAComponent,

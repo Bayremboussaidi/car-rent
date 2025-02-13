@@ -3,26 +3,72 @@
     <button class="add-record-button" (click)="openAddModal()">
       <i class="pi pi-plus"></i> Add User
     </button>
+    <button class="update-button" (click)="updateSelectedUsers()" [disabled]="selectedUsers.length === 0">
+      <i class="pi pi-pencil"></i> Update Selected
+    </button>
   </div>
 
-  <div class="table-container"> <!-- Scrollable wrapper -->
+
+
+<!-- ✅ Add User Modal -->
+<div class="modal-overlay" *ngIf="isAddModalOpen">
+  <div class="modal-content">
+    <h2>Add User</h2>
+    <form (ngSubmit)="onAddUserSubmit()" #addUserForm="ngForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" [(ngModel)]="newUser.username" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="newUser.email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="newUser.password" required />
+      </div>
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" name="role" [(ngModel)]="newUser.role" required>
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="number" id="phone" name="phone" [(ngModel)]="newUser.phone" />
+      </div>
+      <div class="form-group">
+        <label for="workplace">Workplace</label>
+        <input type="text" id="workplace" name="workplace" [(ngModel)]="newUser.workplace" />
+      </div>
+      <div class="form-group">
+        <label for="photo">Photo URL</label>
+        <input type="text" id="photo" name="photo" [(ngModel)]="newUser.photo" />
+      </div>
+      <div class="form-actions">
+        <button type="button" (click)="closeAddModal()">Cancel</button>
+        <button type="submit" [disabled]="addUserForm.invalid">Add User</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+  <div class="table-container">
     <table class="p-table" *ngIf="users.length > 0">
       <thead>
         <tr>
+          <th>
+            <input type="checkbox" (change)="toggleSelectAll($event)" [checked]="selectedUsers.length === users.length" />
+          </th>
           <th>ID</th>
-          <th>Car Name</th>
-          <th>Brand</th>
-          <th>Category</th>
-          <th>Transmission</th>
-          <th>Toit</th>
-          <th>Carburant</th>
-          <th>Price</th>
-          <th>Featured</th>
-          <th>Agency</th>
-          <th>Location</th>
-          <th>Agency Logo</th>
-          <th>Description</th>
-          <th>Availability</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Phone</th>
+          <th>Workplace</th>
           <th>Created At</th>
           <th>Updated At</th>
           <th>Actions</th>
@@ -30,24 +76,29 @@
       </thead>
       <tbody>
         <tr *ngFor="let user of users; let i = index">
-          <td>{{ user.id }}</td>
-          <td>{{ user.carName }}</td>
-          <td>{{ user.brand }}</td>
-          <td>{{ user.category }}</td>
-          <td>{{ user.transmission }}</td>
-          <td>{{ user.toit }}</td>
-          <td>{{ user.carburant }}</td>
-          <td>{{ user.price | currency }}</td>
-          <td>{{ user.featured ? 'Yes' : 'No' }}</td>
-          <td>{{ user.agence }}</td>
-          <td>{{ user.local }}</td>
           <td>
-            <img *ngIf="user.agenceLogo" [src]="user.agenceLogo" alt="Agency Logo" width="50">
+            <input type="checkbox" [checked]="isSelected(user)" (change)="toggleSelection(user)" />
           </td>
-          <td>{{ user.description }}</td>
-          <td>{{ user.disponible ? 'Available' : 'Not Available' }}</td>
-          <td>{{ user.createdAt | date:'yyyy-MM-dd HH:mm' }}</td>
-          <td>{{ user.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username || 'N/A' }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <select *ngIf="isSelected(user)" [(ngModel)]="user.role">
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+            <span *ngIf="!isSelected(user)">{{ user.role }}</span>
+          </td>
+          <td>
+            <input *ngIf="isSelected(user)" type="text" [(ngModel)]="user.phone" />
+            <span *ngIf="!isSelected(user)">{{ user.phone || 'N/A' }}</span>
+          </td>
+          <td>
+            <input *ngIf="isSelected(user)" type="text" [(ngModel)]="user.workplace" />
+            <span *ngIf="!isSelected(user)">{{ user.workplace || 'N/A' }}</span>
+          </td>
+          <td>{{ user.createdAt ? (user.createdAt | date:'yyyy-MM-dd HH:mm') : 'N/A' }}</td>
+          <td>{{ user.updatedAt ? (user.updatedAt | date:'yyyy-MM-dd HH:mm') : 'N/A' }}</td>
           <td>
             <button class="delete-button" *ngIf="user.id !== undefined" (click)="deleteUser(user.id, i)">
               Delete

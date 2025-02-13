@@ -9,6 +9,8 @@ import { Booking } from '../../models/booking.model';
 })
 export class BookingAComponent implements OnInit {
   bookings: Booking[] = [];
+  filteredBookings: Booking[] = [];
+  activeButton: string = ''; //pending
 
   constructor(private bookingService: BookingService) {}
 
@@ -22,8 +24,9 @@ export class BookingAComponent implements OnInit {
         if (response.success && Array.isArray(response.data)) {
           this.bookings = response.data.map((booking: Booking) => ({
             ...booking,
-            formattedDate: this.formatDate(booking.startDate, booking.endDate) // ✅ Now it exists in the model
+            formattedDate: this.formatDate(booking.startDate, booking.endDate)
           }));
+          this.filteredBookings = this.bookings; // Initialize filteredBookings with all bookings
         }
       },
       (error: any) => {
@@ -37,5 +40,41 @@ export class BookingAComponent implements OnInit {
       return 'N/A';
     }
     return `${startDate} - ${endDate}`;
+  }
+
+  showPending(): void {
+    this.filteredBookings = this.bookings.filter(booking => booking.status === 'PENDING');
+    this.activeButton = 'pending'; // Set active button to 'pending'
+  }
+
+  showTraited(): void {
+    this.filteredBookings = this.bookings.filter(booking => booking.status === 'CONFIRMED' || booking.status === 'DECLINED');
+    this.activeButton = 'traited'; // Set active button to 'traited'
+  }
+
+  accept(booking: Booking): void {
+    booking.status = 'CONFIRMED';
+    this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
+      () => {
+        console.log(`Booking ${booking.id} accepted.`);
+        //this.showPending();
+      },
+      (error:any) => {
+        console.error('Error accepting booking:', error);
+      }
+    );
+  }
+
+  refuse(booking: Booking): void {
+    booking.status = 'DECLINED';
+    this.bookingService.updateBookingStatus(booking.id, 'DECLINED').subscribe(
+      () => {
+        console.log(`Booking ${booking.id} refused.`);
+        //this.showPending();
+      },
+      (error:any) => {
+        console.error('Error refusing booking:', error);
+      }
+    );
   }
 }

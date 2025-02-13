@@ -58,7 +58,7 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // ✅ Changed from `nullable = false` to allow null values
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

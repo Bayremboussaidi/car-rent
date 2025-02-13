@@ -1,15 +1,22 @@
 package com.example.comparateur.Controller;
 
-import com.example.Utils.ApiResponse;
-import com.example.comparateur.Entity.Booking;
-import com.example.comparateur.Entity.BookingStatus;
-import com.example.comparateur.Service.BookingService;
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.Utils.ApiResponse;
+import com.example.comparateur.Entity.Booking;
+import com.example.comparateur.Entity.BookingStatus;
+import com.example.comparateur.Service.BookingService;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -21,6 +28,9 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> createBooking(@RequestBody Booking booking) {
+        if (booking.getEndDate() == null) {
+            return ResponseEntity.status(400).body(new ApiResponse(false, "Error: Booking must have an end date."));
+        }
         return bookingService.createBooking(booking);
     }
 
@@ -29,36 +39,39 @@ public class BookingController {
         return bookingService.getOneBooking(id);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Object> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateBooking(
-    @PathVariable Long id, 
-    @RequestBody Booking updatedBooking) {  // ✅ Accept JSON body
-    System.out.println("Received request to update booking ID: " + id);
-    return bookingService.updateBooking(id, updatedBooking);
-}
-
-@PutMapping("/{id}/status")
-public ResponseEntity<Object> updateBookingStatus(
-    @PathVariable Long id,
-    @RequestBody Map<String, String> requestBody) {  // ✅ Accept JSON object
-    
-    try {
-        String statusValue = requestBody.get("status");  // ✅ Extract status from JSON body
-        System.out.println("Received API request: Update booking ID: " + id + " to " + statusValue);
+        @PathVariable Long id, 
+        @RequestBody Booking updatedBooking) { 
         
-        // ✅ Convert status to uppercase
-        BookingStatus bookingStatus = BookingStatus.valueOf(statusValue.toUpperCase());
-        
-        return bookingService.updateBookingStatus(id, bookingStatus);
-    } catch (IllegalArgumentException e) {
-        return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid status value. Use: PENDING, CONFIRMED, DECLINED"));
+        System.out.println("Received request to update booking ID: " + id);
+        return bookingService.updateBooking(id, updatedBooking);
     }
-}
 
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Object> updateBookingStatus(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> requestBody) { 
+    
+        try {
+            if (!requestBody.containsKey("status")) {
+                return ResponseEntity.status(400).body(new ApiResponse(false, "Missing 'status' field in request body"));
+            }
 
+            String statusValue = requestBody.get("status");
+            System.out.println("Received API request: ID=" + id + ", Status=" + statusValue);
+
+            // ✅ Convert to uppercase to avoid case-sensitivity issues
+            BookingStatus bookingStatus = BookingStatus.valueOf(statusValue.toUpperCase());
+
+            return bookingService.updateBookingStatus(id, bookingStatus);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid status value. Use: PENDING, CONFIRMED, DECLINED"));
+        }
+    }
 }

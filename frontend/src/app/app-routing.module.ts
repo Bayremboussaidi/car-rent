@@ -24,7 +24,7 @@ import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
 // Admin Pages
 import { DashComponent } from './ADMIN/dash/dash.component';
 import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
-import { UserListComponent } from './ADMIN/users-a/users-a.component';
+import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 
 // Route Guards (Optional)
@@ -61,7 +61,7 @@ const routes: Routes = [
     children: [
       { path: '', component: DashComponent },
       { path: 'voiturea', component: AddVoitureComponent },
-      { path: 'usera', component: UserListComponent },
+      { path: 'usera', component: UserAComponent },
       { path: 'bookinga', component: BookingAComponent },
       { path: 'reviewa', component: ReviewsAComponent },
 

@@ -6,19 +6,20 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BookingService {
-
   private apiUrl = 'http://localhost:8084/api/bookings'; // Adjust the backend URL if needed
 
   constructor(private http: HttpClient) {}
 
-
   createBooking(bookingData: any): Observable<any> {
-    return this.http.post(this.apiUrl, bookingData);
+    return this.http.post(`${this.apiUrl}`, bookingData);
   }
-
 
   getAllBookings(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    return this.http.get<any>(`${this.apiUrl}/all`); // Ensure the correct endpoint
+  }
+
+  updateBookingStatus(id: number, status: string): Observable<any> {
+    const requestBody = { status }; // Send status as JSON
+    return this.http.put<any>(`${this.apiUrl}/${id}/status`, requestBody);
   }
 }
-
