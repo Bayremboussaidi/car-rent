@@ -2,9 +2,8 @@ package com.example.comparateur.Entity;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,12 +57,12 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = true) // ✅ Changed from `nullable = false` to allow null values
+    @Column(nullable = true) // ✅ Allows `null` values if the booking is not completed yet
     private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voiture_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference // ✅ Prevents infinite recursion when fetching `Voiture`
     private Voiture voiture;
 
     @Enumerated(EnumType.STRING)

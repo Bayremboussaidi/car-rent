@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.comparateur.DTO.ApiResponse;
 import com.example.comparateur.Entity.Booking;
 import com.example.comparateur.Entity.Photo;
+import com.example.comparateur.Entity.Review;
 import com.example.comparateur.Entity.Voiture;
 import com.example.comparateur.Repository.BookingRepository;
 import com.example.comparateur.Repository.PhotoRepository;
+import com.example.comparateur.Repository.ReviewRepository;
 import com.example.comparateur.Repository.VoitureRepository;
 
 @Service
@@ -35,6 +37,9 @@ public class VoitureService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     // ✅ Create a new Voiture
     public ResponseEntity<Object> createVoiture(Voiture voiture) {
         try {
@@ -46,7 +51,7 @@ public class VoitureService {
         }
     }
 
-    // ✅ Update Voiture details
+    // ✅ Update Voiture with or without a new image
     public ResponseEntity<Object> updateVoiture(Long id, Voiture voiture, MultipartFile file) {
         Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
 
@@ -73,33 +78,42 @@ public class VoitureService {
 
             voitureRepository.save(existingVoiture);
             updateDisponibilite(id);
-            return ResponseEntity.ok().body(new ApiResponse<>(true, "Successfully updated"));
+            return ResponseEntity.ok().body(new ApiResponse<>(true, "Successfully updated", existingVoiture));
         } else {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found"));
         }
     }
 
-    // ✅ Delete a Voiture and all its photos
+    // ✅ Delete a Voiture and all its related photos
     public ResponseEntity<Object> deleteVoiture(Long id) {
         try {
-            // First, delete all photos linked to this Voiture
             photoRepository.deleteByVoitureId(id);
-
-            // Then delete the Voiture
             voitureRepository.deleteById(id);
-
             return ResponseEntity.ok().body(new ApiResponse<>(true, "Successfully deleted"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to delete"));
         }
     }
 
-    // ✅ Get a single Voiture
+    // ✅ Get a single Voiture with Photos, Reviews & Bookings
     public ResponseEntity<Object> getOneVoiture(Long id) {
         Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
+
         if (optionalVoiture.isPresent()) {
             Voiture voiture = optionalVoiture.get();
-            updateDisponibilite(id);
+
+            // ✅ Fetch related photos
+            List<Photo> photos = photoRepository.findAllByVoitureId(id);
+            voiture.setPhotos(photos);
+
+            // ✅ Fetch related reviews
+            List<Review> reviews = reviewRepository.findAllByVoitureId(id);
+            voiture.setReviews(reviews);
+
+            // ✅ Fetch related bookings
+            List<Booking> bookings = bookingRepository.findByVoitureId(id);
+            voiture.setBookings(bookings);
+
             return ResponseEntity.ok().body(new ApiResponse<>(true, "Voiture info", voiture));
         } else {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, "Not found"));
@@ -108,7 +122,7 @@ public class VoitureService {
 
     // ✅ Get paginated list of Voitures
     public ResponseEntity<Object> getAllVoitures(int page) {
-        Pageable pageable = PageRequest.of(page, 8); // 8 voitures per page
+        Pageable pageable = PageRequest.of(page, 8);
         Page<Voiture> voiturePage = voitureRepository.findAll(pageable);
 
         voiturePage.getContent().forEach(voiture -> updateDisponibilite(voiture.getId()));
@@ -156,16 +170,19 @@ public class VoitureService {
         }
     }
 
-    // ✅ Retrieve all photos of a Voiture
-    public ResponseEntity<Object> getPhotosByVoitureId(Long voitureId) {
-        List<Photo> photos = photoRepository.findAllByVoitureId(voitureId);
-        return ResponseEntity.ok().body(new ApiResponse<>(true, "Photos retrieved", photos));
-    }
-
     // ✅ Delete all photos of a Voiture
     public ResponseEntity<Object> deletePhotosByVoitureId(Long voitureId) {
         photoRepository.deleteByVoitureId(voitureId);
         return ResponseEntity.ok().body(new ApiResponse<>(true, "All photos deleted"));
+    }
+
+    // ✅ Fetch all photos of a Voiture
+    public ResponseEntity<Object> getPhotosByVoitureId(Long id) {
+        List<Photo> photos = photoRepository.findAllByVoitureId(id);
+        if (photos.isEmpty()) {
+            return ResponseEntity.status(404).body(new ApiResponse<>(false, "No photos found for this Voiture"));
+        }
+        return ResponseEntity.ok().body(new ApiResponse<>(true, "Photos retrieved successfully", photos));
     }
 
     // ✅ Update the availability of a Voiture

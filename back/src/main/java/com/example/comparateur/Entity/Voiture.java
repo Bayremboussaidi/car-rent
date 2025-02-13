@@ -46,22 +46,26 @@ public class Voiture {
     private String agenceLogo;
     private String description;
 
-    private String imgUrl;  
+    private String imgUrl;
 
     private boolean disponible;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // ✅ Fetch reviews associated with this voiture
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "voiture", orphanRemoval = true)
     @JsonManagedReference
     private List<Review> reviews;
 
+    // ✅ Fetch photos associated with this voiture
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "voiture", orphanRemoval = true)
     @JsonManagedReference
     private List<Photo> photos;
 
+    // ✅ Fetch bookings associated with this voiture
     @OneToMany(mappedBy = "voiture", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Booking> bookings;
 
     @PrePersist
@@ -75,9 +79,10 @@ public class Voiture {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // ✅ Update availability based on current bookings
     public void updateDisponibilite() {
-        LocalDate now = LocalDate.now(); // ✅ Use LocalDate for proper date comparison
-        if (bookings != null && !bookings.isEmpty()) { // ✅ Prevent null exception
+        LocalDate now = LocalDate.now();
+        if (bookings != null && !bookings.isEmpty()) {
             boolean isBooked = bookings.stream()
                 .anyMatch(booking -> now.isAfter(booking.getStartDate()) && now.isBefore(booking.getEndDate()));
             this.disponible = !isBooked;
@@ -86,6 +91,7 @@ public class Voiture {
         }
     }
 
+    // ✅ Ensure only the first photo is used for main display
     public String getImgUrl() {
         if (photos != null && !photos.isEmpty()) {
             Photo firstPhoto = photos.get(0);
@@ -93,6 +99,6 @@ public class Voiture {
                 return "data:image/png;base64," + java.util.Base64.getEncoder().encodeToString(firstPhoto.getData());
             }
         }
-        return "/images/default-car.png";  
+        return "/images/default-car.png";
     }
 }
