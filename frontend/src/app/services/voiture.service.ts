@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -27,7 +26,19 @@ export class VoitureService {
     return this.http.post(`${this.baseUrl}`, voiture);
   }
 
+
+
+
+
+
+
+  // for admin , photo , reviews ..
   getCarImageById(id: number): Observable<any> {
     return this.http.get<any>(`http://localhost:8084/api/photos/voiture/${id}`);
+  }
+
+  //  Added method for fetching a single voiture by ID
+  getOneVoiture(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}`);
   }
 }

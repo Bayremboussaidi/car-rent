@@ -26,6 +26,7 @@ import { DashComponent } from './ADMIN/dash/dash.component';
 import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
 import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
+import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -49,7 +50,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'thank-you', component: ThankYouComponent },
       { path: 'footer', component: FooterComponent },
-      { path: 'test', component: TestComponent },
+      { path: 'test', component: TestComponent }
     ]
   },
 
@@ -64,6 +65,8 @@ const routes: Routes = [
       { path: 'usera', component: UserAComponent },
       { path: 'bookinga', component: BookingAComponent },
       { path: 'reviewa', component: ReviewsAComponent },
+      { path: 'carlista', component: CarListAComponent },
+
 
     ]
   },

@@ -1,0 +1,37 @@
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row">
+      <!-- Display cars for the current page -->
+      <div *ngFor="let car of displayedCars" class="col-lg-4 col-md-6 mb-4">
+        <div class="item-1">
+          <a href="#"><img [src]="car.image" alt="Image" class="img-fluid"></a>
+          <div class="item-1-contents">
+            <div class="text-center">
+              <h3><a href="#">{{ car.name }}</a></h3>
+              <div class="rating">
+                <span *ngFor="let star of [].constructor(car.rating)" class="icon-star text-warning"></span>
+              </div>
+              <div class="rent-price"><span>${{ car.price }}/</span>day</div>
+            </div>
+            <ul class="specs">
+              <li><span>Doors</span><span class="spec">{{ car.specs.doors }}</span></li>
+              <li><span>Seats</span><span class="spec">{{ car.specs.seats }}</span></li>
+              <li><span>Transmission</span><span class="spec">{{ car.specs.transmission }}</span></li>
+              <li><span>Minimum age</span><span class="spec">{{ car.specs.minAge }} years</span></li>
+            </ul>
+            <div class="d-flex action">
+              <a href="contact.html" class="btn btn-primary">Rent Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+</div>

@@ -48,6 +48,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
+import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 //import { KeycloakService } from './services/keycloak.service';
 
 /*
@@ -93,6 +94,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     AdminLayoutComponent,
     UserLayoutComponent,
     HeaderAComponent,
+    CarListAComponent,
   ],
   imports: [
     BrowserModule,
