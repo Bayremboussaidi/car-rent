@@ -34,8 +34,11 @@
 
     <!-- 2nd Table: Pricing & Availability (Editable) -->
     <h3 class="table-title">Pricing & Availability</h3>
-    <p-table [value]="[car]" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template pTemplate="header">
+    <p-table [value]="[car]" dataKey="id" editMode="row"
+    [tableStyle]="{'min-width': '50rem', 'height': '400px'}"
+    [scrollable]="true" scrollHeight="400">
+
+        <ng-template pTemplate="header">
         <tr>
           <th>Price (USD)</th>
           <th>Available</th>
@@ -48,14 +51,23 @@
         <tr>
           <td><input pInputText type="number" [(ngModel)]="car.price" /></td>
           <td>
-            <p-dropdown
-              [options]="availabilityOptions"
-              [(ngModel)]="car.disponible"
-              [showClear]="false"
-              placeholder="Select Availability"
-              optionLabel="label"
-              optionValue="value">
-            </p-dropdown>
+            <div class="custom-dropdown">
+              <button class="dropdown-button" (click)="toggleDropdown()">
+                <span class="selected-text">
+                  {{ selectedOption?.label || 'Select Availability' }}
+                </span>
+                <span class="arrow">{{ isOpen ? '▲' : '▼' }}</span>
+              </button>
+              <div class="dropdown-options" *ngIf="isOpen">
+                <div
+                  *ngFor="let option of availabilityOptions"
+                  (click)="selectOption(option)"
+                  class="dropdown-option"
+                  [class.selected]="option.value === selectedOption?.value">
+                  {{ option.label }}
+                </div>
+              </div>
+            </div>
           </td>
           <td><input pInputText [(ngModel)]="car.agence" /></td>
           <td><input pInputText [(ngModel)]="car.local" /></td>
@@ -66,6 +78,7 @@
         </tr>
       </ng-template>
     </p-table>
+
 
     <!-- Upload Car Image -->
     <h3 class="table-title">Update Car Image</h3>

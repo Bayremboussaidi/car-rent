@@ -7,6 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
+          "style": "css", // Ensure components use CSS
           "standalone": false
         },
         "@schematics/angular:directive": {
@@ -43,7 +44,7 @@
               }
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.css", // Changed from styles.scss to styles.css
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
@@ -68,30 +69,37 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "5kB",
-                  "maximumError": "10kB"
+                  "maximumWarning": "5kb",
+                  "maximumError": "10kb"
                 }
               ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractLicenses": true
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
             },
             "development": {
               "optimization": false,
               "sourceMap": true,
-              "extractLicenses": false
+              "extractLicenses": false,
+              "vendorChunk": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 4200,
+            "open": true
+          },
           "configurations": {
             "production": {
               "browserTarget": "frontend:build:production"
@@ -124,7 +132,7 @@
               }
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.css", // Changed from styles.scss to styles.css
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
@@ -139,5 +147,6 @@
         }
       }
     }
-  }
+  },
+  "defaultProject": "frontend"
 }

@@ -20,17 +20,34 @@
   padding-bottom: 0.5rem;
 }
 
-/* Table Styling */
+/* Table Height - Prevent Scrolling Issues */
 p-table {
-  margin-bottom: 2rem;
+  max-height: 400px; /* ✅ Set a maximum height */
+  overflow: hidden; /* ✅ Prevent page scroll */
+  width: 100%;
 }
 
-p-table ::ng-deep .p-datatable {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+p-table ::ng-deep .p-datatable-wrapper {
+  max-height: 350px; /* ✅ Limit table height inside */
+  overflow-y: auto; /* ✅ Allow vertical scrolling only inside */
 }
 
+/* Ensure Table Rows Fit Properly */
+p-table ::ng-deep .p-datatable-tbody > tr {
+  height: 50px; /* ✅ Set a fixed row height */
+}
+
+/* Scrollable Table */
+p-table[scrollable="true"] {
+  max-height: 400px; /* ✅ Keep table fixed */
+}
+
+/* Ensure Input Fields Fit */
+p-inputText ::ng-deep .p-inputtext {
+  height: 32px;
+}
+
+/* Table Header & Row Styling */
 p-table ::ng-deep .p-datatable-header {
   background-color: #4a5568;
   color: white;
@@ -55,44 +72,75 @@ p-table ::ng-deep .p-datatable-tbody > tr:hover {
   background-color: #edf2f7;
 }
 
-/* Input Fields */
-p-inputText {
+/* Custom Dropdown Styling */
+.custom-dropdown {
+  position: relative;
   width: 100%;
+  font-family: Arial, sans-serif;
 }
 
-p-inputText ::ng-deep .p-inputtext {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #cbd5e0;
+.dropdown-button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-p-inputText ::ng-deep .p-inputtext:focus {
-  outline: none;
-  border-color: #4a5568;
-  box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.2);
-}
-
-/* Dropdown Styling */
-p-dropdown ::ng-deep .p-dropdown {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
   width: 100%;
+  text-align: left;
 }
 
-p-dropdown ::ng-deep .p-dropdown .p-dropdown-label {
-  padding: 0.5rem;
+.dropdown-button:hover {
+  background-color: #f1f1f1;
 }
 
-p-dropdown ::ng-deep .p-dropdown-panel {
-  border: 1px solid #cbd5e0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.selected-text {
+  flex-grow: 1; /* ✅ Ensures text takes up available space */
 }
 
-/* Buttons */
+.arrow {
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 4px;
+  max-height: 150px; /* ✅ Limit dropdown height */
+  overflow-y: auto; /* ✅ Add scroll if too many options */
+}
+
+.dropdown-option {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-option.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* File Upload Section */
 .image-upload {
   display: flex;
   gap: 15px; /* ✅ Space between buttons */
   align-items: center;
   margin-top: 10px;
+  margin-bottom: 2rem;
 }
 
 .image-upload button {
@@ -107,32 +155,6 @@ p-dropdown ::ng-deep .p-dropdown-panel {
 .image-upload button:hover {
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* ✅ Hover effect */
   transform: scale(1.05);
-}
-
-/* File Upload Section */
-.image-upload {
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-p-fileUpload ::ng-deep .p-fileupload {
-  margin-bottom: 1rem;
-}
-
-p-fileUpload ::ng-deep .p-fileupload-buttonbar {
-  background-color: #4a5568;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 4px;
-}
-
-p-fileUpload ::ng-deep .p-button {
-  background-color: #4a5568;
-  border: none;
-}
-
-p-fileUpload ::ng-deep .p-button:hover {
-  background-color: #2d3748;
 }
 
 /* ✅ Only One Close Button (X) */

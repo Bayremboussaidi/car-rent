@@ -18,10 +18,20 @@ export class CarDetaComponent implements OnInit {
   imageDialogVisible: boolean = false;
 
 
-  availabilityOptions = [
-    { label: 'Available', value: true },
-    { label: 'Not Available', value: false }
-  ];
+
+
+
+
+
+    isOpen = false; // Controls dropdown visibility
+    selectedOption: { label: string, value: boolean } | null = null; // Selected option
+
+    // Dropdown options
+    availabilityOptions = [
+      { label: 'Available', value: true },
+      { label: 'Not Available', value: false }
+    ];
+
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +46,18 @@ export class CarDetaComponent implements OnInit {
         this.fetchCarDetails(carId); // ✅ Fetch details for the specific car
       }
     });
+  }
+
+
+
+  toggleDropdown() {
+    this.isOpen = !this.isOpen;
+  }
+
+  // Handle option selection
+  selectOption(option: { label: string, value: boolean }) {
+    this.selectedOption = option;
+    this.isOpen = false; // Close dropdown after selection
   }
 
   // ✅ Fetch details of a specific car
