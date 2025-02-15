@@ -67,8 +67,8 @@ const routes: Routes = [
       { path: 'usera', component: UserAComponent },
       { path: 'bookinga', component: BookingAComponent },
       { path: 'reviewa', component: ReviewsAComponent },
-      { path: 'carlista', component: CarDetaComponent },
-      { path: 'carlista/:id', component: CardetailsAComponent }
+      { path: 'carlista', component: CarListAComponent },
+      { path: 'carlista/:id', component: CarDetaComponent }
 
 
 

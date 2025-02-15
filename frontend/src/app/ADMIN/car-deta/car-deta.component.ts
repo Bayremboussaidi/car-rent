@@ -12,10 +12,11 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class CarDetaComponent implements OnInit {
-  car: Voiture | null = null;
-  cars: Voiture[] = [];
-  reviews: Review[] = [];
-  selectedFile: File | null = null; // ✅ Declare and initialize
+  car: Voiture | null = null; // ✅ Holds the specific car details
+  reviews: Review[] = []; // ✅ Holds reviews for the specific car
+  selectedFile: File | null = null;
+  imageDialogVisible: boolean = false;
+
 
   availabilityOptions = [
     { label: 'Available', value: true },
@@ -30,21 +31,22 @@ export class CarDetaComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const carId = Number(params.get('id'));
+      const carId = Number(params.get('id')); // ✅ Get the car ID from the route
       if (carId) {
-        this.fetchCarDetails(carId);
+        this.fetchCarDetails(carId); // ✅ Fetch details for the specific car
       }
     });
   }
 
+  // ✅ Fetch details of a specific car
   fetchCarDetails(carId: number) {
     this.voitureService.getVoitureById(carId).subscribe(
       (response: { success: boolean; data: Voiture }) => {
+        console.log("Fetched car details:", response); // ✅ Debugging log
         if (response.success && response.data) {
           this.car = response.data;
-          this.cars = [this.car]; // Store in array for table display
 
-          // Ensure reviews are properly mapped
+          // ✅ Map reviews for the specific car
           this.reviews = (this.car.reviews || []).map((review: any) => ({
             id: review.id ?? 0,
             username: review.username || 'Anonymous',
@@ -57,10 +59,6 @@ export class CarDetaComponent implements OnInit {
       },
       (error) => console.error('Error fetching car details:', error)
     );
-  }
-
-  onRowEditInit(car: Voiture) {
-    this.messageService.add({ severity: 'info', summary: 'Edit Mode', detail: `Editing ${car.carName}` });
   }
 
   onRowEditSave(car: Voiture) {
@@ -79,11 +77,6 @@ export class CarDetaComponent implements OnInit {
     });
   }
 
-  onRowEditCancel(car: Voiture, index: number) {
-    this.messageService.add({ severity: 'warn', summary: 'Edit Cancelled', detail: `Changes discarded for ${car.carName}` });
-    this.fetchCarDetails(car.id!); // Reload original data
-  }
-
   getStars(rating: number): number[] {
     return Array.from({ length: rating }, (_, i) => i + 1);
   }
@@ -94,7 +87,7 @@ export class CarDetaComponent implements OnInit {
       this.selectedFile = event.files[0];
       console.log("Selected file:", this.selectedFile?.name);
     } else {
-      this.selectedFile = null; // ✅ Ensure reset if no file selected
+      this.selectedFile = null;
     }
   }
 
@@ -120,4 +113,39 @@ export class CarDetaComponent implements OnInit {
       }
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ✅ View Images (Opens Modal)
+viewImages() {
+  this.imageDialogVisible = true;
+}
+
+// ✅ Delete All Images
+deleteAllImages() {
+  if (!this.car || !this.car.id) {
+    console.error("Car ID is missing!");
+    return;
+  }
+
+  /*this.voitureService.deletePhotosForVoiture(this.car.id).subscribe({
+    next: () => {
+      this.messageService.add({ severity: 'warn', summary: 'Deleted', detail: 'All images deleted' });
+      this.fetchCarDetails(this.car.id); // ✅ Refresh after deletion
+    },
+    error: () => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete images' });
+    }
+  });*/
+}
 }

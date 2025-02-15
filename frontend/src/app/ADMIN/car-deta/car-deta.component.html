@@ -1,109 +1,156 @@
 <div class="card">
   <p-toast />
 
-  <!-- 1st Table: General Information (Editable) -->
-  <p-table [value]="cars" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template #header>
-          <tr>
-              <th>Name</th>
-              <th>Brand</th>
-              <th>Category</th>
-              <th>Transmission</th>
-              <th>Fuel Type</th>
-              <th>Update</th>
-          </tr>
-      </ng-template>
-      <ng-template #body let-car>
-          <tr>
-              <td><input pInputText [(ngModel)]="car.carName" required /></td>
-              <td><input pInputText [(ngModel)]="car.brand" /></td>
-              <td><input pInputText [(ngModel)]="car.category" /></td>
-              <td><input pInputText [(ngModel)]="car.transmission" /></td>
-              <td><input pInputText [(ngModel)]="car.carburant" /></td>
-              <td>
-                  <button pButton type="button" icon="pi pi-save"
-                      (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
-              </td>
-          </tr>
-      </ng-template>
-  </p-table>
+  <!-- Display if car data is loaded -->
+  <ng-container *ngIf="car; else loading">
 
-  <!-- 2nd Table: Pricing & Availability (Editable) -->
-  <p-table [value]="cars" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template #header>
-          <tr>
-              <th>Price (USD)</th>
-              <th>Available</th>
-              <th>Agency</th>
-              <th>Location</th>
-              <th>Update</th>
-          </tr>
+    <!-- 1st Table: General Information (Editable) -->
+    <h3 class="table-title">Car Features</h3>
+    <p-table [value]="[car]" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Transmission</th>
+          <th>Fuel Type</th>
+          <th>Update</th>
+        </tr>
       </ng-template>
-      <ng-template #body let-car>
-          <tr>
-              <td><input pInputText type="number" [(ngModel)]="car.price" /></td>
-              <td>
-                  <p-dropdown [options]="availabilityOptions" [(ngModel)]="car.disponible"></p-dropdown>
-              </td>
-              <td><input pInputText [(ngModel)]="car.agence" /></td>
-              <td><input pInputText [(ngModel)]="car.local" /></td>
-              <td>
-                  <button pButton type="button" icon="pi pi-save"
-                      (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
-              </td>
-          </tr>
+      <ng-template pTemplate="body" let-car>
+        <tr>
+          <td><input pInputText [(ngModel)]="car.carName" required /></td>
+          <td><input pInputText [(ngModel)]="car.brand" /></td>
+          <td><input pInputText [(ngModel)]="car.category" /></td>
+          <td><input pInputText [(ngModel)]="car.transmission" /></td>
+          <td><input pInputText [(ngModel)]="car.carburant" /></td>
+          <td>
+            <button pButton type="button" icon="pi pi-save"
+              (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
+          </td>
+        </tr>
       </ng-template>
-  </p-table>
+    </p-table>
 
-  <!-- Upload Car Image -->
-  <h3>Update Car Image</h3>
-  <div class="image-upload">
+    <!-- 2nd Table: Pricing & Availability (Editable) -->
+    <h3 class="table-title">Pricing & Availability</h3>
+    <p-table [value]="[car]" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Price (USD)</th>
+          <th>Available</th>
+          <th>Agency</th>
+          <th>Location</th>
+          <th>Update</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-car>
+        <tr>
+          <td><input pInputText type="number" [(ngModel)]="car.price" /></td>
+          <td>
+            <p-dropdown
+              [options]="availabilityOptions"
+              [(ngModel)]="car.disponible"
+              [showClear]="false"
+              placeholder="Select Availability"
+              optionLabel="label"
+              optionValue="value">
+            </p-dropdown>
+          </td>
+          <td><input pInputText [(ngModel)]="car.agence" /></td>
+          <td><input pInputText [(ngModel)]="car.local" /></td>
+          <td>
+            <button pButton type="button" icon="pi pi-save"
+              (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Upload Car Image -->
+    <h3 class="table-title">Update Car Image</h3>
+    <div class="image-upload">
+      <!-- Upload Image -->
       <p-fileUpload mode="basic" [customUpload]="true" (onSelect)="onFileSelected($event)" accept="image/*"></p-fileUpload>
       <button pButton type="button" label="Upload" icon="pi pi-upload"
           (click)="uploadImage()" [disabled]="!selectedFile"></button>
+
+      <!-- View Images Button -->
+      <button pButton type="button" label="View Images" icon="pi pi-image"
+      (click)="viewImages()" [disabled]="!car || !car.photos || car.photos.length === 0"></button>
+
+      <!-- Delete All Images Button -->
+      <button pButton type="button" label="Delete All Images" icon="pi pi-trash"
+          (click)="deleteAllImages()" severity="danger"
+          [disabled]="!car || !car.photos || car.photos.length === 0"></button>
+    </div>
+
+    <!-- Display Car Images (Modal) -->
+<!-- Display Car Images (Modal) -->
+<p-dialog header="Car Images" [(visible)]="imageDialogVisible" [modal]="true" [style]="{width: '50vw'}" [closable]="true">
+  <div *ngIf="car?.photos?.length">
+    <div class="image-gallery">
+      <img *ngFor="let photo of car.photos" [src]="photo.displayUrl" class="car-image" alt="Car Image">
+    </div>
   </div>
+  <div *ngIf="!car?.photos?.length" class="text-center">
+    <p>No images available for this car.</p>
+  </div>
+</p-dialog>
 
-  <!-- 3rd Table: Reviews (Read-Only) -->
-  <p-table [value]="cars" dataKey="id" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template #header>
-          <tr>
-              <th>Car Name</th>
-              <th>User Review</th>
-              <th>Rating</th>
-              <th>Created At</th>
-          </tr>
-      </ng-template>
-      <ng-template #body let-car>
-          <tr *ngFor="let review of car.reviews">
-              <td>{{ car.carName }}</td>
-              <td>{{ review.comment }}</td>
-              <td>{{ review.rating }}</td>
-              <td>{{ review.createdAt | date: 'short' }}</td>
-          </tr>
-      </ng-template>
-  </p-table>
 
-  <!-- 4th Table: Bookings (Read-Only) -->
-  <p-table [value]="cars" dataKey="id" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template #header>
-          <tr>
-              <th>Car Name</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th>Pickup Location</th>
-              <th>Dropoff Location</th>
-          </tr>
+    <!-- 3rd Table: Reviews (Read-Only) -->
+    <h3 class="table-title">User Reviews</h3>
+    <p-table [value]="reviews" [tableStyle]="{'min-width': '50rem'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>User Review</th>
+          <th>Rating</th>
+          <th>Created At</th>
+        </tr>
       </ng-template>
-      <ng-template #body let-car>
-          <tr *ngFor="let booking of car.bookings">
-              <td>{{ car.carName }}</td>
-              <td>{{ booking.startDate | date: 'short' }}</td>
-              <td>{{ booking.endDate | date: 'short' }}</td>
-              <td>{{ booking.status }}</td>
-              <td>{{ booking.pickupLocation }}</td>
-              <td>{{ booking.dropoffLocation }}</td>
-          </tr>
+      <ng-template pTemplate="body" let-review>
+        <tr>
+          <td>{{ review.reviewText }}</td>
+          <td>
+            <ng-container *ngIf="review.rating > 0; else noRating">
+              <ng-container *ngFor="let _ of getStars(review.rating)">
+                <i class="pi pi-star text-warning"></i>
+              </ng-container>
+            </ng-container>
+            <ng-template #noRating>—</ng-template>
+          </td>
+          <td>{{ review.createdAt | date: 'short' }}</td>
+        </tr>
       </ng-template>
-  </p-table>
+    </p-table>
+
+    <!-- 4th Table: Bookings (Read-Only) -->
+    <h3 class="table-title">Booking History</h3>
+    <p-table [value]="car.bookings ?? []" [tableStyle]="{'min-width': '50rem'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th>Pickup Location</th>
+          <th>Dropoff Location</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-booking>
+        <tr>
+          <td>{{ booking.startDate | date: 'short' }}</td>
+          <td>{{ booking.endDate | date: 'short' }}</td>
+          <td>{{ booking.status }}</td>
+          <td>{{ booking.pickupLocation }}</td>
+          <td>{{ booking.dropoffLocation }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-container>
+
+  <!-- Loading State -->
+  <ng-template #loading>
+    <p class="loading">Loading car details...</p>
+  </ng-template>
 </div>
