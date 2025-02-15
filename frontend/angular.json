@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "css", // Ensure components use CSS
+          "style": "css",
           "standalone": false
         },
         "@schematics/angular:directive": {
@@ -44,7 +44,7 @@
               }
             ],
             "styles": [
-              "src/styles.css", // Changed from styles.scss to styles.css
+              "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
@@ -62,7 +62,7 @@
               "node_modules/swiper/swiper-bundle.min.js",
               "node_modules/glightbox/dist/js/glightbox.min.js"
             ],
-            "allowedCommonJsDependencies": ["aos"]
+            "allowedCommonJsDependencies": ["aos", "swiper"]
           },
           "configurations": {
             "production": {
@@ -132,7 +132,7 @@
               }
             ],
             "styles": [
-              "src/styles.css", // Changed from styles.scss to styles.css
+              "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",

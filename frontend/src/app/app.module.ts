@@ -58,6 +58,7 @@ import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
 import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
+import { AgencelayoutComponent } from './layouts/agencelayout/agencelayout.component';
 //import { KeycloakService } from './services/keycloak.service';
 
 /*
@@ -106,6 +107,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     CarListAComponent,
     CardetailsAComponent,
     CarDetaComponent,
+    AgencelayoutComponent,
   ],
   imports: [
     BrowserModule,

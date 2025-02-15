@@ -1,65 +1,69 @@
-// testimonial.component.ts
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import Swiper from 'swiper';
+import { Pagination, Autoplay } from 'swiper/modules';
 
 @Component({
   selector: 'app-testimonial',
   templateUrl: './testimonial.component.html',
   styleUrls: ['./testimonial.component.css']
 })
-export class TestimonialComponent {
+export class TestimonialComponent implements AfterViewInit {
   testimonials = [
     {
-      message: "Rapide intéressant merci",
-      name: "Med Amine",
-      role: "Customer",
-      imgUrl: 'assets/all-images/ava-1.jpg' // Adjust path as necessary
+      text: "Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus.",
+      image: "assets/img/testimonials/testimonials-1.jpg",
+      name: "Saul Goodman",
+      role: "Ceo & Founder"
     },
     {
-      message: "Simple et pratique",
-      name: "Mootez",
-      role: "Customer",
-      imgUrl: 'assets/all-images/ava-1.jpg' // Adjust path as necessary
+      text: "Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid.",
+      image: "assets/img/testimonials/testimonials-2.jpg",
+      name: "Sara Wilsson",
+      role: "Designer"
     },
     {
-      message: "Facile et rapide",
-      name: "Bilel",
-      role: "Customer",
-      imgUrl: 'assets/all-images/ava-1.jpg' // Adjust path as necessary
+      text: "Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam.",
+      image: "assets/img/testimonials/testimonials-3.jpg",
+      name: "Jena Karlis",
+      role: "Store Owner"
     },
     {
-      message: "Simple et pratique",
-      name: "Salem",
-      role: "Customer",
-      imgUrl: 'assets/all-images/ava-1.jpg' // Adjust path as necessary
+      text: "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat.",
+      image: "assets/img/testimonials/testimonials-4.jpg",
+      name: "Matt Brandon",
+      role: "Freelancer"
+    },
+    {
+      text: "Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam sunt culpa.",
+      image: "assets/img/testimonials/testimonials-5.jpg",
+      name: "John Larson",
+      role: "Entrepreneur"
     }
   ];
 
-  settings = {
-    dots: true,
-    infinite: true,
-    autoplay: true,
-    speed: 1000,
-    swipeToSlide: true,
-    autoplaySpeed: 2000,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
-        },
+  ngAfterViewInit() {
+    new Swiper('.mySwiper', {
+      modules: [Pagination, Autoplay],
+      loop: true,
+      speed: 600,
+      autoplay: {
+        delay: 5000
       },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
+      slidesPerView: "auto",
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true
       },
-    ],
-  };
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 40
+        },
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 1
+        }
+      }
+    });
+  }
 }

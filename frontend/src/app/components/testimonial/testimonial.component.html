@@ -1,15 +1,24 @@
-<!-- testimonial.component.html -->
-<ngx-slider >
-    <ng-container *ngFor="let testimonial of testimonials">
-      <div class="testimonial py-4 px-3">
-        <p class="section__description">{{ testimonial.message }}</p>
-        <div class="mt-3 d-flex align-items-center gap-4">
-          <img [src]="testimonial.imgUrl" alt="{{ testimonial.name }}" class="w-25 h-25 rounded-2" />
-          <div>
-            <h6 class="mb-0 mt-3">{{ testimonial.name }}</h6>
-            <p class="section__description">{{ testimonial.role }}</p>
-          </div>
+<div class="container section-title" data-aos="fade-up">
+  <h2>Testimonials</h2>
+  <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+</div>
+
+<div class="container" data-aos="fade-up" data-aos-delay="100">
+  <div class="swiper-container mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-item">
+          <p>
+            <i class="bi bi-quote quote-icon-left"></i>
+            <span>{{ testimonial.text }}</span>
+            <i class="bi bi-quote quote-icon-right"></i>
+          </p>
+          <img [src]="testimonial.image" class="testimonial-img" alt="">
+          <h3>{{ testimonial.name }}</h3>
+          <h4>{{ testimonial.role }}</h4>
         </div>
       </div>
-    </ng-container>
-  </ngx-slider>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+</div>
