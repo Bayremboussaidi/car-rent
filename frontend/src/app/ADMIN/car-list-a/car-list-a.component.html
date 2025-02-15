@@ -26,7 +26,9 @@
               <li><span>Last Updated</span><span class="spec">{{ car.updatedAt | date: 'medium' }}</span></li>
             </ul>
             <div class="action-buttons">
-              <button (click)="viewCarDetails(car.id)" class="btn btn-view">View</button>
+              <button (click)="viewCarDetails(car.id)" [disabled]="!car.id" class="btn btn-view">View</button>
+
+
               <button (click)="deleteCar(car)" class="btn btn-delete">Delete</button>
             </div>
           </div>

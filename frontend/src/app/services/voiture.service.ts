@@ -32,6 +32,16 @@ export class VoitureService {
 
 
 
+
+    // ✅ New method: Delete a voiture by ID
+    deleteVoiture(id: number): Observable<any> {
+      return this.http.delete(`${this.baseUrl}/${id}`);
+    }
+
+
+
+
+
   // for admin , photo , reviews ..
   getCarImageById(id: number): Observable<any> {
     return this.http.get<any>(`http://localhost:8084/api/photos/voiture/${id}`);

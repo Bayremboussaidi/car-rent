@@ -156,6 +156,19 @@
   transform: translateX(0);
 }
 
+
+
+
+
+.logo {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #04066e92;
+}
+
+.logo span {
+  color: #a19d1b; /* Add some color to the secondary name */
+}
 /* ====================================
   🌟 Mobile Navigation
 ==================================== */

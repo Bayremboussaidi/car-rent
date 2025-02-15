@@ -62,18 +62,32 @@ export class CarListAComponent implements OnInit {
     }
   }
 
-  deleteCar(carToDelete: Voiture) {
-    this.cars = this.cars.filter(car => car.id !== carToDelete.id);
-    this.updateDisplayedCars();
-  }
 
-  viewCarDetails(carId: number | undefined) {
-    if (carId !== undefined) {
-      this.router.navigate(['/car-details', carId]);
-    } else {
-      console.error("Car ID is undefined, cannot navigate.");
+  //delete the car
+  deleteCar(car: any) {
+    if (confirm(`Are you sure you want to delete the car with ID ${car.id}?`)) {
+      this.voitureService.deleteVoiture(car.id).subscribe({
+        next: (response) => {
+          console.log('Car deleted successfully', response);
+          this.cars = this.cars.filter(v => v.id !== car.id);
+        },
+        error: (err) => {
+          console.error('Error deleting car', err);
+        }
+      });
     }
   }
+
+
+
+  viewCarDetails(carId: number | undefined | null) {
+    if (typeof carId === 'number' && !isNaN(carId)) {
+      this.router.navigate([`admin/carlista/${carId}`]);
+    } else {
+      console.error("Car ID is invalid, cannot navigate.");
+    }
+  }
+
 
   calculateAverageRating(reviews: { rating: number }[]): number {
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
