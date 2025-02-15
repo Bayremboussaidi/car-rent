@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -205,5 +206,48 @@ public class VoitureService {
     public void checkDisponibiliteForAllCars() {
         List<Voiture> voitures = voitureRepository.findAll();
         voitures.forEach(voiture -> updateDisponibilite(voiture.getId()));
+    }
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // ✅ Fetch all Voitures with related details
+    public ResponseEntity<Object> getAllVoituresWithDetails() {
+        List<Voiture> voitures = voitureRepository.findAll();
+
+        if (voitures.isEmpty()) {
+            return ResponseEntity.status(404).body(new ApiResponse<>(false, "No voitures found"));
+        }
+
+        List<Voiture> voituresWithDetails = voitures.stream().map(voiture -> {
+            voiture.setPhotos(photoRepository.findAllByVoitureId(voiture.getId()));
+            voiture.setReviews(reviewRepository.findAllByVoitureId(voiture.getId()));
+            voiture.setBookings(bookingRepository.findByVoitureId(voiture.getId()));
+            return voiture;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(new ApiResponse<>(true, "List of voitures with details", voituresWithDetails));
     }
 }

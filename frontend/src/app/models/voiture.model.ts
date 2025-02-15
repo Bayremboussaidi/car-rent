@@ -12,31 +12,41 @@ export interface Voiture {
   local: string;
   agenceLogo: string;
   description: string;
-  imgUrl?: string; // Base64 encoded image string
+  imgUrl?: string; // ✅ Base64 image string
   disponible: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string; // ✅ Use string instead of Date (backend returns ISO string format)
+  updatedAt?: string; // ✅ Use string instead of Date (same reason)
   reviews?: Review[];
   photos?: Photo[];
   bookings?: Booking[];
+
+  // ✅ Add missing properties
+  image?: string;  // Stores the first image URL
+  rating?: number; // Stores the calculated average rating
 }
-
-
 
 export interface Review {
   id?: number;
   rating: number;
   comment: string;
-  createdAt?: Date;
+  userId?: number; // ✅ Add userId (useful for linking reviews)
+  createdAt?: string; // ✅ Change to string (ISO format)
 }
 
 export interface Photo {
   id?: number;
-  data: string; // Base64 encoded string
+  name?: string; // ✅ Add name for better management
+  type?: string; // ✅ Add type (e.g., "image/png")
+  displayUrl?: string; // ✅ URL for displaying images
+  data?: string; // ✅ Base64 encoded string (keep optional)
 }
 
 export interface Booking {
   id?: number;
-  startDate: Date;
-  endDate: Date;
+  userId?: number; // ✅ Add userId for reference
+  startDate: string; // ✅ Change to string (backend returns ISO format)
+  endDate: string; // ✅ Change to string (ISO format)
+  status?: string; // ✅ Add status (e.g., "CONFIRMED", "CANCELED")
+  pickupLocation?: string;
+  dropoffLocation?: string;
 }

@@ -27,6 +27,8 @@ import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
 import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
+import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
+import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -65,7 +67,9 @@ const routes: Routes = [
       { path: 'usera', component: UserAComponent },
       { path: 'bookinga', component: BookingAComponent },
       { path: 'reviewa', component: ReviewsAComponent },
-      { path: 'carlista', component: CarListAComponent },
+      { path: 'carlista', component: CarDetaComponent },
+      { path: 'carlista/:id', component: CardetailsAComponent }
+
 
 
     ]

@@ -42,6 +42,8 @@ public class VoitureController {
         return voitureService.updateVoiture(id, voiture, file);
     }
 
+
+
     // ✅ Delete a Voiture (deletes linked photos automatically)
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
@@ -52,6 +54,12 @@ public class VoitureController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
         return voitureService.getOneVoiture(id);
+    }
+
+       // ✅ Get all Voitures with related details
+    @GetMapping("/all/details")
+    public ResponseEntity<Object> getAllVoituresWithDetails() {
+        return voitureService.getAllVoituresWithDetails();
     }
 
     // ✅ Get all Voitures with pagination

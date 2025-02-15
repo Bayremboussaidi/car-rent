@@ -12,4 +12,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     
     // ✅ Fetch all reviews for a specific Voiture
     List<Review> findAllByVoitureId(Long voitureId);
+
+    
 }

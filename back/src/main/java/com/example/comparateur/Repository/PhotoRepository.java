@@ -17,6 +17,9 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     // ✅ Delete all photos of a specific Voiture
     void deleteByVoitureId(Long voitureId);
 
+
+    
+
 }
 
 

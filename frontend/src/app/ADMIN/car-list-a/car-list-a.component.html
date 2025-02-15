@@ -1,37 +1,87 @@
-<div class="site-section bg-light">
+<!--div class="site-section bg-light">
   <div class="container">
     <div class="row">
-      <!-- Display cars for the current page -->
       <div *ngFor="let car of displayedCars" class="col-lg-4 col-md-6 mb-4">
         <div class="item-1">
-          <a href="#"><img [src]="car.image" alt="Image" class="img-fluid"></a>
+          <a [routerLink]="['/car-details', car.id]"><img [src]="car.image" alt="{{ car.carName }}" class="img-fluid"></a>
           <div class="item-1-contents">
             <div class="text-center">
-              <h3><a href="#">{{ car.name }}</a></h3>
+              <h3><a [routerLink]="['/car-details', car.id]">{{ car.carName }}</a></h3>
+              <p class="text-muted">Brand: {{ car.brand }} | Category: {{ car.category }}</p>
               <div class="rating">
                 <span *ngFor="let star of [].constructor(car.rating)" class="icon-star text-warning"></span>
               </div>
               <div class="rent-price"><span>${{ car.price }}/</span>day</div>
             </div>
             <ul class="specs">
-              <li><span>Doors</span><span class="spec">{{ car.specs.doors }}</span></li>
-              <li><span>Seats</span><span class="spec">{{ car.specs.seats }}</span></li>
-              <li><span>Transmission</span><span class="spec">{{ car.specs.transmission }}</span></li>
-              <li><span>Minimum age</span><span class="spec">{{ car.specs.minAge }} years</span></li>
+              <li><span>Transmission</span><span class="spec">{{ car.transmission }}</span></li>
+              <li><span>Roof Type</span><span class="spec">{{ car.toit }}</span></li>
+              <li><span>Fuel</span><span class="spec">{{ car.carburant }}</span></li>
+              <li><span>Availability</span><span class="spec">{{ car.disponible ? 'Available' : 'Not Available' }}</span></li>
+              <li><span>Agency</span><span class="spec">{{ car.agence }} ({{ car.local }})</span></li>
+              <li><span>Reviews</span><span class="spec">{{ car.reviews?.length || 0 }} Reviews</span></li>
+              <li><span>Added On</span><span class="spec">{{ car.createdAt | date: 'medium' }}</span></li>
+              <li><span>Last Updated</span><span class="spec">{{ car.updatedAt | date: 'medium' }}</span></li>
             </ul>
-            <div class="d-flex action">
-              <a href="contact.html" class="btn btn-primary">Rent Now</a>
+            <div class="d-flex action justify-content-between" style="margin-top: 10vh;">
+              <button (click)="viewCarDetails(car.id)" class="btn btn-success">View</button>
+              <button (click)="deleteCar(car)" class="btn btn-danger">Delete</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination">
-      <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    <div class="pagination text-center mt-4">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-primary">Previous</button>
+      <span class="mx-3">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-primary">Next</button>
+    </div>
+  </div>
+</div-->
+
+
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row">
+      <div *ngFor="let car of displayedCars" class="col-lg-4 col-md-6 mb-4">
+        <div class="item-1">
+          <a [routerLink]="['/car-details', car.id]">
+            <img [src]="car.image" alt="{{ car.carName }}" class="img-fluid">
+          </a>
+          <div class="item-1-contents">
+            <div class="text-center">
+              <h3><a [routerLink]="['/car-details', car.id]">{{ car.carName }}</a></h3>
+              <p class="text-muted">Brand: {{ car.brand }} | Category: {{ car.category }}</p>
+              <div class="rating">
+                <span *ngFor="let star of [].constructor(car.rating)" class="icon-star text-warning"></span>
+              </div>
+              <div class="rent-price"><span>${{ car.price }}/</span>day</div>
+            </div>
+            <ul class="specs">
+              <li><span>Transmission</span><span class="spec">{{ car.transmission }}</span></li>
+              <li><span>Roof Type</span><span class="spec">{{ car.toit }}</span></li>
+              <li><span>Fuel</span><span class="spec">{{ car.carburant }}</span></li>
+              <li><span>Availability</span><span class="spec">{{ car.disponible ? 'Available' : 'Not Available' }}</span></li>
+              <li><span>Agency</span><span class="spec">{{ car.agence }} ({{ car.local }})</span></li>
+              <li><span>Reviews</span><span class="spec">{{ car.reviews?.length || 0 }} Reviews</span></li>
+              <li><span>Added On</span><span class="spec">{{ car.createdAt | date: 'medium' }}</span></li>
+              <li><span>Last Updated</span><span class="spec">{{ car.updatedAt | date: 'medium' }}</span></li>
+            </ul>
+            <div class="d-flex action justify-content-between" style="margin-top: 10vh;">
+              <button (click)="viewCarDetails(car.id)" class="btn btn-success">View</button>
+              <button (click)="deleteCar(car)" class="btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination text-center mt-4">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-primary">Previous</button>
+      <span class="mx-3">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-primary">Next</button>
     </div>
   </div>
 </div>
+

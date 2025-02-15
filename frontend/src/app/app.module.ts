@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -45,10 +45,19 @@ import { PhotoAComponent } from './ADMIN/photo-a/photo-a.component';
 import { APP_BASE_HREF } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { FileUploadModule } from 'primeng/fileupload';
+import { TagModule } from 'primeng/tag';
+
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
+import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
+import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
 //import { KeycloakService } from './services/keycloak.service';
 
 /*
@@ -95,6 +104,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     UserLayoutComponent,
     HeaderAComponent,
     CarListAComponent,
+    CardetailsAComponent,
+    CarDetaComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,15 +113,20 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     HttpClientModule,
     FontAwesomeModule,
     SlickCarouselModule,
-    //NgxSliderModule,
+    // NgxSliderModule,  // Uncomment if used
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     DialogModule,
     CheckboxModule,
+    TableModule,  // ✅ Added for PrimeNG tables
+    ButtonModule, // ✅ Added for PrimeNG buttons
+    InputTextModule, // ✅ Added for input fields
+    DropdownModule, // ✅ Added for dropdowns
+    FileUploadModule, // ✅ Added for file upload
+    TagModule // ✅ Added for tags
   ],
   providers: [
-    HttpClient,
     /*KeycloakService,
     {
       provide: APP_INITIALIZER,
