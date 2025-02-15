@@ -1,60 +1,37 @@
 <div class="row blogs-container" data-aos="flip-right">
-  <!-- Pagination Button (Previous) -->
-  <button
-    class="pagination-button left-pagination"
-    (click)="previousPage()"
-    [disabled]="currentPage === 1"
-    (mouseover)="hoverPreview('previous')"
-    (mouseout)="clearPreview()"
-  >
-    &lt;
-  </button>
-
-  <!-- Blog Items -->
-  <div *ngFor="let item of paginatedBlogs" class="col-lg-4 col-md-6 col-sm-12 blog-column">
-    <div class="blog-item">
-      <a [routerLink]="['/blogs', item.id]" class="blog-img">
-        <img [src]="item.imgUrl" alt="{{ item.title }}" />
-      </a>
-      <div class="blog-info">
-        <a [routerLink]="['/blogs', item.id]" class="blog-title">{{ item.title }}</a>
-        <p class="blog-description">
-          {{ item.description.length > 100
-            ? item.description.substring(0, 100) + '...'
-            : item.description }}
-        </p>
-        <a [routerLink]="['/blogs', item.title]" class="read-more">Read More</a>
-        <div class="blog-time">
-          <span class="blog-author">
-            <i class="ri-user-line"></i> {{ item.author }}
-          </span>
-          <div class="d-flex align-items-center gap-3">
-            <span class="d-flex align-items-center gap-1">
-              <i class="ri-calendar-line"></i> {{ item.date }}
-            </span>
-            <span class="d-flex align-items-center gap-1">
-              <i class="ri-time-line"></i> {{ item.time }}
-            </span>
+  <!-- Blog Swiper Container -->
+  <div class="swiper blogSwiper">
+    <div class="swiper-wrapper">
+      <!-- Blog Items -->
+      <div class="swiper-slide" *ngFor="let item of blogData">
+        <div class="blog-item" [routerLink]="['/blogs', item.id]" style="cursor: pointer;">
+          <a [routerLink]="['/blogs', item.id]" class="blog-img">
+            <img [src]="item.imgUrl" alt="{{ item.title }}" />
+          </a>
+          <div class="blog-info">
+            <a [routerLink]="['/blogs', item.id]" class="blog-title">{{ item.title }}</a>
+            <p class="blog-description">
+              {{ item.description.length > 100 ? item.description.substring(0, 100) + '...' : item.description }}
+            </p>
+            <a [routerLink]="['/blogs', item.id]" class="read-more">Read More</a>
+            <div class="blog-time">
+              <span class="blog-author">
+                <i class="ri-user-line"></i> {{ item.author }}
+              </span>
+              <div class="d-flex align-items-center gap-3">
+                <span class="d-flex align-items-center gap-1">
+                  <i class="ri-calendar-line"></i> {{ item.date }}
+                </span>
+                <span class="d-flex align-items-center gap-1">
+                  <i class="ri-time-line"></i> {{ item.time }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Swiper Pagination -->
+    <div class="swiper-pagination"></div>
   </div>
-
-  <!-- Pagination Button (Next) -->
-  <button
-    class="pagination-button right-pagination"
-    (click)="nextPage()"
-    [disabled]="currentPage === totalPages"
-    (mouseover)="hoverPreview('next')"
-    (mouseout)="clearPreview()"
-  >
-    &gt;
-  </button>
-</div>
-
-<!-- Blog Preview Tooltip -->
-<div *ngIf="hoveredBlog" class="blog-preview">
-  <h5>{{ hoveredBlog.title }}</h5>
-  <p>{{ hoveredBlog.description.length > 50 ? hoveredBlog.description.substring(0, 50) + '...' : hoveredBlog.description }}</p>
 </div>

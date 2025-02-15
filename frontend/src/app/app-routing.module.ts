@@ -69,7 +69,6 @@ const routes: Routes = [
       { path: 'reviewa', component: ReviewsAComponent },
       { path: 'carlista', component: CarListAComponent },
       { path: 'carlista/:id', component: CarDetaComponent },
-      { path: 'admin', redirectTo: 'admin/carlista', pathMatch: 'full' }
 
 
 

@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import Swiper from 'swiper';
+import { Autoplay, Pagination } from 'swiper/modules';
 
 // Blog item interface
 interface BlogItem {
@@ -15,9 +17,9 @@ interface BlogItem {
 @Component({
   selector: 'app-blog-list',
   templateUrl: './blog-list.component.html',
-  styleUrls: ['./blog-list.component.css']
+  styleUrls: ['./blog-list.component.css'],
 })
-export class BlogListComponent implements OnInit {
+export class BlogListComponent implements OnInit, AfterViewInit {
   blogData: BlogItem[] = [
     {
       id: 6,
@@ -81,48 +83,38 @@ export class BlogListComponent implements OnInit {
     },
   ];
 
-  paginatedBlogs: BlogItem[] = [];
-  currentPage = 1;
-  itemsPerPage = 3;
-  totalPages = 0;
+  swiper: Swiper | undefined;
 
   constructor() {}
 
-  ngOnInit() {
-    this.totalPages = Math.ceil(this.blogData.length / this.itemsPerPage);
-    this.updatePaginatedBlogs();
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.initSwiper();
   }
 
-  updatePaginatedBlogs() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedBlogs = this.blogData.slice(startIndex, endIndex);
+  initSwiper(): void {
+    this.swiper = new Swiper('.blogSwiper', {
+      modules: [Pagination, Autoplay],
+      slidesPerView: 1,
+      spaceBetween: 20,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        type: 'bullets',
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+        },
+        992: {
+          slidesPerView: 3,
+        },
+      },
+    });
   }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaginatedBlogs();
-    }
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaginatedBlogs();
-    }
-  }
-
-  hoveredBlog: any | null = null;
-
-hoverPreview(direction: 'previous' | 'next'): void {
-  const index = direction === 'previous' ? this.currentPage - 2 : this.currentPage;
-  if (index >= 0 && index < this.totalPages) {
-    this.hoveredBlog = this.paginatedBlogs[index];
-  }
-}
-
-clearPreview(): void {
-  this.hoveredBlog = null;
-}
 }
