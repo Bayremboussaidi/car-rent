@@ -10,32 +10,32 @@ import { Pagination, Autoplay } from 'swiper/modules';
 export class TestimonialComponent implements AfterViewInit {
   testimonials = [
     {
-      text: "Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus.",
-      image: "assets/img/testimonials/testimonials-1.jpg",
+      text: "Super application, très intuitive et facile à utiliser. Je recommande vivement !",
+      image: "assets/testimonials/bassem.jpg",
       name: "Saul Goodman",
       role: "Ceo & Founder"
     },
     {
-      text: "Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid.",
-      image: "assets/img/testimonials/testimonials-2.jpg",
+      text: "Franchement, rien à dire ! Les voitures sont top et le service hyper pro.",
+      image: "assets/testimonials/assyl.jpg",
       name: "Sara Wilsson",
       role: "Designer"
     },
     {
-      text: "Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam.",
-      image: "assets/img/testimonials/testimonials-3.jpg",
+      text: "J’ai adoré la facilité de réservation et la qualité des véhicules proposés",
+      image: "assets/testimonials/bay.jpg",
       name: "Jena Karlis",
       role: "Store Owner"
     },
     {
-      text: "Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat.",
-      image: "assets/img/testimonials/testimonials-4.jpg",
+      text: "Une des meilleures agences de location de voitures, je reviendrai sans hésiter.",
+      image: "assets/testimonials/aymn.jpg",
       name: "Matt Brandon",
       role: "Freelancer"
     },
     {
-      text: "Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam sunt culpa.",
-      image: "assets/img/testimonials/testimonials-5.jpg",
+      text: "Je suis très satisfait du service, les prix sont abordables et les voitures impeccables.",
+      image: "assets/testimonials/mob.jpg",
       name: "John Larson",
       role: "Entrepreneur"
     }

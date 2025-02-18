@@ -8,7 +8,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
-  height: 100%; /* Ensure equal height for all blogs */
+  height: 92%; /* Ensure equal height for all blogs */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -73,7 +73,7 @@
   position: absolute;
   bottom: 15px;
   left: 50%;
-  transform: translateY(6vh) translateX(-50%);
+  transform: translateY(5vh) translateX(-50%);
   display: flex;
   justify-content: center;
   gap: 5px;

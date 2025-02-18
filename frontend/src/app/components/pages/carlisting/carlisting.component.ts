@@ -14,6 +14,11 @@ export class ListcarsComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
 
+  // ✅ Pagination Variables (Adjusted for API)
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+  totalPages: number = 0;
+
   constructor(
     private voitureService: VoitureService,
     private router: Router,
@@ -21,7 +26,8 @@ export class ListcarsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getCarData();
+    this.getTotalPages(); // ✅ First, get total pages
+    this.getCarData(this.currentPage); // ✅ Then fetch cars for first page
   }
 
   openBookingModal(carId: string) {
@@ -35,21 +41,27 @@ export class ListcarsComponent implements OnInit {
     this.showBookingModal = false;
   }
 
+  // ✅ Get the total number of pages (based on API)
+  getTotalPages(): void {
+    this.voitureService.getVoitureCount().subscribe(
+      (response: any) => {
+        const totalVoitures = response; // Assuming API returns total count
+        this.totalPages = Math.ceil(totalVoitures / this.itemsPerPage);
+      },
+      (error) => {
+        console.error('Error fetching total voiture count:', error);
+      }
+    );
+  }
 
-
-  getCarData(page: number = 0): void {
+  // ✅ Fetch car data for the current page
+  getCarData(page: number): void {
     this.loading = true;
-    this.voitureService.getVoitures(page).subscribe(
+    this.voitureService.getVoitures(page - 1).subscribe( // ✅ Adjusting for 0-based indexing
       (response: any) => {
         console.log('API Response:', response); // Debugging API response
         if (response && response.data) {
           this.voitures = response.data;
-
-          // ✅ Log `disponible` values for each car
-          this.voitures.forEach(car => {
-            console.log(`Car: ${car.carName}, Disponible: ${car.disponible}`);
-          });
-
         } else {
           this.error = 'No data available.';
           this.voitures = [];
@@ -64,4 +76,18 @@ export class ListcarsComponent implements OnInit {
     );
   }
 
+  // ✅ Pagination Functions
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getCarData(this.currentPage);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getCarData(this.currentPage);
+    }
+  }
 }

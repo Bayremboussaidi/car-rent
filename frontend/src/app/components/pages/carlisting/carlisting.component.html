@@ -32,7 +32,7 @@
             <li>Transmission: {{ voiture.transmission }}</li>
             <li>Toit: {{ voiture.toit }}</li>
             <li>Carburant: {{ voiture.carburant }}</li>
-            <li>Price: ${{ voiture.price }}</li>
+            <li>Price: DT{{ voiture.price }}</li>
             <li>
               Disponibilité:
               <span [ngClass]="voiture.disponible ? 'available' : 'not-available'">
@@ -47,10 +47,17 @@
         </div>
       </div>
     </div>
+
+    <!-- ✅ Pagination Section (Now Works with API Pagination) -->
+    <div class="pagination text-center mt-4">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-pagination">Previous</button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-pagination">Next</button>
+    </div>
   </div>
 </section>
 
-<!-- Booking Modal Component (Corrected Position) -->
+<!-- Booking Modal Component -->
 <app-booking
   *ngIf="showBookingModal"
   [selectedCarId]="selectedCarId"
