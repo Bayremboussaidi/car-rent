@@ -5,20 +5,19 @@ import Keycloak from 'keycloak-js';
   providedIn: 'root',
 })
 export class KeycloakService {
-  private keycloakAuth: Keycloak;
+  keycloak: Keycloak; // Rename keycloakAuth to keycloak
 
   constructor() {
-    this.keycloakAuth = new Keycloak({
+    this.keycloak = new Keycloak({
       url: 'http://192.168.100.228:9090',
       realm: 'comparateur',
       clientId: 'bsn',
     });
-
   }
 
   async init(): Promise<void> {
     try {
-      await this.keycloakAuth.init({
+      await this.keycloak.init({
         onLoad: 'login-required',
         checkLoginIframe: false,
       });
@@ -29,69 +28,18 @@ export class KeycloakService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.keycloakAuth.authenticated;
+    return !!this.keycloak.authenticated;
   }
 
   login(): void {
-    this.keycloakAuth.login();
+    this.keycloak.login();
   }
 
   logout(): void {
-    this.keycloakAuth.logout();
+    this.keycloak.logout();
   }
 
   getToken(): Promise<string> {
-    return this.keycloakAuth.token ? Promise.resolve(this.keycloakAuth.token) : Promise.reject('No token available');
+    return this.keycloak.token ? Promise.resolve(this.keycloak.token) : Promise.reject('No token available');
   }
 }
-
-
-
-/*
-import {Injectable} from '@angular/core';
-import Keycloak from 'keycloak-js';
-import {UserProfile} from './user-profile';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class KeycloakService {
-  private _keycloak: Keycloak | undefined;
-
-  get keycloak() {
-    if (!this._keycloak) {
-      this._keycloak = new Keycloak({
-        url: 'http://localhost:9090',
-        realm: 'book-social-network',
-        clientId: 'bsn'
-      });
-    }
-    return this._keycloak;
-  }
-
-  private _profile: UserProfile | undefined;
-
-  get profile(): UserProfile | undefined {
-    return this._profile;
-  }
-
-  async init() {
-    const authenticated = await this.keycloak.init({
-      onLoad: 'login-required',
-    });
-
-    if (authenticated) {
-      this._profile = (await this.keycloak.loadUserProfile()) as UserProfile;
-      this._profile.token = this.keycloak.token || '';
-    }
-  }
-
-  login() {
-    return this.keycloak.login();
-  }
-
-  logout() {
-    // this.keycloak.accountManagement();
-    return this.keycloak.logout({redirectUri: 'http://localhost:4200'});
-  }
-}*/
