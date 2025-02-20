@@ -3,15 +3,15 @@ package com.example.comparateur.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.comparateur.Entity.Photo;
-import com.example.comparateur.Entity.Voiture;
 import com.example.comparateur.Repository.PhotoRepository;
-import com.example.comparateur.Repository.VoitureRepository;
 
 @Service
 public class PhotoService {
@@ -20,23 +20,29 @@ public class PhotoService {
     private PhotoRepository photoRepository;
 
     @Autowired
-    private VoitureRepository voitureRepository;
+    private JdbcTemplate mysqlJdbcTemplate; // ✅ Connects to MySQL to verify `voiture_id`
 
-    // ✅ Save multiple photos
+    // ✅ Save multiple photos while verifying voiture_id in MySQL
     public List<Photo> saveMultiplePhotos(Long voitureId, MultipartFile[] files) throws IOException {
-        Voiture voiture = voitureRepository.findById(voitureId)
-                .orElseThrow(() -> new RuntimeException("Voiture not found"));
+        // ✅ Check if voiture_id exists in MySQL before saving in PostgreSQL
+        String sql = "SELECT COUNT(*) FROM voiture WHERE id = ?";
+        Integer count = mysqlJdbcTemplate.queryForObject(sql, Integer.class, voitureId);
+
+        if (count == null || count == 0) {
+            throw new RuntimeException("Voiture ID " + voitureId + " does not exist in MySQL.");
+        }
 
         List<Photo> savedPhotos = new ArrayList<>();
 
         for (MultipartFile file : files) {
             Photo photo = new Photo();
+            photo.setId(UUID.randomUUID()); // ✅ Generate UUID manually
             photo.setName(file.getOriginalFilename());
             photo.setType(file.getContentType());
             photo.setData(file.getBytes());
-            photo.setVoiture(voiture);
+            photo.setVoitureId(voitureId); // ✅ Store MySQL voiture.id reference
 
-            savedPhotos.add(photoRepository.save(photo)); // ✅ Save each photo
+            savedPhotos.add(photoRepository.save(photo)); // ✅ Save in PostgreSQL
         }
 
         return savedPhotos;

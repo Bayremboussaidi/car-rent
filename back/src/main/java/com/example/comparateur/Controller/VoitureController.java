@@ -1,4 +1,4 @@
-package com.example.comparateur.Controller;
+/*package com.example.comparateur.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -108,4 +108,122 @@ public class VoitureController {
         System.out.println("Deleting all photos for Voiture ID: " + id);
         return voitureService.deletePhotosByVoitureId(id);
     }
+}*/
+
+
+
+
+
+
+
+
+
+package com.example.comparateur.Controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.example.comparateur.Entity.Voiture;
+import com.example.comparateur.Service.VoitureService;
+
+@RestController
+@RequestMapping("/api/voitures")
+@CrossOrigin(origins = "http://localhost:4200")
+public class VoitureController {
+
+    @Autowired
+    private VoitureService voitureService;
+
+    @Autowired
+    private ObjectMapper objectMapper; // ✅ Used for JSON deserialization
+
+    // ✅ Create a new Voiture
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
+        return voitureService.createVoiture(voiture);
+    }
+
+    // ✅ Update Voiture with or without a new main image
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateVoiture(
+            @PathVariable Long id,
+            @RequestParam("voiture") String voitureJson, // ✅ Accepts Voiture as JSON string
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        try {
+            Voiture voiture = objectMapper.readValue(voitureJson, Voiture.class); // ✅ Convert JSON to Voiture object
+            return voitureService.updateVoiture(id, voiture, file);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Invalid JSON format: " + e.getMessage());
+        }
+    }
+
+    // ✅ Delete a Voiture (deletes linked photos automatically)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
+        return voitureService.deleteVoiture(id);
+    }
+
+    // ✅ Get a single Voiture
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
+        return voitureService.getOneVoiture(id);
+    }
+
+    // ✅ Get all Voitures with related details
+    @GetMapping("/all/details")
+    public ResponseEntity<Object> getAllVoituresWithDetails() {
+        return voitureService.getAllVoituresWithDetails();
+    }
+
+    // ✅ Get all Voitures with pagination
+    @GetMapping
+    public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
+        return voitureService.getAllVoitures(page);
+    }
+
+    // ✅ Search for Voitures by location
+    @GetMapping("/search/getVoitureBySearch")
+    public ResponseEntity<Object> getVoitureBySearch(@RequestParam String local) {
+        return voitureService.getVoitureBySearch(local);
+    }
+
+    // ✅ Get all featured Voitures
+    @GetMapping("/search/getFeaturedVoitures")
+    public ResponseEntity<Object> getFeaturedVoitures() {
+        return voitureService.getFeaturedVoitures();
+    }
+
+    // ✅ Get total count of Voitures
+    @GetMapping("/search/getVoitureCount")
+    public ResponseEntity<Object> getVoitureCount() {
+        return voitureService.getVoitureCount();
+    }
+
+    // ✅ Upload **multiple** photos for a Voiture
+    @PostMapping(value = "/{id}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> uploadPhotosForVoiture(
+        @PathVariable Long id,
+        @RequestParam(value = "files", required = false) MultipartFile[] files) { // ✅ Avoid null pointer
+        if (files == null || files.length == 0) {
+            return ResponseEntity.status(400).body("No files uploaded");
+        }
+        return voitureService.addPhotosToVoiture(id, files);
+    }
+
+    // ✅ Get all photos for a specific Voiture
+    @GetMapping("/{id}/photos")
+    public ResponseEntity<Object> getPhotosForVoiture(@PathVariable Long id) {
+        return voitureService.getPhotosByVoitureId(id);
+    }
+
+    // ✅ Delete all photos of a Voiture
+    @DeleteMapping("/{id}/photos")
+    public ResponseEntity<Object> deletePhotosForVoiture(@PathVariable Long id) {
+        return voitureService.deletePhotosByVoitureId(id);
+    }
 }
+
+
