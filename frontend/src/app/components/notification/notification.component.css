@@ -1,0 +1,30 @@
+.notifications-container {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+h3 {
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}

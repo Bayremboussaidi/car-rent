@@ -1,0 +1,17 @@
+<div class="notifications-container">
+  <h3>🔔 Public Notifications</h3>
+  <ul>
+    <li *ngFor="let notification of notifications">
+      {{ notification }}
+    </li>
+  </ul>
+
+  <h3>🔒 Private Notifications</h3>
+  <ul>
+    <li *ngFor="let notification of privateNotifications">
+      {{ notification }}
+    </li>
+  </ul>
+
+  <button (click)="sendNotification()">📢 Send Test Notification</button>
+</div>
