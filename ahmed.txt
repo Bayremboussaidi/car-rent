@@ -1,0 +1,39 @@
+package com.example.comparateur.Controller;
+
+package networklab.backend.controller;
+
+import lombok.RequiredArgsConstructor;
+
+import networklab.backend.model.Notification;
+
+import networklab.backend.service.NotificationService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+
+@RestController
+@RequestMapping("/api/notifications")
+@RequiredArgsConstructor
+public class NotificationController {
+
+    private final NotificationService notificationService;
+
+    @GetMapping("")
+    public Mono<Page<Notification>> getNotifications(@AuthenticationPrincipal Jwt jwt,
+                                                    Pageable pageable,
+                                                    @RequestParam(required = false) String instanceId,
+                                                    @RequestParam(required = false) String filter) {
+
+        return notificationService.getNotification(jwt,instanceId,pageable,filter);
+    }
+
+    @PostMapping("/{id}")
+    public Mono<Void> ack(@AuthenticationPrincipal Jwt jwt,@PathVariable int id){
+        return notificationService.ack(jwt,id);
+    }
+}

@@ -5,11 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.Utils.ApiResponse;
-import com.example.comparateur.Entity.Booking;
+import com.example.comparateur.Entity.Booking; // ✅ WebSocket Messaging
 import com.example.comparateur.Entity.BookingStatus;
 import com.example.comparateur.Entity.Voiture;
 import com.example.comparateur.Repository.BookingRepository;
@@ -24,7 +25,10 @@ public class BookingService {
     @Autowired
     private VoitureRepository voitureRepository;
 
-    // ✅ Create a new booking (Default Status: PENDING)
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate; // ✅ WebSocket Messaging
+
+    // ✅ Create a new booking (Client books a car → Notify Admin)
     @Transactional
     public ResponseEntity<Object> createBooking(Booking booking) {
         try {
@@ -32,18 +36,54 @@ public class BookingService {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid voiture_id"));
             }
 
-            // ✅ Ensure startDate and endDate are not null
             if (booking.getStartDate() == null || booking.getEndDate() == null) {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate."));
             }
 
-            booking.setStatus(BookingStatus.PENDING); // ✅ Set default status
+            booking.setStatus(BookingStatus.PENDING);
             Booking savedBooking = bookingRepository.save(booking);
-            
+
+            // ✅ Notify Admin about new booking
+            String adminMessage = "🚗 New booking request: " + savedBooking.getCarName() +
+                                " by " + savedBooking.getUsername() +
+                                " (Email: " + savedBooking.getUserEmail() + ")";
+            messagingTemplate.convertAndSend("/topic/booking-requests", adminMessage);
+
             return ResponseEntity.ok().body(new ApiResponse(true, "Your voiture is booked", savedBooking));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new ApiResponse(false, "Internal server error: " + e.getMessage()));
+        }
+    }
+
+    // ✅ Update a booking (Admin updates status → Notify Client)
+    @Transactional
+    public ResponseEntity<Object> updateBookingStatus(Long id, BookingStatus status) {
+        try {
+            Optional<Booking> optionalBooking = bookingRepository.findById(id);
+            if (optionalBooking.isPresent()) {
+                Booking booking = optionalBooking.get();
+
+                if (booking.getStartDate() == null || booking.getEndDate() == null) {
+                    return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate before updating status."));
+                }
+
+                booking.setStatus(status);
+                bookingRepository.save(booking);
+
+                // ✅ Notify Client about booking status update
+                String clientMessage = "✅ Your booking for " + booking.getCarName() + " is now: " + status;
+                messagingTemplate.convertAndSendToUser(
+                        booking.getUsername(), "/queue/booking-status", clientMessage
+                );
+
+                return ResponseEntity.ok().body(new ApiResponse(true, "Booking status updated successfully", booking));
+            } else {
+                return ResponseEntity.status(404).body(new ApiResponse(false, "Booking not found"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse(false, "Transaction failed: " + e.getMessage()));
         }
     }
 
@@ -55,7 +95,6 @@ public class BookingService {
             if (optionalBooking.isPresent()) {
                 Booking booking = optionalBooking.get();
 
-                // ✅ Ensure voiture exists before updating
                 if (updatedBooking.getVoiture() != null && updatedBooking.getVoiture().getId() != null) {
                     Optional<Voiture> optionalVoiture = voitureRepository.findById(updatedBooking.getVoiture().getId());
                     if (optionalVoiture.isPresent()) {
@@ -65,12 +104,10 @@ public class BookingService {
                     }
                 }
 
-                // ✅ Ensure startDate and endDate are not null
                 if (updatedBooking.getStartDate() == null || updatedBooking.getEndDate() == null) {
                     return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate."));
                 }
 
-                // ✅ Update all other fields safely
                 booking.setUsername(updatedBooking.getUsername());
                 booking.setCarName(updatedBooking.getCarName());
                 booking.setUserEmail(updatedBooking.getUserEmail());
@@ -133,34 +170,6 @@ public class BookingService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new ApiResponse(false, "Error deleting booking: " + e.getMessage()));
-        }
-    }
-
-    // ✅ Update booking status
-    @Transactional
-    public ResponseEntity<Object> updateBookingStatus(Long id, BookingStatus status) {
-        try {
-            Optional<Booking> optionalBooking = bookingRepository.findById(id);
-            if (optionalBooking.isPresent()) {
-                Booking booking = optionalBooking.get();
-
-                System.out.println("Updating booking ID: " + id + " to status: " + status);
-
-                // ✅ Ensure startDate and endDate exist before updating status
-                if (booking.getStartDate() == null || booking.getEndDate() == null) {
-                    return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate before updating status."));
-                }
-
-                booking.setStatus(status);
-                bookingRepository.save(booking);
-
-                return ResponseEntity.ok().body(new ApiResponse(true, "Booking status updated successfully", booking));
-            } else {
-                return ResponseEntity.status(404).body(new ApiResponse(false, "Booking not found"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new ApiResponse(false, "Transaction failed: " + e.getMessage()));
         }
     }
 }
