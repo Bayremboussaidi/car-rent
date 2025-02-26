@@ -110,6 +110,18 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- ✅ WebSockets for Real-Time Communication -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- ✅ STOMP Messaging for WebSockets -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+
         <!-- ✅ Testing Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

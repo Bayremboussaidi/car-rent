@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "photo", schema = "public") // ✅ PostgreSQL Schema
+@Table(name = "photo") // ❌ Remove schema, as MySQL does not support it
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class Photo {
     private String url;  // ✅ Optional field for storing external image URLs
 
     @Lob
-    @Column(columnDefinition = "BYTEA") // ✅ Proper PostgreSQL Binary Storage
+    @Column(columnDefinition = "LONGBLOB") // ✅ Use LONGBLOB instead of BYTEA for MySQL/MariaDB
     @JsonIgnore
     private byte[] data;
 
