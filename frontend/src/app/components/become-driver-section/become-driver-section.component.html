@@ -1,18 +1,31 @@
-<section class="become__driver">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12 become__driver-img"></div>
+<section class="testimonial"
+         [ngStyle]="{'cursor': cursorStyle}">
 
-        
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <h2 class="section__title become__driver-title">
-            Vous voulez gagner de l'argent avec nous ? Alors ne soyez pas en retard
-          </h2>
-  
+  <div class="testimonials-slider">
+    <ul class="slides">
+      <li *ngFor="let testimonial of testimonials; let i = index"
+          [ngClass]="{'active-slide': i === activeSlide}">
+        <div class="testimonial-content">
+          <div class="module-icon"><span class="icon-quote">❝</span></div>
+          <blockquote class="testimonial-text">
+            {{ testimonial.text }}
+          </blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-title">{{ testimonial.author }}</div>
+            <div class="testimonial-descr">{{ testimonial.company }}</div>
+          </div>
+          <!-- New Button -->
           <button class="btn become__driver-btn mt-4">Réservez maintenant</button>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
 
-  </section>
-  
+    <!-- Pagination Dots -->
+    <div class="carousel-pagination">
+      <span *ngFor="let testimonial of testimonials; let i = index"
+            (click)="setActiveSlide(i)"
+            [ngClass]="{'active-dot': i === activeSlide}">
+      </span>
+    </div>
+  </div>
+</section>
