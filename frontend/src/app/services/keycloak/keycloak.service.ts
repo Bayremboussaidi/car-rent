@@ -9,7 +9,7 @@ export class KeycloakService {
 
   constructor() {
     this.keycloak = new Keycloak({
-      url: 'http://192.168.100.228:9090',
+      url: 'http://192.168.100.248:8080',
       realm: 'comparateur',
       clientId: 'bsn',
     });
