@@ -1,0 +1,121 @@
+/* Default Header (When Top Menu is Visible) */
+.header {
+  position: fixed;
+  top: 30px; /* Below top-menu initially */
+  left: 0;
+  width: 100%;
+  transition: top 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+/* Sticky Header (Moves to Top When Scrolled) */
+.sticky-header {
+  top: 0; /* Moves to the top when top menu is hidden */
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* Nav */
+.nav {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+}
+
+.nav__logo {
+  font-weight: var(--font-semi-bold);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--white-color);
+}
+
+/* Mobile Toggle */
+.nav__toggle {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--white-color);
+  display: none;
+}
+
+/* Desktop Menu */
+.nav__menu {
+  display: flex;
+}
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav__link {
+  display: block;
+  padding: 1rem;
+  transition: background-color 0.3s;
+  color: var(--white-color);
+}
+
+.nav__link:hover {
+  background-color: var(--black-color-light);
+}
+
+/* Dropdown Styling */
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--dropdown-border);
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px var(--dropdown-shadow);
+  padding: 10px;
+  min-width: 180px;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+/* Show dropdown on hover */
+.dropdown__item {
+  position: relative;
+}
+
+.dropdown__item:hover .dropdown__menu {
+  display: block;
+}
+
+/* Responsive: Mobile Mode */
+@media screen and (max-width: 768px) {
+  .nav__toggle {
+    display: block;
+  }
+
+  .nav__menu {
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    background-color: var(--black-color);
+    flex-direction: column;
+    display: none;
+  }
+
+  .show-menu {
+    display: flex;
+  }
+
+  .nav__list {
+    flex-direction: column;
+  }
+
+  /* Mobile: Dropdowns appear further right */
+  .dropdown__menu {
+    left: calc(100% - 30px);
+  }
+
+  .dropdown__submenu {
+    left: calc(100% + 30px);
+    top: 10px;
+  }
+}

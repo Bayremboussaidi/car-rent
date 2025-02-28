@@ -201,6 +201,7 @@ import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
 import { NotificationComponent } from './components/notification/notification.component';
 import { TopMenuComponent } from './components/top-menu/top-menu.component';
+import { TitanComponent } from './components/titan/titan.component';
 
 // ✅ Keycloak Initialization Function
 export function kcFactory(kcService: KeycloakService) {
@@ -250,6 +251,7 @@ export function kcFactory(kcService: KeycloakService) {
     CarDetaComponent,
     NotificationComponent,
     TopMenuComponent,
+    TitanComponent,
   ],
   imports: [
     BrowserModule,
