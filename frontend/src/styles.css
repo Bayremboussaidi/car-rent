@@ -3,8 +3,8 @@
 /*import 'node_modules/bootstrap/dist/css/bootstrap.min.css';*/
 @import "primeicons/primeicons.css";
 
-
-
+/* Ionicons (Add this line) */
+@import url("https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/css/ionicons.min.css");
 
 /* Base styles */
 * {

@@ -1,27 +1,32 @@
-/* Default Header (When Top Menu is Visible) */
+/* Header Styling */
 .header {
   position: fixed;
-  top: 30px; /* Below top-menu initially */
+  top: 30px;
   left: 0;
   width: 100%;
   transition: top 0.3s ease-in-out, background-color 0.3s ease-in-out;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 200px; /* Pushes the nav menu away from the animated menu */
 }
 
-/* Sticky Header (Moves to Top When Scrolled) */
+/* Sticky Header */
 .sticky-header {
-  top: 0; /* Moves to the top when top menu is hidden */
+  top: 0;
   background-color: rgba(255, 255, 255, 1);
 }
 
-/* Nav */
+/* Navigation */
 .nav {
   height: var(--header-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
+  width: 100%;
 }
 
 .nav__logo {
@@ -43,6 +48,7 @@
 /* Desktop Menu */
 .nav__menu {
   display: flex;
+  margin-right: 150px; /* Pushes the nav menu slightly to the left */
 }
 
 .nav__list {
@@ -54,12 +60,33 @@
 .nav__link {
   display: block;
   padding: 1rem;
-  transition: background-color 0.3s;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
   color: var(--white-color);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
 }
 
+/* Hover Effect - Changes text color */
 .nav__link:hover {
   background-color: var(--black-color-light);
+  color: blue;
+}
+
+/* Underline Hover Effect */
+.nav__link:before {
+  content: "";
+  position: absolute;
+  inset: calc(100% - 3px) 0 0 0;
+  background: #ce4f20;
+  scale: 0 1;
+  transition: 0.3s, translate 0s 0.3s;
+}
+
+.nav__link:hover:before {
+  scale: 1;
+  translate: 0;
+  transition: 0.3s;
 }
 
 /* Dropdown Styling */
@@ -76,7 +103,6 @@
   backdrop-filter: blur(5px);
 }
 
-/* Show dropdown on hover */
 .dropdown__item {
   position: relative;
 }
@@ -109,7 +135,6 @@
     flex-direction: column;
   }
 
-  /* Mobile: Dropdowns appear further right */
   .dropdown__menu {
     left: calc(100% - 30px);
   }
@@ -120,10 +145,120 @@
   }
 }
 
+/* Animated Menu (Top-Right Corner, Moved Further Right) */
+.animated-menu {
+  display: flex;
+  gap: 15px;
+  position: absolute;
+  right: 25px; /* Moves it to the extreme right */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001; /* Ensures it appears above other elements */
+}
 
+/* Animated Buttons */
+.animated-menu li {
+  position: relative;
+  list-style: none;
+  width: 60px;
+  height: 60px;
+  background: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+}
 
+.animated-menu li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 60px;
+  background: linear-gradient(45deg, var(--i), var(--j));
+  opacity: 0;
+  transition: 0.5s;
+}
 
+.animated-menu li::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  height: 100%;
+  border-radius: 60px;
+  background: linear-gradient(45deg, var(--i), var(--j));
+  transition: 0.5s;
+  filter: blur(15px);
+  z-index: -1;
+  opacity: 0;
+}
 
+.animated-menu li:hover {
+  width: 180px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
+}
 
+.animated-menu li:hover::before {
+  opacity: 1;
+}
 
+.animated-menu li:hover::after {
+  opacity: 0.5;
+}
 
+/* Icon Styles */
+.animated-menu li ion-icon {
+  color: #777;
+  font-size: 1.75em;
+  transition: 0.5s;
+  transition-delay: 0.25s;
+}
+
+.animated-menu li:hover ion-icon {
+  transform: scale(0);
+  color: #fff;
+  transition-delay: 0s;
+}
+
+/* Title Animation */
+.animated-menu li span {
+  position: absolute;
+}
+
+.animated-menu li .title {
+  color: #fff;
+  font-size: 1.1em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: scale(0);
+  transition: 0.5s;
+  transition-delay: 0s;
+}
+
+.animated-menu li:hover .title {
+  transform: scale(1);
+  transition-delay: 0.25s;
+}
+
+/* Responsive: Move Menu to Bottom on Mobile */
+@media screen and (max-width: 768px) {
+  .animated-menu {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .animated-menu li {
+    width: 50px;
+    height: 50px;
+  }
+
+  .animated-menu li:hover {
+    width: 150px;
+  }
+}
