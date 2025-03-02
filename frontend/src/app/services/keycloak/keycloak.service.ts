@@ -9,32 +9,24 @@ interface KeycloakUserInfo {
 
 @Injectable({ providedIn: "root" })
 export class KeycloakService {
-  private _keycloak: Keycloak | undefined;
+  private _keycloak = new Keycloak({
+    url: "http://192.168.100.248:8080",
+    realm: "comparateur",
+    clientId: "bsn",
+  });
+
   user: User | undefined;
 
-  get keycloak() {
-    if (!this._keycloak) {
-      this._keycloak = new Keycloak({
-        url: "http://192.168.100.248:8080",
-        realm: "comparateur",
-        clientId: "bsn",
-      });
-    }
-    return this._keycloak;
-  }
-
   async init(): Promise<boolean> {
-    const authenticated = await this.keycloak.init({
-      onLoad: "check-sso",
-      silentCheckSsoRedirectUri: window.location.origin + "/assets/silent-check-sso.html",
-    });
-
-    if (!authenticated) {
-      return false;
-    }
-
     try {
-      const userInfo = await this.keycloak.loadUserInfo() as KeycloakUserInfo;
+      const authenticated = await this._keycloak.init({
+        onLoad: "check-sso",
+        silentCheckSsoRedirectUri: window.location.origin + "/assets/silent-check-sso.html",
+      });
+
+      if (!authenticated) return false;
+
+      const userInfo = (await this._keycloak.loadUserInfo()) as KeycloakUserInfo;
 
       this.user = {
         id: undefined, // Keycloak does not provide an explicit user ID
@@ -42,22 +34,22 @@ export class KeycloakService {
         email: userInfo.email || undefined,
         role: this.extractRoleFromToken(),
         anonymous: false,
-        bearer: this.keycloak.token || "",
+        bearer: this._keycloak.token || "",
       };
+
+      return true;
     } catch (error) {
-      console.error("Error loading user info:", error);
+      console.error("Error initializing Keycloak:", error);
       return false;
     }
-
-    return true;
   }
 
   private extractRoleFromToken(): "ADMIN" | "USER" | "AGENCE" | undefined {
-    if (!this.keycloak.token) return undefined;
+    if (!this._keycloak.token) return undefined;
 
     try {
-      const decodedToken = JSON.parse(atob(this.keycloak.token.split(".")[1]));
-      return decodedToken.realm_access?.roles?.find((role: string) =>
+      const decodedToken = JSON.parse(atob(this._keycloak.token.split(".")[1]));
+      return decodedToken?.realm_access?.roles?.find((role: string) =>
         ["ADMIN", "USER", "AGENCE"].includes(role)
       );
     } catch (error) {
@@ -67,14 +59,23 @@ export class KeycloakService {
   }
 
   login(): void {
-    this.keycloak.login();
+    this._keycloak.login();
   }
 
   logout(): void {
-    this.keycloak.logout({ redirectUri: window.location.origin });
+    this._keycloak.logout({ redirectUri: window.location.origin });
   }
 
-  getToken(): Promise<string> {
-    return this.keycloak.token ? Promise.resolve(this.keycloak.token) : Promise.reject("No token available");
+  async getToken(): Promise<string> {
+    try {
+      if (this._keycloak.isTokenExpired()) {
+        console.log("Refreshing token...");
+        await this._keycloak.updateToken(30);
+      }
+      return this._keycloak.token || "";
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return Promise.reject("No token available");
+    }
   }
 }

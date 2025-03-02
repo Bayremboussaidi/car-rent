@@ -1,26 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { KeycloakService } from '../../../services/keycloak/keycloak.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  credentials = { email: '', password: '' };
+  errorMessage: string = '';
 
-  constructor(private keycloakService: KeycloakService, private router: Router) {}
-
-  async ngOnInit(): Promise<void> {
-    await this.keycloakService.init(); // Initialize Keycloak (does not auto-login)
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   async handleClick(event: Event) {
     event.preventDefault();
-    try {
-      await this.keycloakService.login(); // Redirects to Keycloak login page
-    } catch (error) {
-      console.error('An error occurred during login:', error);
-    }
+
+    this.authService.login(this.credentials).subscribe({
+      next: () => {
+        console.log('Login successful');
+        this.router.navigate(['/home']); // Redirect to dashboard after login
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+        this.errorMessage = 'Email ou mot de passe incorrect';
+      },
+    });
   }
 }
