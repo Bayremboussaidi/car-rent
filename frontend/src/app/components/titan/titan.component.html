@@ -67,14 +67,16 @@
         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
         <span class="title">Home</span>
       </li>
-      <li style="--i:#4CAF50;--j:#2E7D32">
+      <li style="--i:#4CAF50;--j:#2E7D32" (click)="login()">
         <span class="icon"><i class="ri-login-circle-line"></i></span>
         <span class="title">Login</span>
       </li>
-      <li style="--i:#FF4C4C;--j:#B22222">
+
+      <li style="--i:#FF4C4C;--j:#B22222" (click)="logout()">
         <span class="icon"><i class="ri-logout-circle-r-line"></i></span>
         <span class="title">Log out</span>
       </li>
+
       <li style="--i:#80FF72;--j:#7EE8FA">
         <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
         <span class="title">Purchase</span>

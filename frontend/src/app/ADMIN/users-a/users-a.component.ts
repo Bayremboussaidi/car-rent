@@ -11,10 +11,10 @@ export class UserAComponent implements OnInit {
   users: User[] = [];
   selectedUsers: User[] = [];
   isAddModalOpen = false;
-  isEditMode = false; // ✅ Track whether we're in edit mode
-  userToEdit: User | null = null; // ✅ Store user to edit
+  isEditMode = false;
+  userToEdit: User | null = null;
 
-  newUser: User = this.getEmptyUser(); // ✅ Initialize new user
+  newUser: User = this.getEmptyUser();
 
   constructor(private userService: UserService) {}
 
@@ -69,25 +69,29 @@ export class UserAComponent implements OnInit {
     this.selectedUsers = isChecked ? [...this.users] : [];
   }
 
-  // ✅ Update multiple selected users
+  // ✅ Update multiple selected users (Fixed `user.id` issue)
   updateSelectedUsers(): void {
     this.selectedUsers.forEach((user) => {
-      this.userService.updateUser(user.id, user).subscribe(
-        (response: any) => {
-          console.log('User updated successfully:', response);
-          this.getUsers();
-        },
-        (error: any) => {
-          console.error('Error updating user:', error);
-        }
-      );
+      if (user.id !== undefined) {  // Ensure `id` is defined
+        this.userService.updateUser(user.id, user).subscribe(
+          (response: any) => {
+            console.log('User updated successfully:', response);
+            this.getUsers();
+          },
+          (error: any) => {
+            console.error('Error updating user:', error);
+          }
+        );
+      } else {
+        console.error('Error: Cannot update user with undefined ID.');
+      }
     });
   }
 
   // ✅ Open modal for adding a new user
   openAddModal(): void {
     this.isAddModalOpen = true;
-    this.isEditMode = false; // Ensure modal is in "add mode"
+    this.isEditMode = false;
     this.newUser = this.getEmptyUser();
   }
 
@@ -95,7 +99,7 @@ export class UserAComponent implements OnInit {
   openEditModal(user: User): void {
     this.isAddModalOpen = true;
     this.isEditMode = true;
-    this.userToEdit = { ...user }; // Copy user data for editing
+    this.userToEdit = { ...user };
   }
 
   // ✅ Close modal and reset form
@@ -106,22 +110,24 @@ export class UserAComponent implements OnInit {
     this.newUser = this.getEmptyUser();
   }
 
-  // ✅ Handle add user submission
+  // ✅ Handle add user submission (Fixed `userToEdit.id` issue)
   onAddUserSubmit(): void {
     if (this.isEditMode && this.userToEdit) {
-      // ✅ Update existing user
-      this.userService.updateUser(this.userToEdit.id, this.userToEdit).subscribe(
-        (response: any) => {
-          console.log('User updated successfully:', response);
-          this.getUsers();
-          this.closeAddModal();
-        },
-        (error: any) => {
-          console.error('Error updating user:', error);
-        }
-      );
+      if (this.userToEdit.id !== undefined) { // Ensure `id` is defined
+        this.userService.updateUser(this.userToEdit.id, this.userToEdit).subscribe(
+          (response: any) => {
+            console.log('User updated successfully:', response);
+            this.getUsers();
+            this.closeAddModal();
+          },
+          (error: any) => {
+            console.error('Error updating user:', error);
+          }
+        );
+      } else {
+        console.error('Error: Cannot update user with undefined ID.');
+      }
     } else {
-      // ✅ Create new user
       this.userService.createUser(this.newUser).subscribe(
         (response: any) => {
           console.log('User added successfully:', response);
@@ -135,10 +141,10 @@ export class UserAComponent implements OnInit {
     }
   }
 
-  // ✅ Utility function to return an empty user object
+  // ✅ Utility function to return an empty user object (Fixed `anonymous` issue)
   private getEmptyUser(): User {
     return {
-      id: 0,
+      id: 0, // Set to 0 (or remove if ID is auto-generated)
       username: '',
       email: '',
       password: '',
@@ -147,7 +153,8 @@ export class UserAComponent implements OnInit {
       workplace: undefined,
       photo: undefined,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      anonymous: false, // ✅ Ensured `anonymous` is always defined
     };
   }
 }
