@@ -4,9 +4,11 @@
         [ngStyle]="{'background-color': 'rgba(255, 255, 255, ' + scrollOpacity + ')'}">
   <nav class="nav container">
     <div class="nav__data">
-      <a href="#" class="nav__logo">
-        <i class="ri-planet-line"></i> Company
-      </a>
+
+      <div class="nav__logo">
+        <img src="../../../assets/all-images/logo.jpg" alt="Comparator Logo" class="nav__logo-img"> Comparator
+      </div>
+
 
       <div class="nav__toggle" id="nav-toggle" (click)="toggleMenu()">
         <i class="ri-menu-line nav__burger" *ngIf="!isMenuOpen"></i>
@@ -66,6 +68,7 @@
       <li style="--i:#a955ff;--j:#ea51ff">
         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
         <span class="title">Home</span>
+        <a routerLink="/home" class="nav__link">.</a>
       </li>
       <li style="--i:#4CAF50;--j:#2E7D32" (click)="login()">
         <span class="icon"><i class="ri-login-circle-line"></i></span>

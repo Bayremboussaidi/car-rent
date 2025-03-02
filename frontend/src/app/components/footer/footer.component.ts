@@ -1,6 +1,4 @@
-// footer.component.ts
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
@@ -8,13 +6,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent {
-  quickLinks = [
-    { path: '/about', display: 'À propos' },
-    { path: '#', display: 'Politique de confidentialité' },
-    { path: '/cars', display: 'Voitures' },
-    { path: '/blogs', display: 'Blogs' },
-    { path: '/contact', display: 'Contact' }
-  ];
-
   currentYear: number = new Date().getFullYear();
+
+  quickLinks = [
+    { path: '/home', display: 'Accueil' },
+    { path: '/about', display: 'À Propos' },
+    { path: '/services', display: 'Services' },
+    { path: '/contact', display: 'Contact' },
+    { path: '/faq', display: 'FAQ' }
+  ];
 }
