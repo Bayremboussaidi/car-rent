@@ -12,7 +12,7 @@ export class KeycloakService {
   private _keycloak = new Keycloak({
     url: "http://192.168.100.248:8080",
     realm: "comparateur",
-    clientId: "bsn",
+    clientId: "location",
   });
 
   user: User | undefined;

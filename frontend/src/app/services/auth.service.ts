@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class AuthService {
   private realm = 'comparateur';
   private clientId = 'location';
   private clientSecret = 'z1GlcCIOjQNeibhAZiS3nXTtp03JLZqz';
-  private adminToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJSdVc3YmFYd3RuS2FTcG83Y3RJc3oyX3Q4MlNGSEN2SVlFWnNucmM2bklRIn0.eyJleHAiOjE3NDA5MTkyMDIsImlhdCI6MTc0MDkxODkwMiwianRpIjoiOTNjNzZhYTQtNGQ3MC00NjZkLWIwY2QtYTY2ZDc0OWIxM2IxIiwiaXNzIjoiaHR0cDovLzE5Mi4xNjguMTAwLjI0ODo4MDgwL3JlYWxtcy9jb21wYXJhdGV1ciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJjYzExZjRlMy1hMGFiLTQzNWYtYjdlZC05N2Y2MDRlODMwN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJsb2NhdGlvbiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo0MjAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1jb21wYXJhdGV1ciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SG9zdCI6IjE5Mi4xNjguMTAwLjExNyIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1sb2NhdGlvbiIsImNsaWVudEFkZHJlc3MiOiIxOTIuMTY4LjEwMC4xMTciLCJjbGllbnRfaWQiOiJsb2NhdGlvbiJ9.NIGVvrH-wagHzf8iR12mwzV1HS1K9uxaJzyLY14dZ6-cSxj_5g76ueIn1njXOVyqEMY_jXohK8xGOrOOrMdL3AxqqmU-D5XnNYLq5r2WNtOPTfwhU37AuTtnpcYIbPwGiafwNwrNCIEnSpsBdf9Aspha2NoPIx6ytRQY9e_OYjQVZcc7i4BQB_aTi9tei0n8vPya2XpoBOrElUXHZZo6og5YaZiVQAn6kNPZsQSo8JTOJj91tBJJn6JwFm5Y-82Etw9UPr4kbkcVpVfvI0MsXoADUQVK-kB41RuSWLST5h1X6Szh2HmcsqE5FWt-voAW2AGcjYUtmuZf2pHJeAwGzw';
+  private adminToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJSdVc3YmFYd3RuS2FTcG83Y3RJc3oyX3Q4MlNGSEN2SVlFWnNucmM2bklRIn0.eyJleHAiOjE3NDA5NzEzMzcsImlhdCI6MTc0MDk3MTAzNywianRpIjoiYTRkNTU3ZDgtNDMxOC00YmIwLWE0MjUtNWZmMGNhMTBlOWQyIiwiaXNzIjoiaHR0cDovLzE5Mi4xNjguMTAwLjI0ODo4MDgwL3JlYWxtcy9jb21wYXJhdGV1ciIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiJjYzExZjRlMy1hMGFiLTQzNWYtYjdlZC05N2Y2MDRlODMwN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJsb2NhdGlvbiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo0MjAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1jb21wYXJhdGV1ciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7InJlYWxtLW1hbmFnZW1lbnQiOnsicm9sZXMiOlsibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxOTIuMTY4LjEwMC4xMTciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtbG9jYXRpb24iLCJjbGllbnRBZGRyZXNzIjoiMTkyLjE2OC4xMDAuMTE3IiwiY2xpZW50X2lkIjoibG9jYXRpb24ifQ.v8wQWlUy3vyaKP4XV6ZCT_eGE1gGGIf26Bk1iVO_U7MG_TdwYr8IWds7AxzZBTyv7wLJa-u2p7fJKZVjpc9rBC_FiA-EM1IYMkCcRunjMMBZvYKyCP6ylVRUFN7wr6Qn6LtfrW3fYssm3XatnXKu1FEEtC8uL9c9ld7HBzPDCNy7Qiwry35BGRiueORxIxdJ9gVYaXQfCr1sjEQYIgDKz5ht3LkKxwiEqGmhlJpVEDaGmyvxVTsvB6Sn40_7DRweh_ZNgbrHxu1zd816EXh0X-WSnn4_aXHQxRL-wOYL28eyFMcyouiVuaVU-K90KxsJmIE52gM7rQk-6Z2--S22zQ';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -26,48 +27,57 @@ export class AuthService {
     body.set('grant_type', 'password');
     body.set('username', credentials.email);
     body.set('password', credentials.password);
+    body.set('scope', 'openid offline_access'); // ✅ Ensures refresh tokens
 
     return this.http.post(url, body.toString(), {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
     }).pipe(
       map((response: any) => {
+        console.log("✅ Login successful:", response);
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
         localStorage.setItem('role', this.extractRole(response.access_token));
         return true;
       }),
       catchError((error) => {
-        console.error('Login error:', error);
+        console.error('❌ Login error:', error);
         return throwError(error);
       })
     );
   }
+
+
 
   // 2️⃣ **REGISTER (Create User in Keycloak)**
-  register(credentials: { username: string; email: string; password: string; phone: number }): Observable<any> {
-    const url = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
+register(user: Partial<User>): Observable<any> {
+  const url = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
 
-    const user = {
-      username: credentials.username,
-      email: credentials.email,
-      firstName: credentials.username,
-      enabled: true,
-      credentials: [{ type: 'password', value: credentials.password, temporary: false }],
-      attributes: { phone: [credentials.phone.toString()] },
-    };
+  const keycloakUser = {
+    username: user.username ?? '',
+    email: user.email ?? '',
+    firstName: user.username ?? '',
+    enabled: true,
+    credentials: [{ type: 'password', value: user.password ?? '', temporary: false }],
+    attributes: {
+      phone: user.phone ? [user.phone.toString()] : [],
+      photo: user.photo ? [user.photo] : [],
+      workplace: user.workplace ? [user.workplace] : [],
+    },
+  };
 
-    return this.http.post(url, user, {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.adminToken}`, // Keycloak Admin Token
-        'Content-Type': 'application/json',
-      }),
-    }).pipe(
-      catchError((error) => {
-        console.error('Registration error:', error);
-        return throwError(error);
-      })
-    );
-  }
+  return this.http.post(url, keycloakUser, {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.adminToken}`, // Keycloak Admin Token
+      'Content-Type': 'application/json',
+    }),
+  }).pipe(
+    catchError((error) => {
+      console.error('Registration error:', error);
+      return throwError(error);
+    })
+  );
+}
+
 
   // 3️⃣ **LOGOUT (Clear Tokens & Redirect)**
   logout() {

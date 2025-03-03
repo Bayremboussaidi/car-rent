@@ -1,5 +1,7 @@
 import { Component, HostListener } from "@angular/core";
 import { KeycloakService } from "../../services/keycloak/keycloak.service";
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: "app-titan",
@@ -11,14 +13,14 @@ export class TitanComponent {
   scrollOpacity = 0; // Starts with 0% opacity at the top
   isTopMenuVisible: boolean = true; // Tracks top menu visibility
 
-  constructor(private keycloakService: KeycloakService) {}
+  constructor(private keycloakService: KeycloakService , private router: Router) {}
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
   login(): void {
-    this.keycloakService.login();
+    this.router.navigate(['/login']);
   }
 
   logout(): void {
