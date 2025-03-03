@@ -1,7 +1,7 @@
-// register.component.ts
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service'; // Ensure the path is correct
+import { AuthService } from '../../../services/auth.service'; // Handles Keycloak Registration
+import { UserService } from '../../../services/user.service'; // Handles MySQL Storage
 import { User } from '../../../models/user.model'; // Ensure correct import path
 
 @Component({
@@ -12,16 +12,24 @@ import { User } from '../../../models/user.model'; // Ensure correct import path
 export class RegisterComponent {
   credentials: Partial<User> = {
     username: '',
-    phone: undefined,
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
+    phone: undefined,
     workplace: '',
     photo: '',
+    role: 'USER', // Default role
     anonymous: false, // Ensure this is always explicitly set
   };
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
+  // ✅ Handle input changes dynamically
   handleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     const key = target.id as keyof Partial<User>;
@@ -39,34 +47,42 @@ export class RegisterComponent {
     }
   }
 
+  // ✅ Handle user registration
   async handleClick(event: Event) {
     event.preventDefault();
 
     try {
-      const credentials: User = {
+      const userData: User = {
         id: undefined, // Keycloak generates ID
         username: this.credentials.username ?? '',
-        phone: this.credentials.phone ? Number(this.credentials.phone) : undefined,
+        firstName: this.credentials.firstName ?? '',
+        lastName: this.credentials.lastName ?? '',
         email: this.credentials.email ?? '',
         password: this.credentials.password ?? '',
-        photo: this.credentials.photo ?? '',
+        phone: this.credentials.phone ? Number(this.credentials.phone) : undefined,
         workplace: this.credentials.workplace ?? null,
-        role: this.credentials.role ?? 'USER', // Default role
+        photo: this.credentials.photo ?? '',
+        role: 'USER', // Default role in MySQL
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         anonymous: false, // Explicitly set
         bearer: '', // No token during registration
       };
 
-      const response = await this.authService.register(credentials).toPromise();
+      console.log("🚀 Registering user in Keycloak:", userData);
 
-      if (response && response.status === 201) { // Check if registration was successful
-        console.log("✅ User registered successfully:", response);
-        alert("🎉 Registration successful! You can now log in.");
-        this.router.navigate(['/login']); // Redirect to login page
-      } else {
-        console.warn("⚠️ Unexpected response:", response);
-      }
+      // ✅ 1. Register User in Keycloak
+      await this.authService.register(userData).toPromise();
+
+      console.log("✅ User registered in Keycloak. Now storing details in MySQL...");
+
+      // ✅ 2. Store User Details in MySQL
+      await this.userService.createUser(userData).toPromise();
+
+      console.log("✅ User details stored in MySQL.");
+      alert("🎉 Registration successful! You can now log in.");
+      this.router.navigate(['/login']); // Redirect to login page
+
     } catch (error: any) { // ✅ Explicitly cast error as 'any'
       console.error("❌ Registration failed:", error);
 
@@ -77,5 +93,4 @@ export class RegisterComponent {
       }
     }
   }
-
 }

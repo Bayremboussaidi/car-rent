@@ -100,9 +100,10 @@
           <td>{{ user.createdAt ? (user.createdAt | date:'yyyy-MM-dd HH:mm') : 'N/A' }}</td>
           <td>{{ user.updatedAt ? (user.updatedAt | date:'yyyy-MM-dd HH:mm') : 'N/A' }}</td>
           <td>
-            <button class="delete-button" *ngIf="user.id !== undefined" (click)="deleteUser(user.id, i)">
+            <button class="delete-button" *ngIf="user.id !== undefined" (click)="deleteUser(user.id!, i)">
               Delete
             </button>
+
           </td>
         </tr>
       </tbody>

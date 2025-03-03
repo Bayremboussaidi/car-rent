@@ -13,7 +13,6 @@ export class UserAComponent implements OnInit {
   isAddModalOpen = false;
   isEditMode = false;
   userToEdit: User | null = null;
-
   newUser: User = this.getEmptyUser();
 
   constructor(private userService: UserService) {}
@@ -22,31 +21,33 @@ export class UserAComponent implements OnInit {
     this.getUsers();
   }
 
-  // ✅ Fetch all users
+  // ✅ Fetch all users (Fixed response handling)
   getUsers(): void {
     this.userService.getAllUsers().subscribe(
-      (response: any) => {
-        if (response.success && Array.isArray(response.data)) {
-          this.users = response.data;
+      (response: User[]) => {
+        if (Array.isArray(response)) {
+          this.users = response.map(user => ({
+            ...user,
+            id: Number(user.id) // Ensure `id` is always a number
+          }));
         }
       },
-      (error: any) => {
+      (error) => {
         console.error('Error fetching users:', error);
       }
     );
   }
 
-  // ✅ Delete a user
-  deleteUser(userId: number, index: number): void {
+  // ✅ Delete a user (Fixed `id` type conversion)
+  deleteUser(userId: number | string, index: number): void {
+    const id = Number(userId); // Convert `string` ID to `number`
     if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.deleteUser(userId).subscribe(
-        (response: any) => {
-          console.log('User deleted successfully:', response);
+      this.userService.deleteUser(id).subscribe(
+        () => {
+          console.log('User deleted successfully');
           this.users.splice(index, 1);
         },
-        (error: any) => {
-          console.error('Error deleting user:', error);
-        }
+        (error) => console.error('Error deleting user:', error)
       );
     }
   }
@@ -69,21 +70,18 @@ export class UserAComponent implements OnInit {
     this.selectedUsers = isChecked ? [...this.users] : [];
   }
 
-  // ✅ Update multiple selected users (Fixed `user.id` issue)
+  // ✅ Update multiple selected users (Fixed `id` issue)
   updateSelectedUsers(): void {
     this.selectedUsers.forEach((user) => {
-      if (user.id !== undefined) {  // Ensure `id` is defined
-        this.userService.updateUser(user.id, user).subscribe(
-          (response: any) => {
-            console.log('User updated successfully:', response);
+      if (user.id !== undefined) {
+        const userId = Number(user.id); // Convert `string` ID to `number`
+        this.userService.updateUser(userId, user).subscribe(
+          () => {
+            console.log('User updated successfully');
             this.getUsers();
           },
-          (error: any) => {
-            console.error('Error updating user:', error);
-          }
+          (error) => console.error('Error updating user:', error)
         );
-      } else {
-        console.error('Error: Cannot update user with undefined ID.');
       }
     });
   }
@@ -110,38 +108,33 @@ export class UserAComponent implements OnInit {
     this.newUser = this.getEmptyUser();
   }
 
-  // ✅ Handle add user submission (Fixed `userToEdit.id` issue)
+  // ✅ Handle add user submission
   onAddUserSubmit(): void {
     if (this.isEditMode && this.userToEdit) {
-      if (this.userToEdit.id !== undefined) { // Ensure `id` is defined
-        this.userService.updateUser(this.userToEdit.id, this.userToEdit).subscribe(
-          (response: any) => {
-            console.log('User updated successfully:', response);
+      if (this.userToEdit.id !== undefined) {
+        const userId = Number(this.userToEdit.id); // Convert `string` ID to `number`
+        this.userService.updateUser(userId, this.userToEdit).subscribe(
+          () => {
+            console.log('User updated successfully');
             this.getUsers();
             this.closeAddModal();
           },
-          (error: any) => {
-            console.error('Error updating user:', error);
-          }
+          (error) => console.error('Error updating user:', error)
         );
-      } else {
-        console.error('Error: Cannot update user with undefined ID.');
       }
     } else {
       this.userService.createUser(this.newUser).subscribe(
-        (response: any) => {
-          console.log('User added successfully:', response);
+        () => {
+          console.log('User added successfully');
           this.getUsers();
           this.closeAddModal();
         },
-        (error: any) => {
-          console.error('Error adding user:', error);
-        }
+        (error) => console.error('Error adding user:', error)
       );
     }
   }
 
-  // ✅ Utility function to return an empty user object (Fixed `anonymous` issue)
+  // ✅ Utility function to return an empty user object
   private getEmptyUser(): User {
     return {
       id: 0, // Set to 0 (or remove if ID is auto-generated)
@@ -154,7 +147,7 @@ export class UserAComponent implements OnInit {
       photo: undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      anonymous: false, // ✅ Ensured `anonymous` is always defined
+      anonymous: false,
     };
   }
 }

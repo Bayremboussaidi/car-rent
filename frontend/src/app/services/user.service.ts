@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../models/user.model'; // Adjust the import path as necessary
+import { User } from '../models/user.model'; // Ensure correct import path
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +12,23 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // ✅ Fetch all users (kept 'any[]' for safety if response format is inconsistent)
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
   }
 
+  // ✅ Delete a user (unchanged since it's already correct)
   deleteUser(userId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${userId}`);
   }
 
-  updateUser(id: number, userData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, userData);
+  // ✅ Update a user (kept 'any' for compatibility but ensured 'id' is number)
+  updateUser(id: number, userData: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, userData);
   }
 
-  createUser(userData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, userData);
+  // ✅ Create a user (kept 'any' for flexibility but used 'User' as return type)
+  createUser(userData: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, userData);
   }
-
-
 }
