@@ -1,96 +1,63 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service'; // Handles Keycloak Registration
-import { UserService } from '../../../services/user.service'; // Handles MySQL Storage
-import { User } from '../../../models/user.model'; // Ensure correct import path
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
-  credentials: Partial<User> = {
-    username: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    phone: undefined,
-    workplace: '',
-    photo: '',
-    role: 'USER', // Default role
-    anonymous: false, // Ensure this is always explicitly set
-  };
+export class RegisterComponent implements OnInit {
 
-  constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private router: Router
-  ) {}
+  constructor() {}
 
-  // ✅ Handle input changes dynamically
-  handleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const key = target.id as keyof Partial<User>;
-
-    if (key === 'phone') {
-      this.credentials.phone = target.value ? Number(target.value) : undefined;
-    } else if (key === 'role') {
-      this.credentials.role = target.value as 'ADMIN' | 'USER' | 'AGENCE';
-    } else if (key === 'anonymous') {
-      this.credentials.anonymous = target.value === 'true';
-    } else if (key === 'workplace') {
-      this.credentials.workplace = target.value ? target.value : null;
-    } else {
-      this.credentials[key] = target.value as any; // Safe fallback
-    }
+  ngOnInit(): void {
+    this.redirectToKeycloak();
   }
 
-  // ✅ Handle user registration
-  async handleClick(event: Event) {
-    event.preventDefault();
+  async redirectToKeycloak(): Promise<void> {
+    // Keycloak configuration
+    const keycloakBaseUrl = 'https://192.168.100.248:8443'; // Use HTTPS Keycloak URL
+    const realm = 'comparateur'; // Keycloak realm
+    const clientId = 'location'; // Keycloak Client ID
+    const redirectUri = 'http://localhost:4200/login/'; // Ensure this matches Keycloak settings!
 
-    try {
-      const userData: User = {
-        id: undefined, // Keycloak generates ID
-        username: this.credentials.username ?? '',
-        firstName: this.credentials.firstName ?? '',
-        lastName: this.credentials.lastName ?? '',
-        email: this.credentials.email ?? '',
-        password: this.credentials.password ?? '',
-        phone: this.credentials.phone ? Number(this.credentials.phone) : undefined,
-        workplace: this.credentials.workplace ?? null,
-        photo: this.credentials.photo ?? '',
-        role: 'USER', // Default role in MySQL
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        anonymous: false, // Explicitly set
-        bearer: '', // No token during registration
-      };
+    // Generate PKCE Code Verifier & Code Challenge
+    const codeVerifier = this.generateCodeVerifier();
+    const codeChallenge = await this.generateCodeChallenge(codeVerifier);
 
-      console.log("🚀 Registering user in Keycloak:", userData);
+    // Store PKCE Verifier for later token exchange
+    sessionStorage.setItem('pkce_verifier', codeVerifier);
 
-      // ✅ 1. Register User in Keycloak
-      await this.authService.register(userData).toPromise();
+    // Construct Keycloak registration URL with PKCE support
+    const keycloakRegisterUrl = `${keycloakBaseUrl}/realms/${realm}/protocol/openid-connect/auth`
+      + `?client_id=${encodeURIComponent(clientId)}`
+      + `&response_type=code`
+      + `&scope=openid`
+      + `&redirect_uri=${encodeURIComponent(redirectUri)}`
+      + `&kc_action=register`
+      + `&code_challenge=${codeChallenge}`
+      + `&code_challenge_method=S256`;
 
-      console.log("✅ User registered in Keycloak. Now storing details in MySQL...");
+    // Debugging: Check the URL before redirecting
+    console.log("🔀 Redirecting to:", keycloakRegisterUrl);
 
-      // ✅ 2. Store User Details in MySQL
-      await this.userService.createUser(userData).toPromise();
+    // Redirect user to Keycloak registration page
+    window.location.href = keycloakRegisterUrl;
+  }
 
-      console.log("✅ User details stored in MySQL.");
-      alert("🎉 Registration successful! You can now log in.");
-      this.router.navigate(['/login']); // Redirect to login page
+  // Generate a secure PKCE Code Verifier
+  generateCodeVerifier(): string {
+    const array = new Uint8Array(32);
+    window.crypto.getRandomValues(array);
+    return btoa(String.fromCharCode(...array))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
 
-    } catch (error: any) { // ✅ Explicitly cast error as 'any'
-      console.error("❌ Registration failed:", error);
-
-      if (error.status === 409) {
-        alert("⚠️ User already exists! Try logging in instead.");
-      } else {
-        alert("❌ Registration failed. Please try again.");
-      }
-    }
+  // Generate the PKCE Code Challenge from the Verifier
+  async generateCodeChallenge(verifier: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(verifier);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 }

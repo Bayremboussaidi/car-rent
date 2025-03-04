@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -13,12 +13,11 @@ export class AuthService {
   private realm = 'comparateur';
   private clientId = 'location';
   private clientSecret = 'z1GlcCIOjQNeibhAZiS3nXTtp03JLZqz';
-  private adminToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJSdVc3YmFYd3RuS2FTcG83Y3RJc3oyX3Q4MlNGSEN2SVlFWnNucmM2bklRIn0.eyJleHAiOjE3NDEwMjcxMDcsImlhdCI6MTc0MTAyNjgwNywianRpIjoiNDY5ZjQ5MTMtYzQ2ZC00YmNkLTk2MTAtMzFhNzMyYmFiNGQ5IiwiaXNzIjoiaHR0cDovLzE5Mi4xNjguMTAwLjI0ODo4MDgwL3JlYWxtcy9jb21wYXJhdGV1ciIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiJjYzExZjRlMy1hMGFiLTQzNWYtYjdlZC05N2Y2MDRlODMwN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJsb2NhdGlvbiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo0MjAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1jb21wYXJhdGV1ciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7InJlYWxtLW1hbmFnZW1lbnQiOnsicm9sZXMiOlsibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxOTIuMTY4LjEwMC4xMTciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtbG9jYXRpb24iLCJjbGllbnRBZGRyZXNzIjoiMTkyLjE2OC4xMDAuMTE3IiwiY2xpZW50X2lkIjoibG9jYXRpb24ifQ.ezuOtgoh3OABAARbkuEEZWMGYJ79QxZ0sCtpeuUaSzTXUv_NLvhk_N9wB63yqF2PoCFKcFhA3054nqIVRPb2lRkNMDjihcYGi0q94-ntcYHwm79duffD_H5Z1FZGj680oSNKDaHlDOyCHv6SJkUOcoSelaGHWjibC9edmIEYmyFetASJ468Jkhj3DNWqAs1fz2mxtTAwEEVevHkHLN1B8jdiqOPC3eOqP4FhEGcIYSZuvbO24BgWWsRrOXJSjsZl5fKJ8CtcSEDPeixiKhAU4ms8RW23yVEMXKPg_mT8_L0urW5lreUa1cLRyWbZrU8kWsQMwlYpwovqzcEe5vbPQg'; // Replace with a dynamic token
-  private backendApiUrl = 'http://localhost:8084/api/users/register'; // Backend for MySQL storage
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // ✅ Register User (Keycloak + MySQL)
+  /*
+  // ❌ Previous Method: Register via Admin API (Commented Out)
   register(user: Partial<User>): Observable<any> {
     const url = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
 
@@ -36,76 +35,58 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     }).pipe(
-      switchMap(() => this.getUserIdByUsername(user.username!)), // Get Keycloak User ID
-      switchMap(userId => this.addUserToGroup(userId)), // Add to 'USER' group
-      switchMap(() => this.storeUserDetailsInDB(user)), // Store full details in MySQL
       catchError(error => {
         console.error('❌ Registration failed:', error);
         return throwError(error);
       })
     );
   }
+  */
 
-  // ✅ Get Keycloak User ID by Username
-  private getUserIdByUsername(username: string): Observable<string> {
-    const url = `${this.keycloakUrl}/admin/realms/${this.realm}/users?username=${username}`;
+  // ✅ New Method: Register User via Direct Access Grants API
+  register(user: Partial<User>): Observable<any> {
+    const adminLoginUrl = `${this.keycloakUrl}/realms/master/protocol/openid-connect/token`;
+    const createUserUrl = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
 
-    return this.http.get<any[]>(url, {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.adminToken}`,
-        'Content-Type': 'application/json',
-      }),
+    // Get an admin access token
+    const body = new URLSearchParams();
+    body.set('client_id', 'admin');  // Use admin-cli for managing users
+    body.set('username', 'admin');  // Admin username
+    body.set('password', 'admin');  // Admin password
+    body.set('grant_type', 'password');
+
+    return this.http.post(adminLoginUrl, body.toString(), {
+        headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
     }).pipe(
-      map(users => {
-        if (users.length > 0) {
-          return users[0].id;
-        } else {
-          throw new Error('User not found in Keycloak');
-        }
-      }),
-      catchError(error => {
-        console.error('❌ Error retrieving user ID:', error);
-        return throwError(error);
-      })
-    );
-  }
+        map((tokenResponse: any) => {
+            console.log("✅ Admin Token Received:", tokenResponse);
+            const adminToken = tokenResponse.access_token;
 
-  // ✅ Add User to 'USER' Group in Keycloak
-  private addUserToGroup(userId: string): Observable<any> {
-    const groupId = 'feb5049b-205a-4500-84ef-366d0e8a276d'; // Retrieve from Keycloak Admin Panel
-    const url = `${this.keycloakUrl}/admin/realms/${this.realm}/users/${userId}/groups/${groupId}`;
+            // Create user payload
+            const keycloakUser = {
+                username: user.username ?? '',
+                firstName: user.firstName ?? '',
+                lastName: user.lastName ?? '',
+                email: user.email ?? '',
+                enabled: true,
+                credentials: [{ type: 'password', value: user.password ?? '', temporary: false }],
+            };
 
-    return this.http.put(url, {}, {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.adminToken}`,
-      }),
-    }).pipe(
-      map(response => {
-        console.log(`✅ User added to 'USER' group:`, response);
-        return response;
-      }),
-      catchError(error => {
-        console.error('❌ Error adding user to group:', error);
-        return throwError(error);
-      })
+            // Register user with the admin token
+            return this.http.post(createUserUrl, keycloakUser, {
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${adminToken}`,
+                    'Content-Type': 'application/json',
+                }),
+            });
+        }),
+        catchError(error => {
+            console.error("❌ Registration Failed:", error);
+            return throwError(error);
+        })
     );
-  }
+}
 
-  // ✅ Store Full User Details in MySQL
-  private storeUserDetailsInDB(user: Partial<User>): Observable<any> {
-    return this.http.post(this.backendApiUrl, user, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    }).pipe(
-      map(response => {
-        console.log("✅ User details stored in MySQL:", response);
-        return response;
-      }),
-      catchError(error => {
-        console.error('❌ Error storing user details in MySQL:', error);
-        return throwError(error);
-      })
-    );
-  }
 
   // ✅ Login (Authenticate User via Keycloak API)
   login(credentials: { email: string; password: string }): Observable<boolean> {
