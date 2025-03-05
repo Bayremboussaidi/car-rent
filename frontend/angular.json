@@ -51,8 +51,8 @@
               "node_modules/slick-carousel/slick/slick-theme.css",
               "node_modules/aos/dist/aos.css",
               "node_modules/swiper/swiper-bundle.min.css",
-              "node_modules/glightbox/dist/css/glightbox.min.css"
-
+              "node_modules/glightbox/dist/css/glightbox.min.css",
+              "node_modules/ionicons/dist/css/ionicons.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -62,6 +62,7 @@
               "node_modules/swiper/swiper-bundle.min.js",
               "node_modules/glightbox/dist/js/glightbox.min.js",
               "node_modules/@fortawesome/fontawesome-free/js/all.min.js",
+              "node_modules/ionicons/dist/ionicons/ionicons.esm.js",
               "src/assets/js/custom.js"
             ],
             "allowedCommonJsDependencies": ["aos", "swiper"]
@@ -137,11 +138,12 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/slick-carousel/slick/slick.css",
               "node_modules/slick-carousel/slick/slick-theme.css",
-              "node_modules/ionicons/dist/ionicons.css"
+              "node_modules/ionicons/dist/css/ionicons.min.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/slick-carousel/slick/slick.min.js"
+              "node_modules/slick-carousel/slick/slick.min.js",
+              "node_modules/ionicons/dist/ionicons/ionicons.esm.js"
             ]
           }
         }
