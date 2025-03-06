@@ -67,7 +67,8 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BookingStatus status = BookingStatus.PENDING;
+    private BookingStatus bookingStatus;
+
 
     @Column(nullable = false)
     private String pickupLocation = "Lac2";

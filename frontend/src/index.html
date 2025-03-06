@@ -18,10 +18,10 @@
       .reduce((s, b) => s + b.toString(16).padStart(2, "0"), "");
 
     // Apply the nonce to the CSP
-    document.head.appendChild(Object.assign(document.createElement("meta"), {
-      httpEquiv: "Content-Security-Policy",
-      content: `default-src 'self'; script-src 'self' 'nonce-${nonce}' https://192.168.100.248:8443; connect-src 'self' https://192.168.100.248:8443;`
-    }));
+    const cspMeta = document.createElement("meta");
+    cspMeta.httpEquiv = "Content-Security-Policy";
+    cspMeta.content = `default-src 'self'; script-src 'self' 'nonce-${nonce}' https://192.168.100.248:8443; connect-src 'self' https://192.168.100.248:8443;`;
+    document.head.appendChild(cspMeta);
 
     // Store the nonce globally so Angular can access it
     window.globalNonce = nonce;
@@ -40,7 +40,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" integrity="sha384-dv+qxGFSsPkeJ95w5h7s2c0E+YF96AkZP34Nc1oxrT2r9DBPCoP/5w1CZ6JxlJX7" crossorigin="anonymous">
 
   <!-- Ionicons -->
-  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/css/ionicons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js" defer></script>
 
   <!-- CSP-Compliant Inline Script -->
   <script nonce="">

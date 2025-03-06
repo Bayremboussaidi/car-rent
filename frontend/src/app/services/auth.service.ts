@@ -9,7 +9,8 @@ import { User } from '../models/user.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private keycloakUrl = 'http://192.168.100.248:8080';
+  private keycloakUrl = 'https://192.168.100.248:8443';
+
   private realm = 'comparateur';
   private clientId = 'location';
   private clientSecret = 'z1GlcCIOjQNeibhAZiS3nXTtp03JLZqz';

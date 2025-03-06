@@ -1,4 +1,4 @@
-package com.example.comparateur.security;
+/*package com.example.comparateur.security;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -62,3 +62,4 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         return roles;
     }
 }
+*/

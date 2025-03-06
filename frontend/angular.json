@@ -52,7 +52,7 @@
               "node_modules/aos/dist/aos.css",
               "node_modules/swiper/swiper-bundle.min.css",
               "node_modules/glightbox/dist/css/glightbox.min.css",
-              "node_modules/ionicons/dist/css/ionicons.min.css"
+              "node_modules/ionicons/css/ionicons.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -138,7 +138,7 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/slick-carousel/slick/slick.css",
               "node_modules/slick-carousel/slick/slick-theme.css",
-              "node_modules/ionicons/dist/css/ionicons.min.css"
+              "node_modules/ionicons/css/ionicons.min.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",

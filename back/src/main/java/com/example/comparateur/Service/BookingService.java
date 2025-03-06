@@ -40,7 +40,7 @@ public class BookingService {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate."));
             }
 
-            booking.setStatus(BookingStatus.PENDING);
+            booking.setBookingStatus(BookingStatus.PENDING);
             Booking savedBooking = bookingRepository.save(booking);
 
             // ✅ Notify Admin about new booking
@@ -68,7 +68,7 @@ public class BookingService {
                     return ResponseEntity.status(400).body(new ApiResponse(false, "Booking must have startDate and endDate before updating status."));
                 }
 
-                booking.setStatus(status);
+                booking.setBookingStatus(status);
                 bookingRepository.save(booking);
 
                 // ✅ Notify Client about booking status update
@@ -118,7 +118,7 @@ public class BookingService {
                 booking.setEndDate(updatedBooking.getEndDate());
                 booking.setPickupLocation(updatedBooking.getPickupLocation());
                 booking.setDropoffLocation(updatedBooking.getDropoffLocation());
-                booking.setStatus(updatedBooking.getStatus());
+                booking.setBookingStatus(updatedBooking.getBookingStatus());
 
                 bookingRepository.save(booking);
                 return ResponseEntity.ok().body(new ApiResponse(true, "Booking updated successfully", booking));
