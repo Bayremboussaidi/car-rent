@@ -17,10 +17,18 @@
     const nonce = crypto.getRandomValues(new Uint8Array(16))
       .reduce((s, b) => s + b.toString(16).padStart(2, "0"), "");
 
-    // Apply the nonce to the CSP
+    // Apply the updated CSP policy
     const cspMeta = document.createElement("meta");
     cspMeta.httpEquiv = "Content-Security-Policy";
-    cspMeta.content = `default-src 'self'; script-src 'self' 'nonce-${nonce}' https://192.168.100.248:8443; connect-src 'self' https://192.168.100.248:8443;`;
+    cspMeta.content = `
+      default-src 'self';
+      script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://192.168.100.248:8443 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+      style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+      font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net;
+      connect-src 'self' https://192.168.100.248:8443 http://localhost:8084 https://cdn.jsdelivr.net;
+      frame-src 'self' http://192.168.100.248:8443;
+      img-src 'self' data: https:;
+    `;
     document.head.appendChild(cspMeta);
 
     // Store the nonce globally so Angular can access it
@@ -28,20 +36,23 @@
   </script>
 
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BEc3kQaV1BpFmAAgSAFl2aaNnQNTlZw7p4Mlbc0ZKp5hd1pSA+6n+vIdpVnN6UQK" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+        crossorigin="anonymous">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;400;600&display=swap">
 
   <!-- Remix Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
 
   <!-- FontAwesome Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" integrity="sha384-dv+qxGFSsPkeJ95w5h7s2c0E+YF96AkZP34Nc1oxrT2r9DBPCoP/5w1CZ6JxlJX7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+        crossorigin="anonymous">
 
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/css/ionicons.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js" defer></script>
+  <!-- ✅ Correct Ionicons 7.4.0 -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
 
   <!-- CSP-Compliant Inline Script -->
   <script nonce="">
@@ -58,6 +69,8 @@
   <app-root></app-root>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer integrity="sha384-4oVZb3DtD8brO0UmdNawKxxHD8FFjw3YwZklMLq2m8z5kq3ztcxAqjEzR+iB2D7l" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer
+          integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+          crossorigin="anonymous"></script>
 </body>
 </html>

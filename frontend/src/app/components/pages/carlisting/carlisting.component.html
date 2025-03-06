@@ -1,7 +1,7 @@
 <app-common-section [title]="'Car Listing'"></app-common-section>
 
 <div class="form__row" data-aos="fade-left">
-  <app-find-car-form></app-find-car-form>
+  <app-find-car-form (searchFilters)="applyFilters($event)"></app-find-car-form>
 </div>
 
 <section>
@@ -18,7 +18,7 @@
   <!-- Car List -->
   <div *ngIf="!loading && !error">
     <div class="row">
-      <div class="col-lg-4" *ngFor="let voiture of voitures">
+      <div class="col-lg-4" *ngFor="let voiture of filteredVoitures">
         <div class="car-item">
           <!-- Make the image clickable and route to listcars/:id -->
           <a [routerLink]="['/listcars', voiture.id]" class="car-item-link">

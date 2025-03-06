@@ -245,13 +245,13 @@ public class VoitureService {
     */
 
 
-
     package com.example.comparateur.Service;
 
     import java.time.LocalDateTime;
     import java.util.List;
     import java.util.Optional;
-
+    import java.util.stream.Collectors;
+    
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageRequest;
@@ -259,8 +259,9 @@ public class VoitureService {
     import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Service;
     import org.springframework.web.multipart.MultipartFile;
-
+    
     import com.example.comparateur.DTO.ApiResponse;
+    import com.example.comparateur.DTO.VoitureResponse;
     import com.example.comparateur.Entity.Review;
     import com.example.comparateur.Entity.Voiture;
     import com.example.comparateur.Repository.ReviewRepository;
@@ -275,6 +276,7 @@ public class VoitureService {
         @Autowired
         private ReviewRepository reviewRepository;
     
+        // ✅ Create a new voiture
         public ResponseEntity<Object> createVoiture(Voiture voiture) {
             try {
                 voiture.setCreatedAt(LocalDateTime.now());
@@ -286,6 +288,7 @@ public class VoitureService {
             }
         }
     
+        // ✅ Update voiture (with optional image)
         public ResponseEntity<Object> updateVoiture(Long id, Voiture voiture, MultipartFile file) {
             Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
             if (optionalVoiture.isEmpty()) {
@@ -307,23 +310,58 @@ public class VoitureService {
             return ResponseEntity.ok(new ApiResponse<>(true, "Successfully updated", existingVoiture));
         }
     
+        // ✅ Get all voitures (Paginated)
         public ResponseEntity<Object> getAllVoitures(int page) {
             Pageable pageable = PageRequest.of(Math.max(page, 0), 8);
             Page<Voiture> voiturePage = voitureRepository.findAll(pageable);
     
             if (voiturePage.isEmpty()) {
-                return ResponseEntity.status(404).body("No cars found");
+                return ResponseEntity.status(404).body(new ApiResponse<>(false, "No cars found"));
             }
     
-            return ResponseEntity.ok(voiturePage.getContent());
+            return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures", voiturePage.getContent()));
         }
     
+        // ✅ Get a single voiture by ID
         public ResponseEntity<ApiResponse<Voiture>> getOneVoiture(Long id) {
             return voitureRepository.findById(id)
-                .map(voiture -> ResponseEntity.ok(new ApiResponse<>(true, "Voiture info", voiture)))
-                .orElse(ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found")));
+                    .map(voiture -> ResponseEntity.ok(new ApiResponse<>(true, "Voiture info", voiture)))
+                    .orElse(ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found")));
         }
     
+        // ✅ Get total count of voitures (Fix for Angular)
+        public ResponseEntity<Object> getVoitureCount() {
+            long voitureCount = voitureRepository.count();
+            return ResponseEntity.ok(new ApiResponse<>(true, "Total number of voitures", voitureCount));
+        }
+    
+        // ✅ Get all voitures with details (Fix for frontend request)
+        public ResponseEntity<Object> getAllVoituresWithDetails() {
+            List<Voiture> voitures = voitureRepository.findAll();
+    
+            if (voitures.isEmpty()) {
+                return ResponseEntity.status(404).body(new ApiResponse<>(false, "No voitures found"));
+            }
+    
+            List<VoitureResponse> voitureResponses = voitures.stream().map(voiture -> {
+                List<Review> reviews = reviewRepository.findAllByVoitureId(voiture.getId());
+                return new VoitureResponse(voiture, null, reviews, null);
+            }).collect(Collectors.toList());
+    
+            return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures with details", voitureResponses));
+        }
+    
+        // ✅ Delete voiture
+        public ResponseEntity<Object> deleteVoiture(Long id) {
+            if (!voitureRepository.existsById(id)) {
+                return ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found"));
+            }
+    
+            voitureRepository.deleteById(id);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Successfully deleted"));
+        }
+    
+        // ✅ Get reviews for a voiture
         public ResponseEntity<Object> getReviewsForVoiture(Long voitureId) {
             List<Review> reviews = reviewRepository.findAllByVoitureId(voitureId);
             return ResponseEntity.ok(new ApiResponse<>(true, "Reviews retrieved successfully", reviews));

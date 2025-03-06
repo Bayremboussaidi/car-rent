@@ -1,239 +1,3 @@
-/*package com.example.comparateur.Controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.comparateur.Entity.Voiture;
-import com.example.comparateur.Service.VoitureService;
-
-@RestController
-@RequestMapping("/api/voitures")
-@CrossOrigin(origins = "http://localhost:4200")
-public class VoitureController {
-
-    @Autowired
-    private VoitureService voitureService;
-
-    // ✅ Create a new Voiture
-    @PostMapping
-    public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
-        return voitureService.createVoiture(voiture);
-    }
-
-    // ✅ Update Voiture with or without a new main image
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> updateVoiture(
-            @PathVariable Long id,
-            @RequestPart("voiture") Voiture voiture,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-        return voitureService.updateVoiture(id, voiture, file);
-    }
-
-
-
-    // ✅ Delete a Voiture (deletes linked photos automatically)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
-        return voitureService.deleteVoiture(id);
-    }
-
-    // ✅ Get a single Voiture
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
-        return voitureService.getOneVoiture(id);
-    }
-
-       // ✅ Get all Voitures with related details
-    @GetMapping("/all/details")
-    public ResponseEntity<Object> getAllVoituresWithDetails() {
-        return voitureService.getAllVoituresWithDetails();
-    }
-
-    // ✅ Get all Voitures with pagination
-    @GetMapping
-    public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
-        return voitureService.getAllVoitures(page);
-    }
-
-    // ✅ Search for Voitures by location
-    @GetMapping("/search/getVoitureBySearch")
-    public ResponseEntity<Object> getVoitureBySearch(@RequestParam String local) {
-        return voitureService.getVoitureBySearch(local);
-    }
-
-    // ✅ Get all featured Voitures
-    @GetMapping("/search/getFeaturedVoitures")
-    public ResponseEntity<Object> getFeaturedVoitures() {
-        return voitureService.getFeaturedVoitures();
-    }
-
-    // ✅ Get total count of Voitures
-    @GetMapping("/search/getVoitureCount")
-    public ResponseEntity<Object> getVoitureCount() {
-        return voitureService.getVoitureCount();
-    }
-
-    // ✅ Upload **multiple** photos for a Voiture
-    @PostMapping(value = "/{id}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadPhotosForVoiture(
-        @PathVariable Long id,
-        @RequestParam("files") MultipartFile[] files) {
-        System.out.println("Received request to upload multiple photos for Voiture ID: " + id);
-        return voitureService.addPhotosToVoiture(id, files);
-    }
-
-    // ✅ Get all photos for a specific Voiture
-    @GetMapping("/{id}/photos")
-    public ResponseEntity<Object> getPhotosForVoiture(@PathVariable Long id) {
-        System.out.println("Fetching photos for Voiture ID: " + id);
-        return voitureService.getPhotosByVoitureId(id);
-    }
-
-    // ✅ Delete all photos of a Voiture
-    @DeleteMapping("/{id}/photos")
-    public ResponseEntity<Object> deletePhotosForVoiture(@PathVariable Long id) {
-        System.out.println("Deleting all photos for Voiture ID: " + id);
-        return voitureService.deletePhotosByVoitureId(id);
-    }
-}
-
-*/
-
-
-
-
-
-
-/* 
-package com.example.comparateur.Controller;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import com.example.comparateur.Entity.Voiture;
-import com.example.comparateur.Service.VoitureService;
-
-@RestController
-@RequestMapping("/api/voitures")
-@CrossOrigin(origins = "http://localhost:4200")
-public class VoitureController {
-
-    @Autowired
-    private VoitureService voitureService;
-
-    @Autowired
-    private ObjectMapper objectMapper; // ✅ Used for JSON deserialization
-
-    // ✅ Create a new Voiture
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
-        return voitureService.createVoiture(voiture);
-    }
-
-    // ✅ Update Voiture with or without a new main image
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> updateVoiture(
-            @PathVariable Long id,
-            @RequestParam("voiture") String voitureJson, // ✅ Accepts Voiture as JSON string
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-        try {
-            Voiture voiture = objectMapper.readValue(voitureJson, Voiture.class); // ✅ Convert JSON to Voiture object
-            return voitureService.updateVoiture(id, voiture, file);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("Invalid JSON format: " + e.getMessage());
-        }
-    }
-
-    // ✅ Delete a Voiture (deletes linked photos automatically)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
-        return voitureService.deleteVoiture(id);
-    }
-
-    // ✅ Get a single Voiture
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
-        return voitureService.getOneVoiture(id);
-    }
-
-    // ✅ Get all Voitures with related details
-    @GetMapping("/all/details")
-    public ResponseEntity<Object> getAllVoituresWithDetails() {
-        return voitureService.getAllVoituresWithDetails();
-    }
-
-    // ✅ Get all Voitures with pagination
-    @GetMapping
-    public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
-        return voitureService.getAllVoitures(page);
-    }
-
-    // ✅ Search for Voitures by location
-    @GetMapping("/search/getVoitureBySearch")
-    public ResponseEntity<Object> getVoitureBySearch(@RequestParam String local) {
-        return voitureService.getVoitureBySearch(local);
-    }
-
-    // ✅ Get all featured Voitures
-    @GetMapping("/search/getFeaturedVoitures")
-    public ResponseEntity<Object> getFeaturedVoitures() {
-        return voitureService.getFeaturedVoitures();
-    }
-
-    // ✅ Get total count of Voitures
-    @GetMapping("/search/getVoitureCount")
-    public ResponseEntity<Object> getVoitureCount() {
-        return voitureService.getVoitureCount();
-    }
-
-    // ✅ Upload **multiple** photos for a Voiture
-    @PostMapping(value = "/{id}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadPhotosForVoiture(
-        @PathVariable Long id,
-        @RequestParam(value = "files", required = false) MultipartFile[] files) { // ✅ Avoid null pointer
-        if (files == null || files.length == 0) {
-            return ResponseEntity.status(400).body("No files uploaded");
-        }
-        return voitureService.addPhotosToVoiture(id, files);
-    }
-
-    // ✅ Get all photos for a specific Voiture
-    @GetMapping("/{id}/photos")
-    public ResponseEntity<Object> getPhotosForVoiture(@PathVariable Long id) {
-        return voitureService.getPhotosByVoitureId(id);
-    }
-
-    // ✅ Delete all photos of a Voiture
-    @DeleteMapping("/{id}/photos")
-    public ResponseEntity<Object> deletePhotosForVoiture(@PathVariable Long id) {
-        return voitureService.deletePhotosByVoitureId(id);
-    }
-}
-
-
-
-
-
-
-
-
-
 package com.example.comparateur.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -241,131 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.comparateur.Entity.Voiture;
-import com.example.comparateur.Service.VoitureService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.validation.Valid;
-
-@RestController
-@RequestMapping("/api/voitures")
-@CrossOrigin(origins = {"http://localhost:4200", "http://your-frontend-url.com"}) // ✅ Allow multiple origins
-public class VoitureController {
-
-    @Autowired
-    private VoitureService voitureService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    // ✅ Create a new Voiture
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createVoiture(@Valid @RequestBody(required = false) Voiture voiture) {
-        if (voiture == null) {
-            return ResponseEntity.badRequest().body("Request body is missing");
-        }
-        return voitureService.createVoiture(voiture);
-    }
-
-    // ✅ Update Voiture with optional image
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> updateVoiture(
-            @PathVariable Long id,
-            @RequestPart("voiture") String voitureJson, // ✅ Use @RequestPart
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-        try {
-            Voiture voiture = objectMapper.readValue(voitureJson, Voiture.class);
-            return voitureService.updateVoiture(id, voiture, file);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("Invalid JSON format: " + e.getMessage());
-        }
-    }
-
-    // ✅ Delete a Voiture
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
-        return voitureService.deleteVoiture(id);
-    }
-
-    // ✅ Get a single Voiture
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
-        return voitureService.getOneVoiture(id);
-    }
-
-    // ✅ Get all Voitures with details
-    @GetMapping("/all/details")
-    public ResponseEntity<Object> getAllVoituresWithDetails() {
-        return voitureService.getAllVoituresWithDetails();
-    }
-
-    // ✅ Get all Voitures with pagination
-    @GetMapping
-    public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
-        return voitureService.getAllVoitures(page);
-    }
-
-    // ✅ Search Voitures by location
-    @GetMapping("/search/getVoitureBySearch")
-    public ResponseEntity<Object> getVoitureBySearch(@RequestParam String local) {
-        return voitureService.getVoitureBySearch(local);
-    }
-
-    // ✅ Get featured Voitures
-    @GetMapping("/search/getFeaturedVoitures")
-    public ResponseEntity<Object> getFeaturedVoitures() {
-        return voitureService.getFeaturedVoitures();
-    }
-
-    // ✅ Get total count of Voitures
-    @GetMapping("/search/getVoitureCount")
-    public ResponseEntity<Object> getVoitureCount() {
-        return voitureService.getVoitureCount();
-    }
-
-    // ✅ Upload multiple photos
-    @PostMapping(value = "/{id}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadPhotosForVoiture(
-            @PathVariable Long id,
-            @RequestParam(value = "files", required = false) MultipartFile[] files) {
-        if (files == null || files.length == 0) {
-            return ResponseEntity.badRequest().body("No files uploaded");
-        }
-        return voitureService.addPhotosToVoiture(id, files);
-    }
-
-    // ✅ Get all photos
-    @GetMapping("/{id}/photos")
-    public ResponseEntity<Object> getPhotosForVoiture(@PathVariable Long id) {
-        return voitureService.getPhotosByVoitureId(id);
-    }
-
-    // ✅ Delete all photos
-    @DeleteMapping("/{id}/photos")
-    public ResponseEntity<Object> deletePhotosForVoiture(@PathVariable Long id) {
-        return voitureService.deletePhotosByVoitureId(id);
-    }
-}
-*/
-
-
-package com.example.comparateur.Controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -393,11 +32,13 @@ public class VoitureController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    // ✅ Create a new voiture
     @PostMapping
     public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
         return voitureService.createVoiture(voiture);
     }
 
+    // ✅ Update a voiture (with optional image)
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> updateVoiture(
             @PathVariable Long id,
@@ -407,20 +48,41 @@ public class VoitureController {
             Voiture voiture = objectMapper.readValue(voitureJson, Voiture.class);
             return voitureService.updateVoiture(id, voiture, file);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Invalid JSON format: " + e.getMessage());
+            return ResponseEntity.status(400).body(new ApiResponse<>(false, "Invalid JSON format: " + e.getMessage()));
         }
     }
 
+    // ✅ Get all voitures (Paginated)
     @GetMapping
     public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
         return voitureService.getAllVoitures(page);
     }
 
+    // ✅ Get voiture by ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Voiture>> getOneVoiture(@PathVariable Long id) {
         return voitureService.getOneVoiture(id);
     }
 
+    // ✅ Get voiture count (Fix for frontend mismatch)
+    @GetMapping("/search/getVoitureCount")
+    public ResponseEntity<Object> getVoitureCount() {
+        return voitureService.getVoitureCount();
+    }
+
+    // ✅ Get all voitures with details
+    @GetMapping("/all/details")
+    public ResponseEntity<Object> getAllVoituresWithDetails() {
+        return voitureService.getAllVoituresWithDetails();
+    }
+
+    // ✅ Delete a voiture
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
+        return voitureService.deleteVoiture(id);
+    }
+
+    // ✅ Get reviews for a voiture
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Object> getReviewsForVoiture(@PathVariable Long id) {
         return voitureService.getReviewsForVoiture(id);

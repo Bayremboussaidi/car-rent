@@ -1,6 +1,4 @@
-// find-car-form.component.ts
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-find-car-form',
@@ -9,28 +7,34 @@ import { Router } from '@angular/router';
 })
 export class FindCarFormComponent {
 
-  contactNumber: string = "+216 12 345 678";
   @ViewChild('localInput') localInput!: ElementRef;
+  @ViewChild('pickupDateInput') pickupDateInput!: ElementRef;
+  @ViewChild('dropoffDateInput') dropoffDateInput!: ElementRef;
+  @ViewChild('carTypeInput') carTypeInput!: ElementRef;
+  @ViewChild('numPlacesInput') numPlacesInput!: ElementRef;
 
-  constructor(private router: Router ) {}
+  @Output() searchFilters = new EventEmitter<any>(); // ✅ Sends filters to ListcarsComponent
 
-  async searchHandler() {
-    const local = this.localInput.nativeElement.value;
+  searchHandler() {
+    const filters: any = {
+      local: this.localInput.nativeElement.value.trim(),
+      pickupDate: this.pickupDateInput.nativeElement.value || null,
+      dropoffDate: this.dropoffDateInput.nativeElement.value || null,
+      carType: this.carTypeInput.nativeElement.value || null,
+      numPlaces: this.numPlacesInput.nativeElement.value || null
+    };
 
-    if (local === "") {
-      return alert("All fields are required!");
+    // ✅ Remove empty filters to avoid unnecessary parameters
+    Object.keys(filters).forEach(key => {
+      if (!filters[key]) delete filters[key];
+    });
+
+    // ✅ Ensure at least one filter is applied
+    if (Object.keys(filters).length === 0) {
+      return alert("Please enter at least one search criteria.");
     }
 
-
-
-    const res = await fetch(`BASE_URL/voitures/search/getVoitureBySearch?local=${local}`);
-
-    if (!res.ok) {
-      alert("Something went wrong");
-      return;
-    }
-
-    const result = await res.json();
-    this.router.navigate(['/voitures/search'], { state: { data: result.data, local } });
+    // ✅ Emit filters to the parent component (ListcarsComponent)
+    this.searchFilters.emit(filters);
   }
 }

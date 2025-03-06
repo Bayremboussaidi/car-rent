@@ -27,19 +27,10 @@ export class VoitureService {
   }
 
 
-
-
-
-
-
-
     // ✅ New method: Delete a voiture by ID
     deleteVoiture(id: number): Observable<any> {
       return this.http.delete(`${this.baseUrl}/${id}`);
     }
-
-
-
 
 
   // for admin , photo , reviews ..
@@ -59,12 +50,7 @@ export class VoitureService {
 
 
 
-
-
-
-
-
-      // ✅ New method: Update Voiture with or without an image
+ //  New method: Update Voiture with or without an image
   updateVoiture(id: number, voiture: any, file?: File): Observable<any> {
     const formData = new FormData();
     formData.append('voiture', new Blob([JSON.stringify(voiture)], { type: 'application/json' }));

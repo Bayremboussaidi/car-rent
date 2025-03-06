@@ -10,7 +10,7 @@ interface KeycloakUserInfo {
 @Injectable({ providedIn: "root" })
 export class KeycloakService {
   private _keycloak = new Keycloak({
-    url: "http://192.168.100.248:8080",
+    url: "http://192.168.100.248:8443",
     realm: "comparateur",
     clientId: "location",
   });
