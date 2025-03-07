@@ -1,7 +1,7 @@
 /* Main container */
 .car-details-container {
-  padding: 20px 40px 20px 100px;
-  margin: 20px 150px 20px 100px;
+  padding: 60px 40px 20px 100px;
+  margin: 106px 150px 20px 100px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff7f7ec;
@@ -158,7 +158,7 @@
 @media only screen and (max-width: 768px) {
   .car-details-container {
     flex-direction: column;
-    margin: 10px;
+    margin: 220px;
     padding: 20px;
   }
 

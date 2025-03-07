@@ -10,8 +10,8 @@ export class FindCarFormComponent {
   @ViewChild('localInput') localInput!: ElementRef;
   @ViewChild('pickupDateInput') pickupDateInput!: ElementRef;
   @ViewChild('dropoffDateInput') dropoffDateInput!: ElementRef;
-  @ViewChild('carTypeInput') carTypeInput!: ElementRef;
   @ViewChild('numPlacesInput') numPlacesInput!: ElementRef;
+  @ViewChild('carTypeInput') carTypeInput!: ElementRef;
 
   @Output() searchFilters = new EventEmitter<any>(); // ✅ Sends filters to ListcarsComponent
 
@@ -20,8 +20,8 @@ export class FindCarFormComponent {
       local: this.localInput.nativeElement.value.trim(),
       pickupDate: this.pickupDateInput.nativeElement.value || null,
       dropoffDate: this.dropoffDateInput.nativeElement.value || null,
-      carType: this.carTypeInput.nativeElement.value || null,
-      numPlaces: this.numPlacesInput.nativeElement.value || null
+      numPlaces: this.numPlacesInput.nativeElement.value || null, // ✅ Added in the middle
+      carType: this.carTypeInput.nativeElement.value || null
     };
 
     // ✅ Remove empty filters to avoid unnecessary parameters

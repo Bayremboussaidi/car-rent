@@ -1,13 +1,25 @@
 package com.example.comparateur.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "photo") // ❌ Remove schema, as MySQL does not support it
+@Table(name = "photo")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,40 +27,34 @@ import java.util.UUID;
 public class Photo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // ✅ UUID for unique IDs in PostgreSQL
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
-    private String name; // ✅ Ensure getter/setter exists
+    private String name;
 
     @Column(nullable = false)
-    private String type; // ✅ Ensure getter/setter exists
+    private String type;
 
-    private String url;  // ✅ Optional field for storing external image URLs
+    private String url;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB") // ✅ Use LONGBLOB instead of BYTEA for MySQL/MariaDB
+    @Column(columnDefinition = "LONGBLOB")
     @JsonIgnore
     private byte[] data;
 
-    @ManyToOne
-    @JoinColumn(name = "voiture_id", nullable = false) // ✅ Correct foreign key mapping
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voiture_id", nullable = false)
     @JsonIgnore
     private Voiture voiture;
 
-    // ✅ Return base64 if no URL exists
+    // Helper method to generate URL (uncomment if needed)
     public String getDisplayUrl() {
         if (url != null && !url.isEmpty()) {
             return url;
         } else if (data != null) {
-            return "data:image/png;base64," + java.util.Base64.getEncoder().encodeToString(data);
+            // return Base64.getEncoder().encodeToString(data);
         }
-        return "/images/default-photo.png"; // ✅ Default fallback image
-    }
-
-    // ✅ Method to set `voiture` from a `voitureId`
-    public void setVoitureId(Long voitureId) {
-        this.voiture = new Voiture();  // Create a new Voiture instance
-        this.voiture.setId(voitureId); // Set the ID
+        return "/images/default-photo.png";
     }
 }

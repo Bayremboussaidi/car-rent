@@ -1,4 +1,4 @@
-package com.example.comparateur.Repository;
+/*package com.example.comparateur.Repository;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +22,30 @@ public interface PhotoRepository extends JpaRepository<Photo, UUID> {
     List<Photo> findAllByVoiture(Voiture voiture);
 
     // ✅ Corrected: Delete all photos related to a specific `voiture_id`
+    @Query("DELETE FROM Photo p WHERE p.voiture.id = :voitureId")
+    void deleteByVoitureId(@Param("voitureId") Long voitureId);
+}
+*/
+
+
+package com.example.comparateur.Repository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.comparateur.Entity.Photo;
+
+public interface PhotoRepository extends JpaRepository<Photo, Long> {
+
+    @Query("SELECT p FROM Photo p WHERE p.voiture.id = :voitureId")
+    List<Photo> findAllByVoitureId(@Param("voitureId") Long voitureId);
+
+    @Transactional
+    @Modifying
     @Query("DELETE FROM Photo p WHERE p.voiture.id = :voitureId")
     void deleteByVoitureId(@Param("voitureId") Long voitureId);
 }

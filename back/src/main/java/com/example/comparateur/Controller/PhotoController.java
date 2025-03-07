@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.comparateur.Entity.Photo;
 import com.example.comparateur.Service.PhotoService;
 
-
 @RestController
 @RequestMapping("/api/photos")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -27,24 +27,29 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    // ✅ Upload multiple photos to a Voiture
     @PostMapping("/upload/{voitureId}")
-    public ResponseEntity<List<Photo>> uploadMultiplePhotos(
-        @PathVariable Long voitureId,
-        @RequestParam("files") MultipartFile[] files) throws IOException {
-        
-        List<Photo> photos = photoService.saveMultiplePhotos(voitureId, files);
-        return ResponseEntity.ok(photos);
+    public ResponseEntity<?> uploadPhotos(
+            @PathVariable Long voitureId,
+            @RequestParam("files") MultipartFile[] files
+    ) {
+        try {
+            List<Photo> savedPhotos = photoService.saveMultiplePhotos(voitureId, files);
+            return ResponseEntity.ok(savedPhotos);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload files: " + e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
     }
 
-    // ✅ Get all photos for a specific Voiture
     @GetMapping("/voiture/{voitureId}")
     public ResponseEntity<List<Photo>> getPhotosByVoitureId(@PathVariable Long voitureId) {
         List<Photo> photos = photoService.getPhotosByVoitureId(voitureId);
         return ResponseEntity.ok(photos);
     }
 
-    // ✅ Delete all photos of a voiture
     @DeleteMapping("/voiture/{voitureId}")
     public ResponseEntity<Void> deletePhotosByVoitureId(@PathVariable Long voitureId) {
         photoService.deletePhotosByVoitureId(voitureId);
