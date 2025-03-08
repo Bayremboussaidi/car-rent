@@ -1,7 +1,9 @@
 package com.example.comparateur.Controller;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.comparateur.DTO.PhotoResponseDTO;
 import com.example.comparateur.Entity.Photo;
 import com.example.comparateur.Service.PhotoService;
 
@@ -44,15 +47,37 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("/voiture/{voitureId}")
+    /*@GetMapping("/voiture/{voitureId}")
     public ResponseEntity<List<Photo>> getPhotosByVoitureId(@PathVariable Long voitureId) {
         List<Photo> photos = photoService.getPhotosByVoitureId(voitureId);
         return ResponseEntity.ok(photos);
-    }
+    }*/
 
     @DeleteMapping("/voiture/{voitureId}")
     public ResponseEntity<Void> deletePhotosByVoitureId(@PathVariable Long voitureId) {
         photoService.deletePhotosByVoitureId(voitureId);
         return ResponseEntity.noContent().build();
+    }
+
+
+
+
+        // Existing method: Returns all photos with image data as Base64
+    @GetMapping("/voiture/{voitureId}")
+    public ResponseEntity<List<PhotoResponseDTO>> getPhotosByVoitureId(
+            @PathVariable Long voitureId) {
+        List<Photo> photos = photoService.getPhotosByVoitureId(voitureId);
+        
+        // Convert to DTO with Base64-encoded image data
+        List<PhotoResponseDTO> dtos = photos.stream()
+            .map(photo -> new PhotoResponseDTO(
+                photo.getId(),
+                photo.getName(),
+                photo.getType(),
+                Base64.getEncoder().encodeToString(photo.getData())
+            ))
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(dtos);
     }
 }

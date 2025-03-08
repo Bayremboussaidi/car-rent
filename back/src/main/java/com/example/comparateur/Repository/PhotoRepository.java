@@ -44,6 +44,14 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     @Query("SELECT p FROM Photo p WHERE p.voiture.id = :voitureId")
     List<Photo> findAllByVoitureId(@Param("voitureId") Long voitureId);
 
+
+
+    static List<Photo> findByVoiture_Id(Long voitureId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByVoiture_Id'");
+    }
+
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Photo p WHERE p.voiture.id = :voitureId")

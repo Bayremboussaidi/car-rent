@@ -122,6 +122,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VoitureService } from '../../../services/voiture.service';
+import { PhotoResponseDTO } from '../../../models/PhotoResponseDTO.model';
 
 @Component({
   selector: 'app-car-details',
@@ -134,7 +135,8 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
   otherCars: any[] = [];
   currentCarIndex: number = 0;
   carouselInterval: any;
-  carImage: string | null = null;
+  carImages: string[] = [];
+  currentImageIndex: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -153,13 +155,24 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  previousImage() {
+    this.currentImageIndex =
+      (this.currentImageIndex - 1 + this.carImages.length) % this.carImages.length;
+  }
+
+  nextImage() {
+    this.currentImageIndex =
+      (this.currentImageIndex + 1) % this.carImages.length;
+  }
+
   loadCarDetails(id: number): void {
     this.voitureService.getVoitureById(id).subscribe(
       (response: any) => {
         if (response && response.success) {
           this.car = response.data;
 
-          // ✅ Ensure reviews exist
+          //  Ensure reviews exist
           this.car.reviews = this.car.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
@@ -171,46 +184,51 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  // ✅ Function to Generate Stars for Ratings
+  // Function to Generate Stars for Ratings
   getStars(rating: number): number[] {
     return Array(rating).fill(0); // Generates an array with 'rating' number of elements
   }
 
   loadCarImage(id: number): void {
     this.voitureService.getCarImageById(id).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.carImage = response.data;
+      (photos: PhotoResponseDTO[]) => {
+        if (photos?.length > 0) {
+          // Map all photos to data URLs
+          this.carImages = photos.map(photo =>
+            `data:${photo.type};base64,${photo.data}`
+          );
         } else {
-          console.error('Error: Unexpected API response format for image.');
+          // Show default image if no photos
+          this.carImages = ['/assets/default-car.jpg'];
         }
       },
-      (error) => {
-        console.error('Error fetching car image:', error);
+      (error: any) => {
+        console.error('Error fetching car images:', error);
+        this.carImages = ['/assets/default-car.jpg'];
       }
     );
   }
 
+
   loadOtherCars(currentCarId: number): void {
     this.voitureService.getVoitures(0).subscribe(
       (response: any) => {
-        if (response && response.data) {
+        if (response?.data) {
           this.otherCars = response.data
             .filter((car: any) => car.id !== currentCarId)
             .map((car: any) => {
-              if (car.imgUrl && !car.imgUrl.startsWith('data:image/png;base64,')) {
-                car.imgUrl = `data:image/png;base64,${car.imgUrl}`;
-              }
+              // Fetch images for each car
+              this.voitureService.getCarImageById(car.id).subscribe(photos => {
+                if (photos?.length > 0) {
+                  car.imgUrl = `data:${photos[0].type};base64,${photos[0].data}`;
+                }
+              });
               return car;
             });
           this.startCarousel();
-        } else {
-          console.error('Unexpected API response format.');
         }
       },
-      (error) => {
-        console.error('Error fetching other cars:', error);
-      }
+      (error) => console.error('Error fetching other cars:', error)
     );
   }
 

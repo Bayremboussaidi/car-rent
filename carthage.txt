@@ -1,0 +1,4 @@
+<div *ngFor="let photo of photos">
+  <img [src]="'data:' + photo.type + ';base64,' + photo.data" 
+       [alt]="photo.name">
+</div>

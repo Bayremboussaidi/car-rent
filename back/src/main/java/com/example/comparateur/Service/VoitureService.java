@@ -262,9 +262,11 @@ public class VoitureService {
     
     import com.example.comparateur.DTO.ApiResponse;
     import com.example.comparateur.DTO.VoitureResponse;
-    import com.example.comparateur.Entity.Review;
+import com.example.comparateur.Entity.Photo;
+import com.example.comparateur.Entity.Review;
     import com.example.comparateur.Entity.Voiture;
-    import com.example.comparateur.Repository.ReviewRepository;
+import com.example.comparateur.Repository.PhotoRepository;
+import com.example.comparateur.Repository.ReviewRepository;
     import com.example.comparateur.Repository.VoitureRepository;
     
     @Service
@@ -365,6 +367,14 @@ public class VoitureService {
         public ResponseEntity<Object> getReviewsForVoiture(Long voitureId) {
             List<Review> reviews = reviewRepository.findAllByVoitureId(voitureId);
             return ResponseEntity.ok(new ApiResponse<>(true, "Reviews retrieved successfully", reviews));
+        }
+
+
+
+
+            // Get all photos for a voiture
+        public List<Photo> getPhotosByVoitureId(Long voitureId) {
+        return PhotoRepository.findByVoiture_Id(voitureId);
         }
     }
     
