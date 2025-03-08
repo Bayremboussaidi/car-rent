@@ -21,8 +21,6 @@ public class ReviewService {
     @Autowired
     private VoitureRepository voitureRepository;
 
-
-
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
@@ -33,19 +31,18 @@ public class ReviewService {
             if (optionalVoiture.isPresent()) {
                 Voiture voiture = optionalVoiture.get();
 
-                // Save the new review
+                // ✅ Link the review to the voiture before saving
+                review.setVoiture(voiture);
+
+                // ✅ Save the review AFTER linking it to the voiture
                 Review savedReview = reviewRepository.save(review);
 
-                // Update the voiture's reviews
-                voiture.getReviews().add(savedReview);
-                voitureRepository.save(voiture);
-
-                return ResponseEntity.ok().body(new ApiResponse(true, "Review submitted", savedReview));
+                return ResponseEntity.ok().body(new ApiResponse(true, "Review submitted successfully", savedReview));
             } else {
                 return ResponseEntity.status(404).body(new ApiResponse(false, "Voiture not found"));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ApiResponse(false, "Failed to submit"));
+            return ResponseEntity.status(500).body(new ApiResponse(false, "Failed to submit review: " + e.getMessage()));
         }
     }
 
