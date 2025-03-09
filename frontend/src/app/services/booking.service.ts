@@ -10,8 +10,8 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
 
-  createBooking(bookingData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, bookingData);
+  createBooking(voitureId: number, bookingData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${voitureId}`, bookingData);
   }
 
   getAllBookings(): Observable<any> {

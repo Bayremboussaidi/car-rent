@@ -36,6 +36,7 @@ export class BookingComponent {
   }
 
   onSubmit() {
+    /*
     this.bookingService.createBooking(this.bookingData).subscribe({
       next: (response) => {
         this.responseMessage = response.message;
@@ -44,6 +45,6 @@ export class BookingComponent {
       error: (error) => {
         this.responseMessage = error.error.message || 'Booking failed';
       }
-    });
+    });*/
   }
 }

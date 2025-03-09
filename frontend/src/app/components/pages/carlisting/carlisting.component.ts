@@ -1,6 +1,6 @@
-
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { VoitureService } from '../../../services/voiture.service';
+import {BookingService} from '../../../services/booking.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -25,6 +25,7 @@ export class ListcarsComponent implements OnInit {
 
   constructor(
     private voitureService: VoitureService,
+    private BookingService : BookingService,
     private router: Router,
     private cd: ChangeDetectorRef
   ) {}
@@ -35,9 +36,57 @@ export class ListcarsComponent implements OnInit {
 
   openBookingModal(carId: string) {
     console.log('Opening modal for Car ID:', carId);
-    this.selectedCarId = carId;
-    this.showBookingModal = true;
+
+    // Prompt the user for a username
+    const username = prompt('Enter your username to book this car:');
+    if (!username) {
+      alert('Username is required!');
+      return;
+    }
+
+    // Prepare booking request payload
+    const bookingRequest = {
+      username: username,
+      carName: "", // This will be fetched from the service
+      userEmail: "test@example.com", // Replace with actual authenticated user email
+      nbrJrs: 3, // Default to 3 days (can be changed)
+      phone: "+21612345678", // Replace with actual user phone number
+      description: `Booking for Car ID ${carId}`,
+      startDate: "2025-03-10", // Replace with actual user input
+      endDate: "2025-03-13", // Replace with actual user input
+      bookingStatus: "PENDING",
+      pickupLocation: "Lac2",
+      dropoffLocation: "Lac2"
+    };
+
+    // Fetch car details from backend before sending the request
+    const id = Number(carId);//cast to number
+    this.voitureService.getOneVoiture(id).subscribe({
+      next: (carDetails:any) => {
+        // Populate car-specific details
+        bookingRequest.carName = carDetails.carName;
+
+        // Send booking request
+        this.BookingService.createBooking(id, bookingRequest).subscribe({
+          next: (response:any ) => {
+            alert('Car booked successfully!');
+            console.log(response);
+            this.selectedCarId = carId;
+            this.showBookingModal = true;
+          },
+          error: (err:any) => {
+            alert('Failed to book the car.');
+            console.error(err);
+          }
+        });
+      },
+      error: (err:any) => {
+        alert('Failed to fetch car details.');
+        console.error(err);
+      }
+    });
   }
+
 
   closeBookingModal() {
     console.log('Closing modal');
