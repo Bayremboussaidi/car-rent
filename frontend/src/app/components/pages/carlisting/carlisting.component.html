@@ -41,7 +41,7 @@
             </li>
           </ul>
           <!-- Purchase Button (Fixed) -->
-          <button class="purchase-btn" (click)="openBookingModal(voiture.id); $event.stopPropagation()">
+          <button class="purchase-btn" (click)="openBookingModal(voiture)" >
             <i class="pi pi-cart-minus"></i> Purchase
           </button>
         </div>
@@ -59,7 +59,9 @@
 
 <!-- Booking Modal Component -->
 <app-booking
-  *ngIf="showBookingModal"
-  [selectedCarId]="selectedCarId"
-  (close)="closeBookingModal()">
+*ngIf="showBookingModal"
+[showModal]="showBookingModal"
+[voitureId]="selectedCar?.id"
+[carName]="selectedCar?.carName"
+(close)="closeBookingModal()">
 </app-booking>

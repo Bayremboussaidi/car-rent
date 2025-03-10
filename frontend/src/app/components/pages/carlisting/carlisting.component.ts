@@ -9,18 +9,32 @@ import { Router } from '@angular/router';
   styleUrls: ['./carlisting.component.css']
 })
 export class ListcarsComponent implements OnInit {
-  selectedCarId: string = '';
-  showBookingModal: boolean = false;
-  voitures: any[] = [];
-  allVoitures: any[] = [];
-  filteredVoitures: any[] = [];
-  loading: boolean = false;
+
+  voitures: any[] = []; // List of cars
+  filteredVoitures: any[] = []; // Filtered list for display
+  loading = false;
   error: string = '';
 
-  // ✅ Pagination Variables
-  currentPage: number = 1;
+  // ✅ State for Booking Modal
+  showBookingModal = false;
+  selectedCar: any = null; // Stores selected car details
+
+  currentPage = 1;
+  totalPages = 1;
+
+
+
+  selectedCarId: string = '';
+
+
+  allVoitures: any[] = [];
+
+
+
+
+
   itemsPerPage: number = 6;
-  totalPages: number = 0;
+
   totalVoitures: number = 0;
 
   constructor(
@@ -34,7 +48,7 @@ export class ListcarsComponent implements OnInit {
     this.fetchAllVoitures();
   }
 
-  openBookingModal(carId: string) {
+/*  openBookingModal(carId: string) {
     console.log('Opening modal for Car ID:', carId);
 
     // Prompt the user for a username
@@ -44,48 +58,54 @@ export class ListcarsComponent implements OnInit {
       return;
     }
 
-    // Prepare booking request payload
-    const bookingRequest = {
-      username: username,
-      carName: "", // This will be fetched from the service
-      userEmail: "test@example.com", // Replace with actual authenticated user email
-      nbrJrs: 3, // Default to 3 days (can be changed)
-      phone: "+21612345678", // Replace with actual user phone number
-      description: `Booking for Car ID ${carId}`,
-      startDate: "2025-03-10", // Replace with actual user input
-      endDate: "2025-03-13", // Replace with actual user input
-      bookingStatus: "PENDING",
-      pickupLocation: "Lac2",
-      dropoffLocation: "Lac2"
-    };
+    const id = Number(carId); // Convert to number
 
-    // Fetch car details from backend before sending the request
-    const id = Number(carId);//cast to number
+    // Fetch car details before booking
     this.voitureService.getOneVoiture(id).subscribe({
-      next: (carDetails:any) => {
-        // Populate car-specific details
-        bookingRequest.carName = carDetails.carName;
+      next: (carDetails: any) => {
+        // Prepare booking request payload
+        const bookingRequest = {
+          userId: 1, // Change based on logged-in user
+          username: username,
+          carName: carDetails.carName, // Fetched from backend
+          userEmail: "test@example.com", // Replace with actual authenticated user email
+          nbrJrs: 3, // Default to 3 days
+          phone: "+21612345678", // Replace with actual user phone
+          description: `Booking for ${carDetails.carName}`,
+          startDate: "2025-03-10", // Replace with actual user input
+          endDate: "2025-03-13", // Replace with actual user input
+          voitureId: id, // Assign voitureId from input
+          pickupLocation: "Lac2",
+          dropoffLocation: "Lac2"
+        };
 
         // Send booking request
-        this.BookingService.createBooking(id, bookingRequest).subscribe({
-          next: (response:any ) => {
+        this.BookingService.createBooking(bookingRequest).subscribe({
+          next: (response: any) => {
             alert('Car booked successfully!');
             console.log(response);
-            this.selectedCarId = carId;
+            this.selectedCarId = id.toString(); // Ensure consistency
             this.showBookingModal = true;
           },
-          error: (err:any) => {
+          error: (err: any) => {
             alert('Failed to book the car.');
             console.error(err);
           }
         });
       },
-      error: (err:any) => {
+      error: (err: any) => {
         alert('Failed to fetch car details.');
         console.error(err);
       }
     });
-  }
+  } */
+
+
+    openBookingModal(voiture: any) {
+      console.log('Booking car:', voiture);
+      this.selectedCar = voiture; // Store car details
+      this.showBookingModal = true; // Show modal
+    }
 
 
   closeBookingModal() {

@@ -6,12 +6,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Future;
@@ -72,9 +69,9 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voiture_id", nullable = false)
-    private Voiture voiture;
+    @NotBlank(message = "Voiture ID is mandatory")
+    @Column(nullable = false)
+    private String voitureId; // Now stored as a simple column, not a foreign key
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

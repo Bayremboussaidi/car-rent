@@ -1,7 +1,7 @@
 <div class="card">
   <h2>Bookings</h2>
 
-  <!-- Buttons for filtering bookings -->
+
   <div class="switch-buttons">
     <button
       [ngClass]="{'active': activeButton === 'pending'}"
@@ -45,7 +45,7 @@
         <td>
         <span [ngClass]="{
           'status-confirmed': booking.status === 'CONFIRMED',
-          'status-declined': booking.status === 'DECLINED'
+          'status-declined': booking.status === 'CANCELED'
         }">
         {{ booking.status }}
         </span>
