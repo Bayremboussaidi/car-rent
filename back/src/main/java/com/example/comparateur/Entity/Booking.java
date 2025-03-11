@@ -76,6 +76,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus bookingStatus = BookingStatus.PENDING;
+    
 
     @NotBlank(message = "Pickup location is mandatory")
     @Column(nullable = false)

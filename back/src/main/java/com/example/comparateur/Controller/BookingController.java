@@ -179,7 +179,7 @@ public class BookingController {
     public ResponseEntity<Object> getBookingsByStatus(@PathVariable String status) {
         try {
             BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase());
-            List<Booking> bookings = bookingRepository.findByStatus(bookingStatus);
+            List<Booking> bookings = bookingRepository.findByBookingStatus(bookingStatus);
             return ResponseEntity.ok(new ApiResponse(true, "Bookings fetched successfully", bookings));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid status. Use: PENDING, CONFIRMED, CANCELED"));

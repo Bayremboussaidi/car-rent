@@ -18,6 +18,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.voitureId = :voitureId")
     List<Booking> findAllBookingsByVoitureId(@Param("voitureId") String voitureId);
 
-    // Corrected version
-    List<Booking> findByStatus(BookingStatus status);
+    // Corrected method name to match the entity field
+    List<Booking> findByBookingStatus(BookingStatus bookingStatus);
 }

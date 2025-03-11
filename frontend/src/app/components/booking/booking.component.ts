@@ -15,7 +15,7 @@ export class BookingModalComponent implements OnInit {
   @Output() close = new EventEmitter<void>(); // Emit event to close modal
 
   bookingData = {
-    userId: '0',
+    userId: 8, // Ensure this remains a number
     username: '*',
     carName: '',
     userEmail: '',
@@ -24,9 +24,10 @@ export class BookingModalComponent implements OnInit {
     description: '',
     startDate: '',
     endDate: '',
-    voitureId: '', // Assigned as string before sending request
+    voitureId: 0, // Ensure voitureId is sent as a number
     pickupLocation: 'lac2,tunis',
-    dropoffLocation: 'lac2,tunis'
+    dropoffLocation: 'lac2,tunis',
+    //bookingStatus: "PENDING"
   };
 
   responseMessage: string = '';
@@ -38,7 +39,7 @@ export class BookingModalComponent implements OnInit {
     if (this.voitureId) {
       this.fetchUnavailableDates();
       this.bookingData.carName = this.carName; // Assign car name
-      this.bookingData.voitureId = this.voitureId; // Assign voitureId as string
+      this.bookingData.voitureId = Number(this.voitureId); // Convert voitureId to a number
     }
   }
 
@@ -84,9 +85,16 @@ export class BookingModalComponent implements OnInit {
       return;
     }
 
-    // Assign voitureId and carName correctly
-    this.bookingData.voitureId = this.voitureId;
+    // Ensure voitureId is a number before sending the request
+    this.bookingData.voitureId = Number(this.voitureId);
     this.bookingData.carName = this.carName;
+    this.bookingData.userId = Number(this.bookingData.userId); // Convert to number if necessary
+
+    // ✅ Convert date format to "YYYY-MM-DD" (avoid sending full timestamp)
+    this.bookingData.startDate = moment(this.bookingData.startDate).format("YYYY-MM-DD");
+    this.bookingData.endDate = moment(this.bookingData.endDate).format("YYYY-MM-DD");
+
+    console.log("Sending Booking Data:", this.bookingData); // ✅ Debugging step
 
     this.bookingService.createBooking(this.bookingData).subscribe({
       next: (response: any) => {
