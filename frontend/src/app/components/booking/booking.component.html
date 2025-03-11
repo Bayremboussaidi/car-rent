@@ -12,7 +12,7 @@
       <input type="text" id="username" [(ngModel)]="bookingData.username" name="username" required />
 
       <label for="carName">Nom de la voiture :</label>
-      <input type="text" id="carName" [(ngModel)]="bookingData.carName" name="carName" required />
+      <input type="text" id="carName" [(ngModel)]="bookingData.carName" name="carName" readonly />
 
       <label for="userEmail">E-mail :</label>
       <input type="email" id="userEmail" [(ngModel)]="bookingData.userEmail" name="userEmail" required />
@@ -29,12 +29,12 @@
       <label for="startDate">Date de début <span style="color: red;">(Doit être aujourd'hui ou plus tard)</span></label>
       <input type="text" id="startDate" [(ngModel)]="bookingData.startDate" name="startDate"
         bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        required />
+        readonly (keydown)="$event.preventDefault()" required />
 
       <label for="endDate">Date de fin <span style="color: red;">(Doit être après la date de début)</span></label>
       <input type="text" id="endDate" [(ngModel)]="bookingData.endDate" name="endDate"
         bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        required />
+        readonly (keydown)="$event.preventDefault()" required />
 
       <label for="pickupLocation">Lieu de prise en charge :</label>
       <input type="text" id="pickupLocation" [(ngModel)]="bookingData.pickupLocation" name="pickupLocation" required />

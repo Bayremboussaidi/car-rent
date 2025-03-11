@@ -53,9 +53,6 @@
               "node_modules/swiper/swiper-bundle.min.css",
               "node_modules/glightbox/dist/css/glightbox.min.css",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
-
-
-
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -68,7 +65,7 @@
               "node_modules/ionicons/dist/ionicons/ionicons.esm.js",
               "src/assets/js/custom.js"
             ],
-            "allowedCommonJsDependencies": ["aos", "swiper"]
+            "allowedCommonJsDependencies": ["aos", "swiper", "moment"]
           },
           "configurations": {
             "production": {

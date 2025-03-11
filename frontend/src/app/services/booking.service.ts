@@ -55,12 +55,16 @@ export class BookingService {
 
 
 
-
-
   getBookingsByStatus(status: string) {
     return this.http.get<{ success: boolean; data: Booking[] }>(
       `your-api-url/bookings?status=${status}`
     );
+  }
+
+
+
+  getBookingsByUserEmail(userEmail: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user/${userEmail}`);
   }
 
 }

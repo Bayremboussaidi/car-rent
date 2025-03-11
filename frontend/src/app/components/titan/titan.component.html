@@ -1,14 +1,10 @@
-
-
 <header class="header" [ngClass]="{'sticky-header': !isTopMenuVisible}"
         [ngStyle]="{'background-color': 'rgba(255, 255, 255, ' + scrollOpacity + ')'}">
   <nav class="nav container">
     <div class="nav__data">
-
       <div class="nav__logo">
         <img src="../../../assets/all-images/logo.jpg" alt="Comparator Logo" class="nav__logo-img"> Comparator
       </div>
-
 
       <div class="nav__toggle" id="nav-toggle" (click)="toggleMenu()">
         <i class="ri-menu-line nav__burger" *ngIf="!isMenuOpen"></i>
@@ -18,17 +14,17 @@
 
     <!-- Navigation Menu -->
     <div class="nav__menu" [ngClass]="{'show-menu': isMenuOpen}" data-aos="zoom-in" data-aos-duration="1500">
-      <ul class="nav__list" >
-        <li><a routerLink="/home"  class="nav__link">Home</a></li>
-        <li><a routerLink="/about"  class="nav__link">About</a></li>
+      <ul class="nav__list">
+        <li><a routerLink="/home" class="nav__link">Home</a></li>
+        <li><a routerLink="/about" class="nav__link">About</a></li>
 
-        <!-- Dropdown 1 (Hover Triggered) -->
+        <!-- Dropdown 1 -->
         <li class="dropdown__item">
           <div class="nav__link">
             Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
           </div>
           <ul class="dropdown__menu">
-            <li><a routerLink="/register"  class="dropdown__link"><i class="ri-pie-chart-line"></i> Overview</a></li>
+            <li><a routerLink="/register" class="dropdown__link"><i class="ri-pie-chart-line"></i> Overview</a></li>
             <li><a href="#" class="dropdown__link"><i class="ri-arrow-up-down-line"></i> Transactions</a></li>
 
             <!-- Submenu -->
@@ -45,9 +41,9 @@
           </ul>
         </li>
 
-        <li><a routerLink="/blogs"class="nav__link">Blogs</a></li>
+        <li><a routerLink="/blogs" class="nav__link">Blogs</a></li>
 
-        <!-- Dropdown 2 (Hover Triggered) -->
+        <!-- Dropdown 2 -->
         <li class="dropdown__item">
           <div class="nav__link">
             Cars <i class="ri-arrow-down-s-line dropdown__arrow"></i>
@@ -63,8 +59,8 @@
       </ul>
     </div>
 
-    <!-- Animated Font Menu (Added) -->
-    <ul class="animated-menu" >
+    <!-- Animated Font Menu -->
+    <ul class="animated-menu">
       <li style="--i:#a955ff;--j:#ea51ff">
         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
         <span class="title">Home</span>
@@ -80,11 +76,26 @@
         <span class="title">Log out</span>
       </li>
 
+      <!-- Purchase Button with Email Input -->
       <li style="--i:#80FF72;--j:#7EE8FA">
         <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
         <span class="title">Purchase</span>
+        <input type="email" [(ngModel)]="userEmail" placeholder="Votre e-mail" class="email-input">
+        <button (click)="fetchBookingsByEmail()" class="fetch-btn">Voir mes réservations</button>
       </li>
-
     </ul>
+
+    <!-- Display bookings dynamically -->
+    <div *ngIf="userBookings.length > 0" class="bookings-container">
+      <h3>Vos Réservations</h3>
+      <ul>
+        <li *ngFor="let booking of userBookings">
+          <strong>{{ booking.carName }}</strong> -
+          {{ booking.startDate }} à {{ booking.endDate }} ({{ booking.status }})
+        </li>
+      </ul>
+    </div>
+
+    <p *ngIf="responseMessage">{{ responseMessage }}</p>
   </nav>
 </header>

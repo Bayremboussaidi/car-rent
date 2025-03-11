@@ -107,15 +107,11 @@ public class BookingController {
         }
     }
     
-    
-
-    
-    
 
 
 
 
-    // ✅ Get Car Availability
+    // Get Car Availability
     @GetMapping("/{voitureId}/availability")
     public ResponseEntity<Object> getCarAvailability(@PathVariable String voitureId) {
         List<Booking> bookings = bookingRepository.findAllBookingsByVoitureId(voitureId);
@@ -137,4 +133,20 @@ public class BookingController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
+// Get bookings by user email
+@GetMapping("/user/{email}")
+public ResponseEntity<Object> getBookingsByUserEmail(@PathVariable String email) {
+    List<Booking> bookings = bookingRepository.findByUserEmail(email);
+    
+    if (bookings.isEmpty()) {
+        return ResponseEntity.status(404).body(new ApiResponse(false, "No bookings found for this email"));
+    }
+    
+    return ResponseEntity.ok(new ApiResponse(true, "Bookings fetched successfully", bookings));
+}
+
 }

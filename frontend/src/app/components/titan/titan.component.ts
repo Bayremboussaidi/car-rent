@@ -1,7 +1,8 @@
 import { Component, HostListener } from "@angular/core";
 import { KeycloakService } from "../../services/keycloak/keycloak.service";
 import { Router } from '@angular/router';
-
+import { BookingService } from "../../services/booking.service";
+import { Booking } from "../../models/booking.model";
 
 @Component({
   selector: "app-titan",
@@ -12,8 +13,15 @@ export class TitanComponent {
   isMenuOpen = false;
   scrollOpacity = 0; // Starts with 0% opacity at the top
   isTopMenuVisible: boolean = true; // Tracks top menu visibility
+  userBookings: Booking[] = []; // Store bookings fetched from the server
+  responseMessage: string = ""; // Message if no bookings are found
+  userEmail: string = ""; // User email input
 
-  constructor(private keycloakService: KeycloakService , private router: Router) {}
+  constructor(
+    private keycloakService: KeycloakService,
+    private router: Router,
+    private bookingService: BookingService
+  ) {}
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -25,6 +33,32 @@ export class TitanComponent {
 
   logout(): void {
     this.keycloakService.logout();
+  }
+
+  /**
+   * Fetch bookings by user email when clicking "Purchase"
+   */
+  fetchBookingsByEmail() {
+    if (!this.userEmail) {
+      this.responseMessage = "Veuillez entrer un e-mail valide.";
+      return;
+    }
+
+    this.bookingService.getBookingsByUserEmail(this.userEmail).subscribe({
+      next: (response: { success: boolean; data: Booking[] }) => {
+        if (response.success) {
+          this.userBookings = response.data;
+          this.responseMessage = "";
+        } else {
+          this.responseMessage = "Aucune réservation trouvée pour cet e-mail.";
+          this.userBookings = [];
+        }
+      },
+      error: (error: any) => {
+        console.error("Erreur lors de la récupération des réservations:", error);
+        this.responseMessage = "Impossible de récupérer les réservations.";
+      }
+    });
   }
 
   @HostListener("window:scroll", [])
