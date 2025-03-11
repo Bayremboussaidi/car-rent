@@ -9,14 +9,14 @@ import moment from 'moment';
 })
 export class BookingModalComponent implements OnInit {
   today: Date = new Date();
-  @Input() showModal: boolean = false; // Controls modal visibility
-  @Input() voitureId!: string; // Receives car ID from parent as a string
-  @Input() carName!: string; // Receives car Name from parent
-  @Output() close = new EventEmitter<void>(); // Emit event to close modal
+  @Input() showModal: boolean = false;
+  @Input() voitureId!: string;
+  @Input() carName!: string;
+  @Output() close = new EventEmitter<void>();
 
   bookingData = {
-    userId: 8, // Ensure this remains a number
-    username: '*',
+    userId: 8,
+    username: 'bay',
     carName: '',
     userEmail: '',
     nbrJrs: 0,
@@ -24,10 +24,9 @@ export class BookingModalComponent implements OnInit {
     description: '',
     startDate: '',
     endDate: '',
-    voitureId: 0, // Ensure voitureId is sent as a number
+    voitureId: 0,
     pickupLocation: 'lac2,tunis',
     dropoffLocation: 'lac2,tunis',
-    //bookingStatus: "PENDING"
   };
 
   responseMessage: string = '';
@@ -37,17 +36,14 @@ export class BookingModalComponent implements OnInit {
 
   ngOnInit() {
     if (this.voitureId) {
+      this.bookingData.voitureId = Number(this.voitureId); // ✅ Convert once
+      this.bookingData.carName = this.carName;
       this.fetchUnavailableDates();
-      this.bookingData.carName = this.carName; // Assign car name
-      this.bookingData.voitureId = Number(this.voitureId); // Convert voitureId to a number
     }
   }
 
-  /**
-   * Fetch unavailable dates for the selected car
-   */
   fetchUnavailableDates() {
-    if (!this.voitureId) return; // Prevent unnecessary API call
+    if (!this.voitureId) return;
 
     this.bookingService.getUnavailableDates(this.voitureId).subscribe({
       next: (data) => {
@@ -68,40 +64,35 @@ export class BookingModalComponent implements OnInit {
     });
   }
 
-  /**
-   * Disable unavailable dates on the calendar
-   */
   isDateDisabled = (date: Date): boolean => {
     return this.unavailableDates.some(d => moment(d).isSame(date, "day"));
   };
 
-  /**
-   * Submit booking request
-   */
   onSubmit() {
-    // Validate required fields before submitting
     if (!this.voitureId || !this.bookingData.startDate || !this.bookingData.endDate) {
       this.responseMessage = "Please fill in all required fields!";
       return;
     }
 
-    // Ensure voitureId is a number before sending the request
     this.bookingData.voitureId = Number(this.voitureId);
     this.bookingData.carName = this.carName;
-    this.bookingData.userId = Number(this.bookingData.userId); // Convert to number if necessary
 
-    // ✅ Convert date format to "YYYY-MM-DD" (avoid sending full timestamp)
-    this.bookingData.startDate = moment(this.bookingData.startDate).format("YYYY-MM-DD");
-    this.bookingData.endDate = moment(this.bookingData.endDate).format("YYYY-MM-DD");
+    if (this.bookingData.startDate && this.bookingData.endDate) {
+      this.bookingData.startDate = moment(this.bookingData.startDate).format("YYYY-MM-DD");
+      this.bookingData.endDate = moment(this.bookingData.endDate).format("YYYY-MM-DD");
+    } else {
+      this.responseMessage = "Start date and end date are required!";
+      return;
+    }
 
-    console.log("Sending Booking Data:", this.bookingData); // ✅ Debugging step
+    console.log("🔍 Sending Booking Data:", JSON.stringify(this.bookingData, null, 2));
 
     this.bookingService.createBooking(this.bookingData).subscribe({
       next: (response: any) => {
-        this.responseMessage = response.message || "Booking successful!"; // Handle potential missing message
+        this.responseMessage = response.message || "Booking successful!";
         if (response.success) {
-          this.fetchUnavailableDates(); // Refresh unavailable dates
-          setTimeout(() => this.closeModal(), 2000); // Close modal after success
+          this.fetchUnavailableDates();
+          setTimeout(() => this.closeModal(), 2000);
         }
       },
       error: (error: any) => {
@@ -111,11 +102,8 @@ export class BookingModalComponent implements OnInit {
     });
   }
 
-  /**
-   * Close modal and emit event to parent
-   */
   closeModal() {
     this.showModal = false;
-    this.close.emit(); // Notify parent to close modal
+    this.close.emit();
   }
 }

@@ -11,6 +11,8 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
 
+
+
   /**
    * Fetch unavailable dates for a specific car.
    * @param voitureId The ID of the car (string as required by backend)
@@ -26,8 +28,10 @@ export class BookingService {
    * @returns Observable containing booking response
    */
   createBooking(bookingData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, bookingData);
+    const headers = { 'Content-Type': 'application/json' };
+    return this.http.post<any>(this.apiUrl, bookingData, { headers });
   }
+
 
   /**
    * Fetch all bookings.
@@ -44,8 +48,9 @@ export class BookingService {
    * @returns Observable with updated booking data
    */
   updateBookingStatus(id: number, status: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/status`, { status });
-  }
+    return this.http.put<any>(`${this.apiUrl}/${id}/status`, { "status": status }); // ✅ Explicit field name
+}
+
 
 
 
