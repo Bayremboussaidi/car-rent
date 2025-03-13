@@ -38,25 +38,28 @@
   <div *ngIf="bookings !== null && !isLoading" class="booking-container">
     <ul *ngIf="bookings.length > 0; else noBookings">
       <li *ngFor="let booking of bookings" class="booking-item">
-        <!-- ✅ Display Image -->
-        <img [src]="booking.imgUrl" [alt]="booking.carName" class="booking-image" />
+        <!-- ✅ Make the entire booking item clickable -->
+        <a [routerLink]="['/listcars', booking.voitureId]" class="booking-link">
+          <!-- ✅ Display Image -->
+          <img [src]="booking.imgUrl" [alt]="booking.carName" class="booking-image" />
 
-        <div class="booking-info">
-          <strong>{{ booking.carName }}</strong> - {{ booking.startDate }} to {{ booking.endDate }}
-          (<span [ngClass]="{
-            'pending': booking.bookingStatus === 'PENDING',
-            'confirmed': booking.bookingStatus === 'CONFIRMED',
-            'canceled': booking.bookingStatus === 'CANCELED'
-          }">{{ booking.bookingStatus }}</span>)
+          <div class="booking-info">
+            <strong>{{ booking.carName }}</strong> - {{ booking.startDate }} to {{ booking.endDate }}
+            (<span [ngClass]="{
+              'pending': booking.bookingStatus === 'PENDING',
+              'confirmed': booking.bookingStatus === 'CONFIRMED',
+              'canceled': booking.bookingStatus === 'CANCELED'
+            }">{{ booking.bookingStatus }}</span>)
 
-          <!-- ✅ Delete Button (Enabled for PENDING, Disabled for Others) -->
-          <button
-            (click)="deleteBooking(booking.id)"
-            [disabled]="booking.bookingStatus !== 'PENDING'"
-            class="btn btn-danger">
-            Delete
-          </button>
-        </div>
+            <!-- ✅ Delete Button (Enabled for PENDING, Disabled for Others) -->
+            <button
+              (click)="deleteBooking(booking.id); $event.stopPropagation()"
+              [disabled]="booking.bookingStatus !== 'PENDING'"
+              class="btn btn-danger">
+              Delete
+            </button>
+          </div>
+        </a>
       </li>
     </ul>
 
