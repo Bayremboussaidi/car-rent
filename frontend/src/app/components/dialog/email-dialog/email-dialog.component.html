@@ -1,0 +1,51 @@
+<h2 mat-dialog-title *ngIf="bookings === null">Enter Your Email</h2>
+<h2 mat-dialog-title *ngIf="bookings !== null">Vos Réservations</h2>
+
+<mat-dialog-content>
+  <!-- Step 1: Email Input -->
+  <div *ngIf="bookings === null" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h4>Your Company Logo</h4>
+      </div>
+      <div class="login-body">
+        <h2>Log In</h2>
+        <form class="form-group">
+          <div class="input-group">
+            <input type="text" name="username" id="username" class="form__input" placeholder="Username">
+          </div>
+
+
+          <div class="btn-container">
+            <button type="submit" class="btn" (click)="submitEmail()">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p>Loading your bookings...</p>
+  </div>
+
+  <!-- Step 3: Display Booking List -->
+  <div *ngIf="bookings !== null && !isLoading" class="booking-container">
+    <ul *ngIf="bookings.length > 0; else noBookings">
+      <li *ngFor="let booking of bookings">
+        <strong>{{ booking.carName }}</strong> - {{ booking.startDate }} à {{ booking.endDate }} ({{ booking.status }})
+      </li>
+    </ul>
+
+    <!-- Message when no bookings found -->
+    <ng-template #noBookings>
+      <p>Aucune réservation trouvée pour cet e-mail.</p>
+    </ng-template>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <!-- Step 2: Show "Close" when bookings are displayed -->
+  <button *ngIf="bookings !== null" mat-button (click)="closeDialog()">Fermer</button>
+</mat-dialog-actions>

@@ -58,7 +58,6 @@ import { ListcarsComponent } from './components/pages/carlisting/carlisting.comp
 import { DashComponent } from './ADMIN/dash/dash.component';
 import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
 import { CarDetailsComponent } from './components/pages/car-details/car-details.component';
-import { TestComponent } from './test/test.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { BookingModalComponent } from './components/booking/booking.component'; // ✅ Updated import
 import { UserAComponent } from './ADMIN/users-a/users-a.component';
@@ -76,8 +75,15 @@ import { TitanComponent } from './components/titan/titan.component';
 // ✅ Keycloak Imports
 import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
+import { EmailDialogComponent } from './components/dialog/email-dialog/email-dialog.component';
 
 
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MaterialComponent } from './test/material/material.component';
 
 // ✅ Keycloak Initialization Function
 export function kcFactory(kcService: KeycloakService) {
@@ -112,7 +118,6 @@ export function kcFactory(kcService: KeycloakService) {
     DashComponent,
     AddVoitureComponent,
     CarDetailsComponent,
-    TestComponent,
     VideoPlayerComponent,
     BookingModalComponent,
     UserAComponent,
@@ -128,6 +133,8 @@ export function kcFactory(kcService: KeycloakService) {
     NotificationComponent,
     TopMenuComponent,
     TitanComponent,
+    EmailDialogComponent,
+    MaterialComponent,
   ],
   imports: [
     BrowserModule,
@@ -147,6 +154,10 @@ export function kcFactory(kcService: KeycloakService) {
     DropdownModule,
     FileUploadModule,
     TagModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
     BsDatepickerModule.forRoot() // ✅ Fixes `bsConfig` errors
   ],
   providers: [

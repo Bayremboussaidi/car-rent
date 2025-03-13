@@ -171,4 +171,31 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
         }
       );
   }
+
+
+
+
+
+
+
+    // ✅ Fetch images using VoitureService
+    loadCarImages(id: number): void {
+      this.voitureService.getCarImageById(id).subscribe(
+        (photos) => {
+          if (photos.length > 0) {
+            // ✅ Convert to Base64 format
+            this.carImages = photos.map(photo =>
+              `data:${photo.type};base64,${photo.data}`
+            );
+          } else {
+            // ✅ Set default image if no photos found
+            this.carImages = ['/assets/default-car.jpg'];
+          }
+        },
+        (error) => {
+          console.error('Error fetching car images:', error);
+          this.carImages = ['/assets/default-car.jpg']; // ✅ Set default image on error
+        }
+      );
+    }
 }

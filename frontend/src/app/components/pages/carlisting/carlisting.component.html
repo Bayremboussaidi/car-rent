@@ -24,6 +24,7 @@
           <a [routerLink]="['/listcars', voiture.id]" class="car-item-link">
             <img [src]="voiture.imgUrl" [alt]="voiture.carName" class="img-fluid clickable-image" />
           </a>
+
           <h3>{{ voiture.carName }}</h3>
           <p>{{ voiture.description }}</p>
           <ul>
@@ -48,7 +49,7 @@
       </div>
     </div>
 
-    <!-- ✅ Pagination Section (Now Works with API Pagination) -->
+    <!--  Pagination Section (Now Works with API Pagination) -->
     <div class="pagination text-center mt-4">
       <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-pagination">Previous</button>
       <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>

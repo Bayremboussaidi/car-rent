@@ -1,8 +1,10 @@
-import { Component, HostListener } from "@angular/core";
+import { Component, HostListener, inject } from "@angular/core";
 import { KeycloakService } from "../../services/keycloak/keycloak.service";
 import { Router } from '@angular/router';
 import { BookingService } from "../../services/booking.service";
 import { Booking } from "../../models/booking.model";
+import { MatDialog } from "@angular/material/dialog";
+import { EmailDialogComponent } from "../dialog/email-dialog/email-dialog.component";
 
 @Component({
   selector: "app-titan",
@@ -22,6 +24,23 @@ export class TitanComponent {
     private router: Router,
     private bookingService: BookingService
   ) {}
+
+
+  readonly dialog = inject(MatDialog);
+
+
+  openEmailDialog() {
+    this.dialog.open(EmailDialogComponent, {
+      width: '500vh', // Ensures a reasonable width
+      disableClose: false,
+      hasBackdrop: true,
+      panelClass:  'custom-dialog-container',
+    });
+  }
+
+
+
+
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;

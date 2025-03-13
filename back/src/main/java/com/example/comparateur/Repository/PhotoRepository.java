@@ -28,6 +28,12 @@ public interface PhotoRepository extends JpaRepository<Photo, UUID> {
 */
 
 
+
+
+
+
+
+/*
 package com.example.comparateur.Repository;
 import java.util.List;
 
@@ -46,14 +52,41 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
 
 
-    static List<Photo> findByVoiture_Id(Long voitureId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByVoiture_Id'");
-    }
+    public default List<Photo> findByVoiture_Id(Long voitureId) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'findByVoiture_Id'");
+        }
 
 
     @Transactional
     @Modifying
     @Query("DELETE FROM Photo p WHERE p.voiture.id = :voitureId")
     void deleteByVoitureId(@Param("voitureId") Long voitureId);
+}*/
+
+
+
+
+
+package com.example.comparateur.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.example.comparateur.Entity.Photo;
+import com.example.comparateur.Entity.Voiture;
+
+public interface PhotoRepository extends JpaRepository<Photo, Long> {
+
+    @Query("SELECT p FROM Photo p WHERE p.voiture.id = :voitureId")
+    List<Photo> findAllByVoitureId(@Param("voitureId") Long voitureId);
+
+    @Query("DELETE FROM Photo p WHERE p.voiture.id = :voitureId")
+    void deleteByVoitureId(@Param("voitureId") Long voitureId);
+
+    Optional<Voiture> findByVoiture_Id(Long id);
 }

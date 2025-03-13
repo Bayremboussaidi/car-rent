@@ -10,14 +10,14 @@ import { Router } from '@angular/router';
 })
 export class ListcarsComponent implements OnInit {
 
-  voitures: any[] = []; // List of cars
-  filteredVoitures: any[] = []; // Filtered list for display
+  voitures: any[] = [];
+  filteredVoitures: any[] = [];
   loading = false;
   error: string = '';
 
   // ✅ State for Booking Modal
   showBookingModal = false;
-  selectedCar: any = null; // Stores selected car details
+  selectedCar: any = null;
 
   currentPage = 1;
   totalPages = 1;
@@ -48,58 +48,6 @@ export class ListcarsComponent implements OnInit {
     this.fetchAllVoitures();
   }
 
-/*  openBookingModal(carId: string) {
-    console.log('Opening modal for Car ID:', carId);
-
-    // Prompt the user for a username
-    const username = prompt('Enter your username to book this car:');
-    if (!username) {
-      alert('Username is required!');
-      return;
-    }
-
-    const id = Number(carId); // Convert to number
-
-    // Fetch car details before booking
-    this.voitureService.getOneVoiture(id).subscribe({
-      next: (carDetails: any) => {
-        // Prepare booking request payload
-        const bookingRequest = {
-          userId: 1, // Change based on logged-in user
-          username: username,
-          carName: carDetails.carName, // Fetched from backend
-          userEmail: "test@example.com", // Replace with actual authenticated user email
-          nbrJrs: 3, // Default to 3 days
-          phone: "+21612345678", // Replace with actual user phone
-          description: `Booking for ${carDetails.carName}`,
-          startDate: "2025-03-10", // Replace with actual user input
-          endDate: "2025-03-13", // Replace with actual user input
-          voitureId: id, // Assign voitureId from input
-          pickupLocation: "Lac2",
-          dropoffLocation: "Lac2"
-        };
-
-        // Send booking request
-        this.BookingService.createBooking(bookingRequest).subscribe({
-          next: (response: any) => {
-            alert('Car booked successfully!');
-            console.log(response);
-            this.selectedCarId = id.toString(); // Ensure consistency
-            this.showBookingModal = true;
-          },
-          error: (err: any) => {
-            alert('Failed to book the car.');
-            console.error(err);
-          }
-        });
-      },
-      error: (err: any) => {
-        alert('Failed to fetch car details.');
-        console.error(err);
-      }
-    });
-  } */
-
 
     openBookingModal(voiture: any) {
       console.log('Booking car:', voiture);
@@ -124,6 +72,24 @@ export class ListcarsComponent implements OnInit {
           this.filteredVoitures = [...this.allVoitures];
           this.totalVoitures = this.filteredVoitures.length;
           this.totalPages = Math.ceil(this.totalVoitures / this.itemsPerPage);
+
+          // ✅ Fetch images for each voiture and assign the first one
+          this.allVoitures.forEach((voiture: any) => {
+            this.voitureService.getCarImageById(voiture.id).subscribe(
+              (photos: any[]) => {
+                if (photos?.length > 0) {
+                  voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].data}`;
+                } else {
+                  voiture.imgUrl = '/assets/default-car.jpg'; // ✅ Default image if no photos
+                }
+              },
+              (error) => {
+                console.error(`Error fetching images for voiture ${voiture.id}:`, error);
+                voiture.imgUrl = '/assets/default-car.jpg'; // ✅ Default on error
+              }
+            );
+          });
+
           this.updateDisplayedVoitures();
         } else {
           this.error = 'No data available.';
@@ -141,11 +107,49 @@ export class ListcarsComponent implements OnInit {
   }
 
 
+
   updateDisplayedVoitures(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.voitures = this.filteredVoitures.slice(startIndex, endIndex);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   applyFilters(filters: any): void {

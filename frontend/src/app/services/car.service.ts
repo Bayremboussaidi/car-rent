@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
 
 @Injectable({
   providedIn: 'root'
@@ -52,9 +55,18 @@ export class CarService {
     },
   ];
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
   getCarData() {
     return this.carData;
+  }
+
+
+
+  private photosUrl = 'http://localhost:8084/api/photos/voiture';
+
+
+  getCarImagesById(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.photosUrl}/${id}`);
   }
 }

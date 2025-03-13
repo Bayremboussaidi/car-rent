@@ -1,4 +1,4 @@
-package com.example.comparateur.DTO;
+/*package com.example.comparateur.DTO;
 
 import com.example.comparateur.Entity.Booking;
 import com.example.comparateur.Entity.Photo;
@@ -59,4 +59,57 @@ public class VoitureResponse {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+}
+*/
+
+
+package com.example.comparateur.DTO;
+
+import java.util.List;
+
+import com.example.comparateur.Entity.Review;
+import com.example.comparateur.Entity.Voiture;
+
+public class VoitureResponse {
+    private Long id;
+    private String carName;
+    private String brand;
+    private String category;
+    private String transmission;
+    private String toit;
+    private String carburant;
+    private double price;
+    private boolean featured;
+    private String agence;
+    private String local;
+    private String agenceLogo;
+    private String description;
+    private boolean disponible;
+    private String createdAt;
+    private String updatedAt;
+    private List<PhotoResponseDTO> images;  // ✅ Car Images
+    private List<Review> reviews; // ✅ Car Reviews (Type-Safe)
+
+    public VoitureResponse(Voiture voiture, List<PhotoResponseDTO> images, List<Review> reviews) {
+        this.id = voiture.getId();
+        this.carName = voiture.getCarName();
+        this.brand = voiture.getBrand();
+        this.category = voiture.getCategory();
+        this.transmission = voiture.getTransmission();
+        this.toit = voiture.getToit();
+        this.carburant = voiture.getCarburant();
+        this.price = voiture.getPrice();
+        this.featured = voiture.isFeatured();
+        this.agence = voiture.getAgence();
+        this.local = voiture.getLocal();
+        this.agenceLogo = voiture.getAgenceLogo();
+        this.description = voiture.getDescription();
+        this.disponible = voiture.isDisponible();
+        this.createdAt = voiture.getCreatedAt() != null ? voiture.getCreatedAt().toString() : null;
+        this.updatedAt = voiture.getUpdatedAt() != null ? voiture.getUpdatedAt().toString() : null;
+        this.images = images != null ? images : List.of(); // Avoid null lists
+        this.reviews = reviews != null ? reviews : List.of(); // Avoid null lists
+    }
+
+    // ✅ Getters & Setters
 }

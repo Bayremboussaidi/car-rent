@@ -1,0 +1,106 @@
+/* Center the dialog container */
+.mat-mdc-dialog-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100vh !important;
+}
+
+/* Background shadow effect for Material Design */
+.mat-mdc-dialog-backdrop {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Login Form Container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Login Card Styling */
+.login-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  width: 100%;
+  min-width: 350px;
+  max-width: 400px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Header Inside Login Card */
+.login-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Form Group Styling */
+.input-group {
+  margin-bottom: 15px;
+}
+
+/* Input Fields */
+.form__input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Remember Me Checkbox */
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Submit Button */
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+/* Booking List */
+.booking-container {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Loading State */
+.loading-container {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 15px;
+}

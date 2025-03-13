@@ -18,7 +18,6 @@ import { ListcarsComponent } from './components/pages/carlisting/carlisting.comp
 import { CarDetailsComponent } from './components/pages/car-details/car-details.component';
 //import { NotFoundComponent } from './components/pages/not-found/not-found.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { TestComponent } from './test/test.component';
 import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
 
 // Admin Pages
@@ -51,8 +50,7 @@ const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
       { path: 'thank-you', component: ThankYouComponent },
-      { path: 'footer', component: FooterComponent },
-      { path: 'test', component: TestComponent }
+      { path: 'footer', component: FooterComponent }
     ]
   },
 
