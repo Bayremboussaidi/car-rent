@@ -64,4 +64,14 @@ export class VoitureService {
 
     return this.http.put(`${this.baseUrl}/${id}`, formData);
   }
+
+
+
+  //get reviews for each voiture
+  getReviewsForVoiture(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}/reviews`);
+  }
+
+
+
 }
