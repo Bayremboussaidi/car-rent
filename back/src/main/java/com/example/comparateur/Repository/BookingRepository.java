@@ -21,9 +21,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Corrected method name to match the entity field
     List<Booking> findByBookingStatus(BookingStatus bookingStatus);
 
+//used in the delete
+    boolean existsById(Long id);
 
 
-
+    
 // Fetch bookings by user email
     List<Booking> findByUserEmail(String userEmail);
 

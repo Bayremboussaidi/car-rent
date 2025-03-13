@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -147,6 +148,24 @@ public ResponseEntity<Object> getBookingsByUserEmail(@PathVariable String email)
     }
     
     return ResponseEntity.ok(new ApiResponse(true, "Bookings fetched successfully", bookings));
+}
+
+
+
+
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Object> deleteBooking(@PathVariable Long id) {
+    try {
+        if (!bookingRepository.existsById(id)) {
+            return ResponseEntity.status(404).body(new ApiResponse(false, "Booking not found"));
+        }
+
+        bookingRepository.deleteById(id);
+        return ResponseEntity.ok(new ApiResponse(true, "Booking deleted successfully"));
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(new ApiResponse(false, "Error deleting booking: " + e.getMessage()));
+    }
 }
 
 }

@@ -1,5 +1,5 @@
 <h2 mat-dialog-title *ngIf="bookings === null">Enter Your Email</h2>
-<h2 mat-dialog-title *ngIf="bookings !== null">Vos Réservations</h2>
+<h2 mat-dialog-title *ngIf="bookings !== null">Your Bookings</h2>
 
 <mat-dialog-content>
   <!-- Step 1: Email Input -->
@@ -12,12 +12,17 @@
         <h2>Log In</h2>
         <form class="form-group">
           <div class="input-group">
-            <input type="text" name="username" id="username" class="form__input" placeholder="Username">
+            <input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              class="form__input"
+              placeholder="Enter your email"
+              required
+            />
           </div>
-
-
           <div class="btn-container">
-            <button type="submit" class="btn" (click)="submitEmail()">Submit</button>
+            <button type="button" class="btn" (click)="submitEmail()">Submit</button>
           </div>
         </form>
       </div>
@@ -32,20 +37,37 @@
   <!-- Step 3: Display Booking List -->
   <div *ngIf="bookings !== null && !isLoading" class="booking-container">
     <ul *ngIf="bookings.length > 0; else noBookings">
-      <li *ngFor="let booking of bookings">
-        <strong>{{ booking.carName }}</strong> - {{ booking.startDate }} à {{ booking.endDate }} ({{ booking.status }})
+      <li *ngFor="let booking of bookings" class="booking-item">
+        <!-- ✅ Display Image -->
+        <img [src]="booking.imgUrl" [alt]="booking.carName" class="booking-image" />
+
+        <div class="booking-info">
+          <strong>{{ booking.carName }}</strong> - {{ booking.startDate }} to {{ booking.endDate }}
+          (<span [ngClass]="{
+            'pending': booking.bookingStatus === 'PENDING',
+            'confirmed': booking.bookingStatus === 'CONFIRMED',
+            'canceled': booking.bookingStatus === 'CANCELED'
+          }">{{ booking.bookingStatus }}</span>)
+
+          <!-- ✅ Delete Button (Enabled for PENDING, Disabled for Others) -->
+          <button
+            (click)="deleteBooking(booking.id)"
+            [disabled]="booking.bookingStatus !== 'PENDING'"
+            class="btn btn-danger">
+            Delete
+          </button>
+        </div>
       </li>
     </ul>
 
     <!-- Message when no bookings found -->
     <ng-template #noBookings>
-      <p>Aucune réservation trouvée pour cet e-mail.</p>
+      <p>No bookings found for this email.</p>
     </ng-template>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-
-  <!-- Step 2: Show "Close" when bookings are displayed -->
-  <button *ngIf="bookings !== null" mat-button (click)="closeDialog()">Fermer</button>
+  <!-- Show "Close" when bookings are displayed -->
+  <button *ngIf="bookings !== null" mat-button (click)="closeDialog()">Close</button>
 </mat-dialog-actions>

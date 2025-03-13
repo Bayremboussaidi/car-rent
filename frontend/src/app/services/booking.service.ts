@@ -62,9 +62,17 @@ export class BookingService {
   }
 
 
-
   getBookingsByUserEmail(userEmail: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/user/${userEmail}`);
-  }
+    const encodedEmail = userEmail.trim(); // ✅ Remove encodeURIComponent()
+    console.log(`Making API call to: ${this.apiUrl}/user/${encodedEmail}`); // ✅ Debugging log
+    return this.http.get<any>(`${this.apiUrl}/user/${encodedEmail}`);
+}
+
+
+
+deleteBooking(bookingId: number): Observable<any> {
+  return this.http.delete<any>(`${this.apiUrl}/${bookingId}`);
+}
+
 
 }

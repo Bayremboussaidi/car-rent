@@ -1,106 +1,83 @@
-/* Center the dialog container */
-.mat-mdc-dialog-container {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 100vh !important;
-}
-
-/* Background shadow effect for Material Design */
-.mat-mdc-dialog-backdrop {
-  background: rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Login Form Container */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-/* Login Card Styling */
-.login-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+/* General Dialog Styling */
+mat-dialog-content {
   padding: 20px;
-  width: 100%;
-  min-width: 350px;
-  max-width: 400px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
 }
 
-/* Header Inside Login Card */
-.login-header {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* Form Group Styling */
-.input-group {
-  margin-bottom: 15px;
-}
-
-/* Input Fields */
-.form__input {
-  width: 100%;
+/* Booking Container */
+.booking-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
 }
 
-/* Remember Me Checkbox */
-.remember-me {
+/* Booking Item Card */
+.booking-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-size: 14px;
-  margin-bottom: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Submit Button */
-.btn-container {
+.booking-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Booking Image */
+.booking-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
+/* Booking Info */
+.booking-info {
+  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.btn {
-  background: #007bff;
+/* Booking Status */
+.pending {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.confirmed {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.canceled {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* Delete Button */
+.btn-danger {
+  background-color: #f44336;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
   transition: background 0.3s ease;
 }
 
-.btn:hover {
-  background: #0056b3;
+.btn-danger:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
-/* Booking List */
-.booking-container {
-  padding: 20px;
-  text-align: center;
-}
-
-/* Loading State */
-.loading-container {
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-/* Footer */
-.footer {
-  text-align: center;
-  font-size: 12px;
-  margin-top: 15px;
+.btn-danger:hover:not(:disabled) {
+  background-color: #d32f2f;
 }

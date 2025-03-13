@@ -31,10 +31,11 @@ export class TitanComponent {
 
   openEmailDialog() {
     this.dialog.open(EmailDialogComponent, {
-      width: '500vh', // Ensures a reasonable width
+      width: '400px',
       disableClose: false,
       hasBackdrop: true,
-      panelClass:  'custom-dialog-container',
+      panelClass: 'custom-dialog-container',
+      position: { top: '50%', left: '50%' }, // ✅ Ensures modal appears in the center
     });
   }
 
@@ -59,26 +60,30 @@ export class TitanComponent {
    */
   fetchBookingsByEmail() {
     if (!this.userEmail) {
-      this.responseMessage = "Veuillez entrer un e-mail valide.";
-      return;
+        this.responseMessage = "Veuillez entrer un e-mail valide.";
+        return;
     }
 
+    console.log("Fetching bookings for email:", this.userEmail); // ✅ Debugging log
+
     this.bookingService.getBookingsByUserEmail(this.userEmail).subscribe({
-      next: (response: { success: boolean; data: Booking[] }) => {
-        if (response.success) {
-          this.userBookings = response.data;
-          this.responseMessage = "";
-        } else {
-          this.responseMessage = "Aucune réservation trouvée pour cet e-mail.";
-          this.userBookings = [];
+        next: (response: { success: boolean; data: Booking[] }) => {
+            console.log("API Response:", response); // ✅ Debugging log
+            if (response.success) {
+                this.userBookings = response.data;
+                this.responseMessage = "";
+            } else {
+                this.responseMessage = "Aucune réservation trouvée pour cet e-mail.";
+                this.userBookings = [];
+            }
+        },
+        error: (error: any) => {
+            console.error("Erreur lors de la récupération des réservations:", error); // ✅ Debugging log
+            this.responseMessage = "Impossible de récupérer les réservations.";
         }
-      },
-      error: (error: any) => {
-        console.error("Erreur lors de la récupération des réservations:", error);
-        this.responseMessage = "Impossible de récupérer les réservations.";
-      }
     });
-  }
+}
+
 
   @HostListener("window:scroll", [])
   onWindowScroll() {

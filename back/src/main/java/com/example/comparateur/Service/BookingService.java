@@ -180,17 +180,13 @@ public class BookingService {
     // ✅ Delete a booking
     @Transactional
     public ResponseEntity<Object> deleteBooking(Long id) {
-        try {
+        
             if (bookingRepository.existsById(id)) {
                 bookingRepository.deleteById(id);
                 return ResponseEntity.ok().body(new ApiResponse(true, "Booking deleted successfully"));
             } else {
                 return ResponseEntity.status(404).body(new ApiResponse(false, "Booking not found"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new ApiResponse(false, "Error deleting booking: " + e.getMessage()));
-        }
     }
 }
 
