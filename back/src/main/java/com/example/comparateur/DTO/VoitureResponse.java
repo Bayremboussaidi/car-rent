@@ -70,6 +70,12 @@ import java.util.List;
 import com.example.comparateur.Entity.Review;
 import com.example.comparateur.Entity.Voiture;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class VoitureResponse {
     private Long id;
     private String carName;
