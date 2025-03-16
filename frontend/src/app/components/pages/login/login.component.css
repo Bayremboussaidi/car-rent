@@ -1,16 +1,11 @@
 .login__img {
-    width: 60%;
-    height: 100%; /* Set the height as needed */
-    text-align: center;
-    background-image: url('../../../../assets/all-images/login.jpg');
-    background-size: cover; /* Adjusts the background image to cover the entire div */
-    background-position: center; /* Centers the background image */
-    background-repeat: no-repeat; /* Prevents the background image from repeating */
-  }
+  inline-size: 60%;
+}
 
-  .login__img img {
-    display: none; /* Hide the img tag since the background image is used */
-  }
+.login__img img {
+  inline-size: 100%;
+}
+
 
   .login__form {
     padding: 50px;

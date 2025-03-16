@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { Client, IMessage, Stomp } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -70,4 +70,4 @@ export class WebsocketService {
       console.error('WebSocket is not connected');
     }
   }
-}
+}*/

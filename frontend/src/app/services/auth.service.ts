@@ -17,78 +17,36 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  register(user: Partial<User>): Observable<any> {
-    const adminLoginUrl = `${this.keycloakUrl}/realms/master/protocol/openid-connect/token`;
-    const createUserUrl = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
 
-    // Get an admin access token
-    const body = new URLSearchParams();
-    body.set('client_id', 'admin');  // Use admin-cli for managing users
-    body.set('username', 'admin');  // Admin username
-    body.set('password', 'admin');  // Admin password
-    body.set('grant_type', 'password');
 
-    return this.http.post(adminLoginUrl, body.toString(), {
+
+    login(credentials: { email: string; password: string }): Observable<any> {
+      const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
+
+      const body = new URLSearchParams();
+      body.set('client_id', this.clientId);
+      body.set('client_secret', this.clientSecret);
+      body.set('grant_type', 'password');
+      body.set('username', credentials.email);
+      body.set('password', credentials.password);
+      body.set('scope', 'openid offline_access');
+
+      return this.http.post(url, body.toString(), {
         headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
-    }).pipe(
-        map((tokenResponse: any) => {
-            console.log(" Admin Token Received:", tokenResponse);
-            const adminToken = tokenResponse.access_token;
-
-            // Create user payload
-            const keycloakUser = {
-                username: user.username ?? '',
-                firstName: user.firstName ?? '',
-                lastName: user.lastName ?? '',
-                email: user.email ?? '',
-                enabled: true,
-                credentials: [{ type: 'password', value: user.password ?? '', temporary: false }],
-            };
-
-            // Register user with the admin token
-            return this.http.post(createUserUrl, keycloakUser, {
-                headers: new HttpHeaders({
-                    Authorization: `Bearer ${adminToken}`,
-                    'Content-Type': 'application/json',
-                }),
-            });
+      }).pipe(
+        map((response: any) => {
+          console.log("✅ Login successful:", response);
+          localStorage.setItem('access_token', response.access_token);
+          localStorage.setItem('refresh_token', response.refresh_token);
+          localStorage.setItem('role', this.extractRole(response.access_token));
+          return response; // Return the full response object
         }),
-        catchError(error => {
-            console.error(" Registration Failed:", error);
-            return throwError(error);
+        catchError((error) => {
+          console.error('❌ Login error:', error);
+          return throwError(error);
         })
-    );
-}
-
-
-
-  login(credentials: { email: string; password: string }): Observable<boolean> {
-    const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
-
-    const body = new URLSearchParams();
-    body.set('client_id', this.clientId);
-    body.set('client_secret', this.clientSecret);
-    body.set('grant_type', 'password');
-    body.set('username', credentials.email);
-    body.set('password', credentials.password);
-    body.set('scope', 'openid offline_access');
-
-    return this.http.post(url, body.toString(), {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
-    }).pipe(
-      map((response: any) => {
-        console.log("✅ Login successful:", response);
-        localStorage.setItem('access_token', response.access_token);
-        localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('role', this.extractRole(response.access_token));
-        return true;
-      }),
-      catchError((error) => {
-        console.error('❌ Login error:', error);
-        return throwError(error);
-      })
-    );
-  }
+      );
+    }
 
 
 
@@ -135,6 +93,86 @@ export class AuthService {
       })
     );
   }
+
+
+
+  //(Clear Tokens & Redirect)
+  logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('user');
+
+    // Log the remaining local storage data
+    const remainingLocalStorageData = { ...localStorage };
+    console.log('Remaining local storage data:', remainingLocalStorageData);
+
+    // Check if user-related items are removed
+    const userRemoved = !localStorage.getItem('access_token') && !localStorage.getItem('refresh_token') && !localStorage.getItem('role') && !localStorage.getItem('user');
+    console.log('User removed:', userRemoved);
+
+    this.router.navigate(['/login']);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*login(credentials: { email: string; password: string }): Observable<boolean> {
+    const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
+
+    const body = new URLSearchParams();
+    body.set('client_id', this.clientId);
+    body.set('client_secret', this.clientSecret);
+    body.set('grant_type', 'password');
+    body.set('username', credentials.email);
+    body.set('password', credentials.password);
+    body.set('scope', 'openid offline_access');
+
+    return this.http.post(url, body.toString(), {
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
+    }).pipe(
+      map((response: any) => {
+        console.log("✅ Login successful:", response);
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('refresh_token', response.refresh_token);
+        localStorage.setItem('role', this.extractRole(response.access_token));
+        return true;
+      }),
+      catchError((error) => {
+        console.error('❌ Login error:', error);
+        return throwError(error);
+      })
+    );
+  }*/
+
+
+
+
+
+
+
+
 
 
 
@@ -191,13 +229,8 @@ export class AuthService {
     }
   }
     */
-  // ✅ Logout (Clear Tokens & Redirect)
-  logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('role');
-    this.router.navigate(['/login']);
-  }
+  // ✅ Logout
+
 
     /*
   // ❌ Previous Method: Register via Admin API (Commented Out)
@@ -225,4 +258,48 @@ export class AuthService {
     );
   }
   */
+
+/*
+  register(user: Partial<User>): Observable<any> {
+    const adminLoginUrl = `${this.keycloakUrl}/realms/master/protocol/openid-connect/token`;
+    const createUserUrl = `${this.keycloakUrl}/admin/realms/${this.realm}/users`;
+
+    // Get an admin access token
+    const body = new URLSearchParams();
+    body.set('client_id', 'admin');  // Use admin-cli for managing users
+    body.set('username', 'admin');  // Admin username
+    body.set('password', 'admin');  // Admin password
+    body.set('grant_type', 'password');
+
+    return this.http.post(adminLoginUrl, body.toString(), {
+        headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
+    }).pipe(
+        map((tokenResponse: any) => {
+            console.log(" Admin Token Received:", tokenResponse);
+            const adminToken = tokenResponse.access_token;
+
+            // Create user payload
+            const keycloakUser = {
+                username: user.username ?? '',
+                firstName: user.firstName ?? '',
+                lastName: user.lastName ?? '',
+                email: user.email ?? '',
+                enabled: true,
+                credentials: [{ type: 'password', value: user.password ?? '', temporary: false }],
+            };
+
+            // Register user with the admin token
+            return this.http.post(createUserUrl, keycloakUser, {
+                headers: new HttpHeaders({
+                    Authorization: `Bearer ${adminToken}`,
+                    'Content-Type': 'application/json',
+                }),
+            });
+        }),
+        catchError(error => {
+            console.error(" Registration Failed:", error);
+            return throwError(error);
+        })
+    );
 }
+*/

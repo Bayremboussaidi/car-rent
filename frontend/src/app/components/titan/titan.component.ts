@@ -5,6 +5,8 @@ import { BookingService } from "../../services/booking.service";
 import { Booking } from "../../models/booking.model";
 import { MatDialog } from "@angular/material/dialog";
 import { EmailDialogComponent } from "../dialog/email-dialog/email-dialog.component";
+import { AuthService } from "../../services/auth.service";
+
 
 @Component({
   selector: "app-titan",
@@ -22,7 +24,8 @@ export class TitanComponent {
   constructor(
     private keycloakService: KeycloakService,
     private router: Router,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private authService: AuthService
   ) {}
 
 
@@ -52,7 +55,7 @@ export class TitanComponent {
   }
 
   logout(): void {
-    this.keycloakService.logout();
+    this.authService.logout();
   }
 
   /**

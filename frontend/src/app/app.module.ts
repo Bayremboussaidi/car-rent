@@ -68,7 +68,7 @@ import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
 import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
-import { NotificationComponent } from './components/notification/notification.component';
+//import { NotificationComponent } from './components/notification/notification.component';
 import { TopMenuComponent } from './components/top-menu/top-menu.component';
 import { TitanComponent } from './components/titan/titan.component';
 
@@ -130,7 +130,7 @@ export function kcFactory(kcService: KeycloakService) {
     CarListAComponent,
     CardetailsAComponent,
     CarDetaComponent,
-    NotificationComponent,
+
     TopMenuComponent,
     TitanComponent,
     EmailDialogComponent,

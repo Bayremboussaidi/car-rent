@@ -114,8 +114,6 @@ export class LoginComponent implements OnInit {
 
 
 
-
-
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -135,8 +133,9 @@ export class LoginComponent {
     event.preventDefault();
 
     this.authService.login(this.credentials).subscribe({
-      next: () => {
+      next: (response) => {
         console.log('Login successful');
+        this.storeUserDetails(response.access_token);
         this.router.navigate(['/home']); // Redirect to dashboard after login
       },
       error: (err) => {
@@ -144,5 +143,23 @@ export class LoginComponent {
         this.errorMessage = 'Email ou mot de passe incorrect';
       },
     });
+  }
+
+  private storeUserDetails(token: string) {
+    try {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const userDetails = {
+        username: decodedToken.preferred_username,
+        email: decodedToken.email,
+        firstName: decodedToken.given_name,
+        lastName: decodedToken.family_name,
+        workplace: decodedToken.workplace,
+        phoneNumber: decodedToken.phone_number,
+      };
+      localStorage.setItem('user', JSON.stringify(userDetails));
+      console.log('User details saved to local storage:', userDetails);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
   }
 }

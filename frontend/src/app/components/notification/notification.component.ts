@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+/*import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 
 @Component({
@@ -32,3 +32,4 @@ export class NotificationComponent implements OnInit {
     this.websocketService.sendNotification('New booking request received!');
   }
 }
+*/
