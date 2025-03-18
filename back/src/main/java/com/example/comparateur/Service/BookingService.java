@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.Utils.ApiResponse;
-import com.example.comparateur.Entity.Booking; // ✅ WebSocket Messaging
+import com.example.comparateur.Entity.Booking;
 import com.example.comparateur.Entity.BookingStatus;
 import com.example.comparateur.Repository.BookingRepository;
 import com.example.comparateur.Repository.VoitureRepository;

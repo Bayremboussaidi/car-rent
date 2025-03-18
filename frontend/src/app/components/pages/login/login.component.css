@@ -74,6 +74,44 @@
     font-weight: 500;
   }
 
+
+
+
+
+
+
+  /*i m not robot */
+  .robot-check {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #4CAF50; /* Green color for checkbox */
+    }
+  }
+
+  .text-danger {
+    color: #dc3545;
+    margin-top: 0.5rem;
+  }
+
+
+
+
+
+
+
+
   @media only screen and (max-width: 768px) {
     .login__img {
       display: none;

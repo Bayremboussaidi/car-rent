@@ -25,6 +25,19 @@
               <div class="form-group">
                 <input type="password" placeholder="Mot de passe" required id="password" [(ngModel)]="credentials.password" name="password">
               </div>
+
+              <div class="robot-check">
+                <label>
+                  <input type="checkbox" [(ngModel)]="isRobot" name="robotCheck">
+                  Je ne suis pas un robot
+                </label>
+              </div>
+              <div class="robot-check">
+                <label>
+                  <input type="checkbox" [(ngModel)]="isUser" name="robotCheck">
+                  Je suis un client
+                </label>
+              </div>
               <button class="btn secondary__btn auth__btn" type="submit">
                 <p>Se connecter</p>
               </button>
