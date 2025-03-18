@@ -136,6 +136,8 @@ public class AuthController {
 
 package com.example.comparateur.Controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -159,22 +161,26 @@ public class AuthController {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // ✅ Fix: Use PasswordEncoder to check passwords
+    private PasswordEncoder passwordEncoder; // ✅ Use PasswordEncoder to check passwords
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             // ✅ Fetch user by email
-            User user = userRepository.findByEmail(loginRequest.getEmail());
+            Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
             // ✅ Check if user exists and password matches
-            if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            if (userOptional.isEmpty() || !passwordEncoder.matches(loginRequest.getPassword(), userOptional.get().getPassword())) {
                 return ResponseEntity.status(401).body(new ErrorResponse(false, "Les identifications sont erronées", null));
             }
 
-            return ResponseEntity.ok(user);
+            // If the user is found and the password matches
+            return ResponseEntity.ok(userOptional.get()); // Return user info or a JWT token here as per your needs
+
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ErrorResponse(false, "An error occurred: " + e.getMessage(), null));
         }
     }
 }
+
+

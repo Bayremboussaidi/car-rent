@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.comparateur.Entity.User;
-import com.example.comparateur.Service.UserService;
+import com.example.comparateur.Service.USER.UserService;
 
 @RestController
 @RequestMapping("/api")
