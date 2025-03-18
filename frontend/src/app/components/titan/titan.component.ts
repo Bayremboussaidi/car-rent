@@ -99,6 +99,6 @@ export class TitanComponent {
     this.scrollOpacity = Math.min(maxOpacity, scrollTop / scrollFactor);
 
     // Hide top menu after scrolling 50px, and make app-titan move up
-    this.isTopMenuVisible = scrollTop < 50;
+    this.isTopMenuVisible = scrollTop < 60;
   }
 }
