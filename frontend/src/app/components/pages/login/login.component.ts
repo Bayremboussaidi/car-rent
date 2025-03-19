@@ -12,7 +12,7 @@ export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage: string = '';
   isRobot = false;
-  isUser = false;
+  isUser = true;
   showRobotError = false;
 
   constructor(
@@ -38,8 +38,9 @@ export class LoginComponent {
 
     if (this.isUser) {
       this.userloginService.login(this.credentials).subscribe({
-        next: (response) => { // Added next handler for user login
-          this.storeUserDetails(response.access_token);
+        next: (response) => {
+          console.log('Login response:', response); // Log response
+          this.storeUserDetails(response.token);
           this.router.navigate(['/home']);
         },
         error: (err: any) => {
@@ -50,7 +51,7 @@ export class LoginComponent {
       this.authService.login(this.credentials).subscribe({
         next: (response) => {
           console.log('Login successful');
-          this.storeUserDetails(response.access_token);
+          this.storeUserDetails(response.token);
           this.router.navigate(['/home']);
         },
         error: (err) => {
@@ -60,10 +61,17 @@ export class LoginComponent {
       });
     }
   }
-
   private storeUserDetails(token: string) {
+    if (!token) {
+      console.error('No token provided');
+      return;
+    }
+
     try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const payload = token.split('.')[1];
+      const decodedToken = JSON.parse(atob(payload));
+      console.log('Decoded token:', decodedToken); // Log decoded token
+
       const userDetails = {
         username: decodedToken.preferred_username,
         email: decodedToken.email,
@@ -72,6 +80,7 @@ export class LoginComponent {
         workplace: decodedToken.workplace,
         phoneNumber: decodedToken.phone_number,
       };
+      console.log('User details:', userDetails); // Log user details
       localStorage.setItem('user', JSON.stringify(userDetails));
     } catch (error) {
       console.error('Error decoding token:', error);

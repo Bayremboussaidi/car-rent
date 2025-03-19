@@ -59,14 +59,16 @@ public class ControllerU {
         // Load user details from the user service
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         
+            // Load user entity from the repository
+            final User user = userRepository.findByEmail(loginRequest.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
         // Generate a JWT token for the authenticated user
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = jwtUtil.generateToken(userDetails, user);
 
         // Return the JWT as part of the response body
         return ResponseEntity.ok(new LoginResponse(jwt));
     }
-
-
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {

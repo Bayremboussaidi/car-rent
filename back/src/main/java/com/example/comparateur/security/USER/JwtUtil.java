@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.example.comparateur.Entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-
-
-// JwtUtil.java
 @Component
 public class JwtUtil {
 
@@ -24,8 +23,14 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("preferred_username", user.getUsername());
+        claims.put("email", user.getEmail());
+        claims.put("given_name", user.getUsername());
+        claims.put("workplace", user.getWorkplace());
+        claims.put("phone_number", user.getPhone());
+
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -49,7 +54,7 @@ public class JwtUtil {
     }
 
     private Date extractExpiration(String token) {
-        return (Date) extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

@@ -15,8 +15,8 @@ export class UserloginService {
   login(credentials: { email: string, password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
+        console.log('Login response:', response); // Log response
         localStorage.setItem('auth_token', response.token);
-        this.router.navigate(['/home']);
       }),
       catchError(error => {
         return throwError(() => error.error?.message || 'Login failed');
