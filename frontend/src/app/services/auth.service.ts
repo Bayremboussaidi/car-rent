@@ -98,19 +98,26 @@ export class AuthService {
 
   //(Clear Tokens & Redirect)
   logout() {
+    // Clear all relevant data from local storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('role');
     localStorage.removeItem('user');
+    localStorage.removeItem('auth_token'); // Add this line to remove auth_token
+    localStorage.removeItem('kc-callback-3b0df39a-9bdc-4d5f-b14b-abad8258c271'); // Add this line to remove kc-callback
+
+    // Optionally, clear all local storage data
+    // localStorage.clear();
 
     // Log the remaining local storage data
     const remainingLocalStorageData = { ...localStorage };
     console.log('Remaining local storage data:', remainingLocalStorageData);
 
     // Check if user-related items are removed
-    const userRemoved = !localStorage.getItem('access_token') && !localStorage.getItem('refresh_token') && !localStorage.getItem('role') && !localStorage.getItem('user');
+    const userRemoved = !localStorage.getItem('access_token') && !localStorage.getItem('refresh_token') && !localStorage.getItem('role') && !localStorage.getItem('user') && !localStorage.getItem('auth_token') && !localStorage.getItem('kc-callback-3b0df39a-9bdc-4d5f-b14b-abad8258c271');
     console.log('User removed:', userRemoved);
 
+    // Redirect to login page
     this.router.navigate(['/login']);
   }
 

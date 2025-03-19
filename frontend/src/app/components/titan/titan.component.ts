@@ -52,6 +52,8 @@ export class TitanComponent {
 
   login(): void {
     this.router.navigate(['/login']);
+    console.log('Local storage after logout:', localStorage);
+
   }
 
   logout(): void {
