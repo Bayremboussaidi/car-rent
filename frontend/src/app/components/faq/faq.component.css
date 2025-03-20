@@ -1,0 +1,87 @@
+.faq-container {
+  max-width: 800px;
+  max-height: 80vh; /* Hauteur maximale de 80% de l'écran */
+  overflow-y: auto; /* Défilement vertical */
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Style de la barre de défilement */
+.faq-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.faq-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.faq-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.faq-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Reste du CSS existant */
+.faq-item {
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.question:hover {
+  background-color: #e9ecef;
+}
+
+.toggle-icon {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-left: 15px;
+}
+
+.answer {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 15px;
+  transition: max-height 0.3s ease-out;
+  background-color: white;
+}
+
+.answer.open {
+  max-height: 500px;
+  padding: 15px;
+}
+
+.answer p {
+  margin: 0;
+  line-height: 1.6;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 10px;
+    max-height: 70vh; /* Ajustement pour mobile */
+  }
+
+  .question {
+    padding: 10px;
+  }
+}

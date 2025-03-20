@@ -14,12 +14,19 @@ export class LoginComponent {
   isRobot = false;
   isUser = true;
   showRobotError = false;
+  showConditions = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private userloginService: UserloginService // Fixed casing and type annotation
   ) {}
+
+
+
+  closeConditions() {
+    this.showConditions = false;
+  }
 
   handleClick(event: Event) {
     event.preventDefault();

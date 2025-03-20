@@ -85,6 +85,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MaterialComponent } from './test/material/material.component';
+import { ContactBadgeComponent } from './components/contact-badge/contact-badge.component';
+import { FaqComponent } from './components/faq/faq.component';
 
 
 
@@ -138,6 +140,8 @@ export function kcFactory(kcService: KeycloakService) {
     TitanComponent,
     EmailDialogComponent,
     MaterialComponent,
+    ContactBadgeComponent,
+    FaqComponent,
   ],
   imports: [
     BrowserModule,

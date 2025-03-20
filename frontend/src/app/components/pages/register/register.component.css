@@ -52,6 +52,10 @@
   outline: none;
 }
 
+.form-group {
+  margin-bottom: 1.5rem; /* Espace de 24px entre les inputs */
+}
+
 .auth__btn {
   background: var(--heading-color) !important;
   width: 100%;
