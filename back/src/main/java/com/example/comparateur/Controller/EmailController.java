@@ -26,7 +26,9 @@ public class EmailController {
 
     @PostMapping("/sendEmail/inform")
     public String informEmail(@RequestBody EmailRequestDTO emailRequest) {
-        emailService.sendEmail(emailRequest);
+        emailService.informEmail(emailRequest);
         return "Email sent successfully";
     }
+
+    
 }

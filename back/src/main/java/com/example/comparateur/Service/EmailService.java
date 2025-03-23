@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.comparateur.DTO.EmailRequestDTO;
 
@@ -23,9 +24,9 @@ public class EmailService {
 
 
 
-    public void informEmail(EmailRequestDTO emailRequest) {
+    public void informEmail(@RequestBody EmailRequestDTO emailRequest) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(emailRequest.getEmail());
+        message.setTo(emailRequest.getEmail()); // Use the email from the JSON payload
         message.setSubject("New Message from " + emailRequest.getName());
         message.setText("Email: " + emailRequest.getEmail() + "\n\nMessage:\n" + emailRequest.getMessage());
         mailSender.send(message);
