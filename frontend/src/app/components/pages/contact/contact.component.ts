@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { EmailService } from '../../../services/email.service';
 
 @Component({
   selector: 'app-contact',
@@ -6,6 +7,27 @@ import { Component } from '@angular/core';
   styleUrls: ['./contact.component.css']
 })
 export class ContactComponent {
+  name: string = '';
+  email: string = '';
+  message: string = '';
+
+  constructor(private emailService: EmailService) {}
+
+  sendMessage() {
+    const emailRequest = {
+      name: this.name,
+      email: this.email,
+      message: this.message
+    };
+    this.emailService.sendEmail(emailRequest)
+    .subscribe(response => {
+      console.log('Email sent successfully', response);
+    }, error => {
+      console.error('Error sending email', error);
+    });
+  }
+
+
   socialLinks = [
     {
       url: 'https://www.facebook.com/profile.php?id=61567175341859',

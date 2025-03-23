@@ -1,93 +1,7 @@
-/*import { Component, OnInit } from '@angular/core';
-import { BookingService } from './../../services/booking.service';
-import { Booking } from '../../models/booking.model';
-
-@Component({
-  selector: 'app-bookings',
-  templateUrl: './booking-a.component.html',
-  styleUrls: ['./booking-a.component.css']
-})
-export class BookingAComponent implements OnInit {
-  bookings: Booking[] = [];
-  filteredBookings: Booking[] = [];
-  activeButton: string = ''; //pending
-
-  constructor(private bookingService: BookingService) {}
-
-  ngOnInit(): void {
-    this.loadBookings();
-  }
-
-  loadBookings(): void {
-    this.bookingService.getAllBookings().subscribe(
-      (response: any) => {
-        if (response.success && Array.isArray(response.data)) {
-          this.bookings = response.data.map((booking: Booking) => ({
-            ...booking,
-            formattedDate: this.formatDate(booking.startDate, booking.endDate)
-          }));
-          this.filteredBookings = this.bookings; // Initialize filteredBookings with all bookings
-        }
-      },
-      (error: any) => {
-        console.error('Error fetching bookings:', error);
-      }
-    );
-  }
-
-  formatDate(startDate: string | null, endDate: string | null): string {
-    if (!startDate || !endDate) {
-      return 'N/A';
-    }
-    return `${startDate} - ${endDate}`;
-  }
-
-  showPending(): void {
-    this.filteredBookings = this.bookings.filter(booking => booking.status === 'PENDING');
-    this.activeButton = 'pending'; // Set active button to 'pending'
-  }
-
-  showTraited(): void {
-    this.filteredBookings = this.bookings.filter(booking => booking.status === 'CONFIRMED' || booking.status === 'DECLINED');
-    this.activeButton = 'traited'; // Set active button to 'traited'
-  }
-
-  accept(booking: Booking): void {
-    booking.status = 'CONFIRMED';
-    this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
-      () => {
-        console.log(`Booking ${booking.id} accepted.`);
-        //this.showPending();
-      },
-      (error:any) => {
-        console.error('Error accepting booking:', error);
-      }
-    );
-  }
-
-  refuse(booking: Booking): void {
-    booking.status = 'DECLINED';
-    this.bookingService.updateBookingStatus(booking.id, 'DECLINED').subscribe(
-      () => {
-        console.log(`Booking ${booking.id} refused.`);
-        //this.showPending();
-      },
-      (error:any) => {
-        console.error('Error refusing booking:', error);
-      }
-    );
-  }
-}
-*/
-
-
-
-
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { BookingService } from './../../services/booking.service';
+import { EmailService } from '../../services/email.service';
+import { EmailRequest } from '../../models/emailRequest.model';
 
 interface BookingData {
   id: number;
@@ -116,7 +30,7 @@ export class BookingAComponent implements OnInit {
   filteredBookings: BookingData[] = [];
   activeButton: string = 'pending'; // Default to 'En Cours' (Pending)
 
-  constructor(private bookingService: BookingService) {}
+  constructor(private bookingService: BookingService , private emailService: EmailService) {}
 
   ngOnInit(): void {
     this.loadBookings();
@@ -176,12 +90,28 @@ export class BookingAComponent implements OnInit {
   accept(booking: BookingData): void {
     this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
       () => {
-        console.log(`✅ Réservation ${booking.id} acceptée.`);
+        console.log(` Réservation ${booking.id} acceptée.`);
         booking.bookingStatus = 'CONFIRMED'; // ✅ Update UI directly
-        this.loadBookings(); // ✅ Force UI refresh
+        this.loadBookings(); //  Force UI refresh
+
+                // Send confirmation email
+                const emailRequest: EmailRequest = {
+                  name: booking.username,
+                  email: booking.userEmail,
+                  message: `Votre réservation pour ${booking.carName} a été confirmée.`
+                };
+
+                this.emailService.informEmail(emailRequest).subscribe(
+                  response => {
+                    console.log('Email sent successfully', response);
+                  },
+                  error => {
+                    console.error('Error sending email', error);
+                  }
+                );
       },
       (error: any) => {
-        console.error('❌ Erreur lors de l\'acceptation de la réservation:', error);
+        console.error(' Erreur lors de l\'acceptation de la réservation:', error);
       }
     );
 }
@@ -192,6 +122,22 @@ refuse(booking: BookingData): void {
         console.log(`❌ Réservation ${booking.id} refusée.`);
         booking.bookingStatus = 'CANCELED'; // ✅ Update UI directly
         this.loadBookings(); // ✅ Force UI refresh
+
+                        // Send confirmation email
+                        const emailRequest: EmailRequest = {
+                          name: booking.username,
+                          email: booking.userEmail,
+                          message: `Votre réservation pour ${booking.carName} a été réfusé.`
+                        };
+
+                        this.emailService.informEmail(emailRequest).subscribe(
+                          response => {
+                            console.log('Email sent successfully', response);
+                          },
+                          error => {
+                            console.error('Error sending email', error);
+                          }
+                        );
       },
       (error: any) => {
         console.error('❌ Erreur lors du refus de la réservation:', error);
