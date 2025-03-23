@@ -43,9 +43,9 @@
           <h5 class="footer__link-title">Newsletter</h5>
           <p class="section__description">Abonnez-vous à notre newsletter pour les dernières mises à jour.</p>
           <div class="newsletter">
-            <input type="email" placeholder="Email" />
-            <span><i class="ri-send-plane-line"></i></span>
-          </div>
+            <input type="email" [(ngModel)]="email" placeholder="Email" />
+            <span><i class="ri-send-plane-line" (click)="subscribeToNewsletter()"></i></span>
+        </div>
         </div>
       </div>
 
