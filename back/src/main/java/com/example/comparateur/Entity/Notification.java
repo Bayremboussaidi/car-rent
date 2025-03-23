@@ -12,15 +12,23 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder // ✅ Fix: Add @Builder annotation
+@Builder // Fix: Add @Builder annotation
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String recipient; // ✅ Username of recipient
+    private String recipient; // Username of recipient
     private String message;
     private boolean seen = false;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+
+
+
+
+    @PrePersist
+    protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    }
 }

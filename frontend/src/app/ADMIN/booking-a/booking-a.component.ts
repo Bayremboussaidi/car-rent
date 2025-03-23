@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BookingService } from './../../services/booking.service';
 import { EmailService } from '../../services/email.service';
 import { EmailRequest } from '../../models/emailRequest.model';
+import { NotifService } from '../../services/notif.service';
+import { AppNotification } from '../../models/AppNotification.model';
 
 interface BookingData {
   id: number;
@@ -14,7 +16,7 @@ interface BookingData {
   description: string;
   startDate: string | null;
   endDate: string | null;
-  bookingStatus: string; // ✅ Make sure bookingStatus is included
+  bookingStatus: string; //  Make sure bookingStatus is included
   pickupLocation: string;
   dropoffLocation: string;
   formattedDate?: string; // Optional for UI display
@@ -30,7 +32,7 @@ export class BookingAComponent implements OnInit {
   filteredBookings: BookingData[] = [];
   activeButton: string = 'pending'; // Default to 'En Cours' (Pending)
 
-  constructor(private bookingService: BookingService , private emailService: EmailService) {}
+  constructor(private bookingService: BookingService , private emailService: EmailService , private notificationService : NotifService) {}
 
   ngOnInit(): void {
     this.loadBookings();
@@ -51,7 +53,7 @@ export class BookingAComponent implements OnInit {
         }
       },
       (error: any) => {
-        console.error('❌ Erreur lors de la récupération des réservations:', error);
+        console.error(' Erreur lors de la récupération des réservations:', error);
       }
     );
   }
@@ -91,7 +93,7 @@ export class BookingAComponent implements OnInit {
     this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
       () => {
         console.log(` Réservation ${booking.id} acceptée.`);
-        booking.bookingStatus = 'CONFIRMED'; // ✅ Update UI directly
+        booking.bookingStatus = 'CONFIRMED'; //  Update UI directly
         this.loadBookings(); //  Force UI refresh
 
                 // Send confirmation email
@@ -109,6 +111,25 @@ export class BookingAComponent implements OnInit {
                     console.error('Error sending email', error);
                   }
                 );
+
+
+
+        // Send notification request
+        const notificationRequest: AppNotification = {
+          recipient: booking.userEmail,
+          message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+          seen: false,
+
+        };
+
+        this.notificationService.createNotification(notificationRequest).subscribe(
+          response => {
+            console.log('Notification stored successfully', response);
+          },
+          (error: any) => {
+            console.error('Error storing notification', error);
+          }
+        );
       },
       (error: any) => {
         console.error(' Erreur lors de l\'acceptation de la réservation:', error);
@@ -119,9 +140,9 @@ export class BookingAComponent implements OnInit {
 refuse(booking: BookingData): void {
     this.bookingService.updateBookingStatus(booking.id, 'CANCELED').subscribe(
       () => {
-        console.log(`❌ Réservation ${booking.id} refusée.`);
-        booking.bookingStatus = 'CANCELED'; // ✅ Update UI directly
-        this.loadBookings(); // ✅ Force UI refresh
+        console.log(` Réservation ${booking.id} refusée.`);
+        booking.bookingStatus = 'CANCELED'; //  Update UI directly
+        this.loadBookings(); //  Force UI refresh
 
                         // Send confirmation email
                         const emailRequest: EmailRequest = {
@@ -140,7 +161,7 @@ refuse(booking: BookingData): void {
                         );
       },
       (error: any) => {
-        console.error('❌ Erreur lors du refus de la réservation:', error);
+        console.error(' Erreur lors du refus de la réservation:', error);
       }
     );
 }

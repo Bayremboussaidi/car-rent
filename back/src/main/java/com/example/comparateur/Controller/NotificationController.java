@@ -1,38 +1,49 @@
 package com.example.comparateur.Controller;
 
 
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.comparateur.config.WebSocketEventListener;
+import com.example.comparateur.Entity.Notification;
+import com.example.comparateur.Service.NotificationService;
 
-@Controller
+@RestController
+@RequestMapping("/notification")
+@CrossOrigin(origins = "http://localhost:4200")
 public class NotificationController {
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+@Autowired
+private NotificationService notificationService;
 
-    @Autowired
-    private WebSocketEventListener webSocketEventListener; // ✅ Track active users
-
-    // ✅ Broadcast notification to all users
-    @MessageMapping("/notify") 
-    public void sendNotification(String message) {
-        messagingTemplate.convertAndSend("/topic/notifications", message);
-    }
-
-    // ✅ Send a private notification (only if user is online)
-    public void sendPrivateNotification(String username, String message) {
-        if (webSocketEventListener.isUserConnected(username)) {
-            messagingTemplate.convertAndSendToUser(username, "/queue/private", message);
-        } else {
-            // Store notification in the database so user sees it later
-            // TODO: Implement a database storage mechanism for offline users
-            System.out.println("User is offline, storing notification for later...");
-        }
-    }
+@PostMapping
+public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
+    Notification savedNotification = notificationService.createNotification(notification);
+    return ResponseEntity.ok(savedNotification);
 }
 
+
+// get unread notif
+@GetMapping("/unread/{recipient}")
+public ResponseEntity<List<Notification>> getUnreadNotifications(@PathVariable String recipient) {
+    List<Notification> notifications = notificationService.getUnreadNotifications(recipient);
+    return ResponseEntity.ok(notifications);
+}
+
+
+
+  // Endpoint to get all notifications
+@GetMapping("/all")
+public ResponseEntity<List<Notification>> getAllNotifications() {
+    List<Notification> notifications = notificationService.getAllNotifications();
+    return ResponseEntity.ok(notifications);
+}
+}
