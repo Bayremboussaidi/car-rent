@@ -17,8 +17,7 @@
       <label for="userEmail">E-mail :</label>
       <input type="email" id="userEmail" [(ngModel)]="bookingData.userEmail" name="userEmail" required />
 
-      <label for="nbrJrs">Nombre de jours :</label>
-      <input type="number" id="nbrJrs" [(ngModel)]="bookingData.nbrJrs" name="nbrJrs" min="1" required />
+
 
       <label for="phone">Numéro de téléphone :</label>
       <input type="text" id="phone" [(ngModel)]="bookingData.phone" name="phone" required />
@@ -29,12 +28,19 @@
       <label for="startDate">Date de début <span style="color: red;">(Doit être aujourd'hui ou plus tard)</span></label>
       <input type="text" id="startDate" [(ngModel)]="bookingData.startDate" name="startDate"
         bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        readonly (keydown)="$event.preventDefault()" required />
+        readonly (keydown)="$event.preventDefault()" required (ngModelChange)="calculateDaysAndPrice()"/>
 
       <label for="endDate">Date de fin <span style="color: red;">(Doit être après la date de début)</span></label>
       <input type="text" id="endDate" [(ngModel)]="bookingData.endDate" name="endDate"
         bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        readonly (keydown)="$event.preventDefault()" required />
+        readonly (keydown)="$event.preventDefault()" required (ngModelChange)="calculateDaysAndPrice()"/>
+
+      <p><strong>Nombre de jours :</strong> {{ bookingData.nbrJrs }}</p>
+
+
+      <p><strong>Prix total :</strong> DT {{ bookingData.price }}</p>
+
+
 
       <label for="pickupLocation">Lieu de prise en charge :</label>
       <input type="text" id="pickupLocation" [(ngModel)]="bookingData.pickupLocation" name="pickupLocation" required />

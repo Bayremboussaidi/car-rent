@@ -117,41 +117,6 @@ export class ListcarsComponent implements OnInit {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   applyFilters(filters: any): void {
     this.filteredVoitures = this.allVoitures.filter(voiture => {
       // 1️ Pick Up Location Match

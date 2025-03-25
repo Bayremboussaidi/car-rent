@@ -12,6 +12,7 @@ export class BookingModalComponent implements OnInit {
   @Input() showModal: boolean = false;
   @Input() voitureId!: string;
   @Input() carName!: string;
+  @Input() carPrice!: number;
   @Output() close = new EventEmitter<void>();
 
   bookingData = {
@@ -24,6 +25,7 @@ export class BookingModalComponent implements OnInit {
     description: '',
     startDate: '',
     endDate: '',
+    price:0,
     voitureId: 0,
     pickupLocation: 'lac2,tunis',
     dropoffLocation: 'lac2,tunis',
@@ -85,7 +87,12 @@ export class BookingModalComponent implements OnInit {
       return;
     }
 
+    // ✅ Ensure price and days are calculated
+    this.calculateDaysAndPrice();
+
     console.log("🔍 Sending Booking Data:", JSON.stringify(this.bookingData, null, 2));
+    console.log("🔍 Final Booking Data Before Sending:", this.bookingData);
+
 
     this.bookingService.createBooking(this.bookingData).subscribe({
       next: (response: any) => {
@@ -102,8 +109,29 @@ export class BookingModalComponent implements OnInit {
     });
   }
 
+
   closeModal() {
     this.showModal = false;
     this.close.emit();
   }
+
+
+
+
+
+  //calculate numb of days and price
+  calculateDaysAndPrice() {
+    if (this.bookingData.startDate && this.bookingData.endDate) {
+      const start = moment(this.bookingData.startDate, "YYYY-MM-DD");
+      const end = moment(this.bookingData.endDate, "YYYY-MM-DD");
+
+      if (start.isBefore(end)) {
+        this.bookingData.nbrJrs = end.diff(start, "days"); // ✅ Calculate days
+        this.bookingData.price = this.bookingData.nbrJrs * (this.carPrice || 0); // ✅ Use carPrice safely
+      } else {
+        this.bookingData.nbrJrs = 0;
+        this.bookingData.price = 0;
+      }
+    }
+}
 }

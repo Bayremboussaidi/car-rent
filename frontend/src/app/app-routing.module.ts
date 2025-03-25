@@ -28,6 +28,7 @@ import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
 import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
+import { NotifComponent } from './components/pages/notif/notif.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -50,7 +51,8 @@ const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
       { path: 'thank-you', component: ThankYouComponent },
-      { path: 'footer', component: FooterComponent }
+      { path: 'footer', component: FooterComponent },
+      { path: 'notif', component: NotifComponent }
     ]
   },
 

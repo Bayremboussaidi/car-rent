@@ -53,6 +53,10 @@ public class BookingService {
             if (!booking.getStartDate().isBefore(booking.getEndDate())) {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "End date must be after start date."));
             }
+
+            if (booking.getPrice() <= 0) {
+                return ResponseEntity.status(400).body(new ApiResponse(false, "Price must be greater than zero."));
+            }
     
             // ✅ 5. Assign Pending status
             booking.setBookingStatus(BookingStatus.PENDING);
@@ -130,6 +134,7 @@ public class BookingService {
                 booking.setCarName(updatedBooking.getCarName());
                 booking.setUserEmail(updatedBooking.getUserEmail());
                 booking.setNbrJrs(updatedBooking.getNbrJrs());
+                booking.setPrice(updatedBooking.getPrice());
                 booking.setPhone(updatedBooking.getPhone());
                 booking.setDescription(updatedBooking.getDescription());
                 booking.setStartDate(updatedBooking.getStartDate());

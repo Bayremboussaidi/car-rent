@@ -1,9 +1,12 @@
+import { QRCodeService } from './../../services/qrcode.service';
 import { Component, OnInit } from '@angular/core';
 import { BookingService } from './../../services/booking.service';
 import { EmailService } from '../../services/email.service';
 import { EmailRequest } from '../../models/emailRequest.model';
+import { ReportRequest } from '../../models/ReportRequest.model';
 import { NotifService } from '../../services/notif.service';
 import { AppNotification } from '../../models/AppNotification.model';
+import { JasperReportService } from '../../services/jasper-report.service';
 
 interface BookingData {
   id: number;
@@ -32,7 +35,9 @@ export class BookingAComponent implements OnInit {
   filteredBookings: BookingData[] = [];
   activeButton: string = 'pending'; // Default to 'En Cours' (Pending)
 
-  constructor(private bookingService: BookingService , private emailService: EmailService , private notificationService : NotifService) {}
+  constructor(private bookingService: BookingService , private emailService: EmailService , private notificationService : NotifService , private qrCodeService : QRCodeService ,
+    private jasperReportService: JasperReportService ,
+  ) {}
 
   ngOnInit(): void {
     this.loadBookings();
@@ -89,7 +94,7 @@ export class BookingAComponent implements OnInit {
   /**
    * Accept a booking (Set status to CONFIRMED)
    */
-  accept(booking: BookingData): void {
+  /*accept(booking: BookingData): void {
     this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
       () => {
         console.log(` Réservation ${booking.id} acceptée.`);
@@ -135,6 +140,60 @@ export class BookingAComponent implements OnInit {
         console.error(' Erreur lors de l\'acceptation de la réservation:', error);
       }
     );
+}*/
+
+accept(booking: BookingData): void {
+  this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
+      () => {
+          console.log(`Réservation ${booking.id} acceptée.`);
+          booking.bookingStatus = 'CONFIRMED'; // Update UI directly
+          this.loadBookings(); // Force UI refresh
+
+          // Generate QR code
+          const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}`;
+          const qrCode = this.qrCodeService.generateQRCode(qrCodeData);
+
+          // Generate Jasper Report
+          const jasperReport = this.jasperReportService.generateReport(booking, qrCode);
+
+          // Send confirmation email with QR code and Jasper Report
+          const reportRequest: ReportRequest = {
+              name: booking.username,
+              email: booking.userEmail,
+              message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+              qrCode: qrCode, // Attach QR code
+              attachment: jasperReport // Attach Jasper Report
+          };
+
+          this.emailService.informEmail(reportRequest).subscribe(
+              response => {
+                  console.log('Email sent successfully', response);
+              },
+              error => {
+                  console.error('Error sending email', error);
+              }
+          );
+
+          // Send notification request
+          const notificationRequest: AppNotification = {
+              recipient: booking.userEmail,
+              message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+              seen: false,
+          };
+
+          this.notificationService.createNotification(notificationRequest).subscribe(
+              response => {
+                  console.log('Notification stored successfully', response);
+              },
+              (error: any) => {
+                  console.error('Error storing notification', error);
+              }
+          );
+      },
+      (error: any) => {
+          console.error('Erreur lors de l\'acceptation de la réservation:', error);
+      }
+  );
 }
 
 
