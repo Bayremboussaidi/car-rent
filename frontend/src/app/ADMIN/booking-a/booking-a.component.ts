@@ -22,6 +22,7 @@ interface BookingData {
   pickupLocation: string;
   dropoffLocation: string;
   formattedDate?: string; // Optional for UI display
+  price: number;
 }
 
 @Component({
@@ -30,7 +31,8 @@ interface BookingData {
   styleUrls: ['./booking-a.component.css']
 })
 export class BookingAComponent implements OnInit {
-  bookings: BookingData[] = []; // ✅ Use the new local BookingData model
+  bookings: BookingData[] = []; //
+  //  Use the new local BookingData model
   filteredBookings: BookingData[] = [];
   activeButton: string = 'pending'; // Default to 'En Cours' (Pending)
 
@@ -100,7 +102,8 @@ export class BookingAComponent implements OnInit {
         this.loadBookings(); // Force UI refresh
 
         // Generate QR code data
-        const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}`;
+        const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}\nPrice: ${booking.price}`;
+
 
         // Create report request
         const reportRequest: ReportRequest = {

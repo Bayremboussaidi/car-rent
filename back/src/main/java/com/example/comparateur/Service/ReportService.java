@@ -42,7 +42,7 @@ public class ReportService {
 
     private byte[] generateQRCode(ReportRequest reportRequest) {
         // Implementation to generate QR code
-        ByteArrayOutputStream stream = QRCode.from(reportRequest.getMessage()).withSize(250, 250).stream();
+        ByteArrayOutputStream stream = QRCode.from(reportRequest.getQrCode()).withSize(200, 200).stream();
         return stream.toByteArray();
     }
 
@@ -52,8 +52,8 @@ public class ReportService {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-            document.add(new Paragraph("Booking Details:"));
-            document.add(new Paragraph("Name: " + reportRequest.getName()));
+            document.add(new Paragraph("Chèr(e) Notre Client(e)"));
+            document.add(new Paragraph("Nom: " + reportRequest.getName()));
             document.add(new Paragraph("Email: " + reportRequest.getEmail()));
             document.add(new Paragraph("Message: " + reportRequest.getMessage()));
             Image qrImage = Image.getInstance(qrCodeImage);
