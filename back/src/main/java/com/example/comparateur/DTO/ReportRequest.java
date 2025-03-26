@@ -1,10 +1,11 @@
 package com.example.comparateur.DTO;
 
+
 public class ReportRequest {
     private String name;
     private String email;
     private String message;
-    // Other fields as needed
+    private String qrCode;
 
     // Getters and Setters
     public String getName() {
@@ -31,5 +32,11 @@ public class ReportRequest {
         this.message = message;
     }
 
-    // Add other getters and setters as needed
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
 }

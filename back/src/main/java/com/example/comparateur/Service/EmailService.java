@@ -1,13 +1,7 @@
 package com.example.comparateur.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,16 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.comparateur.DTO.EmailRequestDTO;
 
-import io.jsonwebtoken.io.IOException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class EmailService {
@@ -52,68 +38,28 @@ public class EmailService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    //report sender
-    public void sendEmailWithReport(EmailRequestDTO emailRequest, BookingData bookingData) throws JRException, MessagingException, IOException {
-        // Generate Jasper report
-        File reportFile = generateJasperReport(bookingData);
-
-        // Send email with report attached
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo(emailRequest.getEmail());
-        helper.setSubject("Confirmation de réservation");
-        helper.setText("Bonjour " + emailRequest.getName() + ",\n\n" + emailRequest.getMessage());
-
-        helper.addAttachment("booking_report.pdf", reportFile);
-        mailSender.send(message);
-
-        // Clean up temporary file
-        reportFile.delete();
+    public void sendEmailWithAttachments(String to, String subject, String text, byte[] pdfAttachment, byte[] qrCodeImage) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(text);
+            if (pdfAttachment != null) {
+                helper.addAttachment("booking-confirmation.pdf", new ByteArrayResource(pdfAttachment));
+                System.out.println("PDF attachment added successfully, size: " + pdfAttachment.length);
+            } else {
+                System.out.println("PDF attachment is null");
+            }
+            if (qrCodeImage != null) {
+                helper.addAttachment("qr-code.png", new ByteArrayResource(qrCodeImage));
+                System.out.println("QR code attachment added successfully, size: " + qrCodeImage.length);
+            } else {
+                System.out.println("QR code attachment is null");
+            }
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
-
-    private File generateJasperReport(BookingData bookingData) throws JRException, IOException, FileNotFoundException, java.io.IOException {
-        // Load JRXML file
-        JasperReport jasperReport = JasperCompileManager.compileReport(getClass().getResourceAsStream("/reports/booking_report.jrxml"));
-
-        // Create data source
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("username", bookingData.getUsername());
-        parameters.put("carName", bookingData.getCarName());
-        parameters.put("userEmail", bookingData.getUserEmail());
-        parameters.put("nbrJrs", bookingData.getNbrJrs());
-        parameters.put("phone", bookingData.getPhone());
-        parameters.put("description", bookingData.getDescription());
-        parameters.put("formattedDate", bookingData.getFormattedDate());
-
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(bookingData));
-
-        // Fill report
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
-        // Export report to PDF
-        File reportFile = File.createTempFile("booking_report", ".pdf");
-        JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(reportFile));
-
-        return reportFile;
-    }*/
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +23,6 @@ public class BookingService {
     @Autowired
     private VoitureRepository voitureRepository;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate; // ✅ WebSocket Messaging
 
     // ✅ Create a new booking (Client books a car → Notify Admin)
     @Transactional
@@ -64,11 +61,7 @@ public class BookingService {
             // ✅ 6. Save booking
             Booking savedBooking = bookingRepository.save(booking);
     
-            // ✅ 7. Notify Admin about new booking
-            String adminMessage = "🚗 New booking request: " + savedBooking.getCarName() +
-                                " by " + savedBooking.getUsername() +
-                                " (Email: " + savedBooking.getUserEmail() + ")";
-            messagingTemplate.convertAndSend("/topic/booking-requests", adminMessage);
+
     
             return ResponseEntity.ok().body(new ApiResponse(true, "Your voiture is booked", savedBooking));
         } catch (Exception e) {
@@ -94,11 +87,7 @@ public class BookingService {
                 booking.setBookingStatus(status);
                 bookingRepository.save(booking);
     
-                // Notify client
-                String clientMessage = "✅ Your booking for " + booking.getCarName() + " is now: " + status;
-                messagingTemplate.convertAndSendToUser(
-                        booking.getUsername(), "/queue/booking-status", clientMessage
-                );
+
     
                 return ResponseEntity.ok().body(new ApiResponse(true, "Booking status updated successfully", booking));
             } else {

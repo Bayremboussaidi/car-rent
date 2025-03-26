@@ -1,67 +1,66 @@
 package com.example.comparateur.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.comparateur.DTO.ReportRequest;
 import com.example.comparateur.DTO.ReportResponse;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import net.glxn.qrgen.javase.QRCode;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class ReportService {
 
+    @Autowired
+    private EmailService emailService;
+
+
     public ReportResponse generateReport(ReportRequest reportRequest) {
         // Generate QR code
-        String qrCode = generateQRCode(reportRequest);
+        byte[] qrCodeImage = generateQRCode(reportRequest);
 
-        // Generate Jasper Report
-        byte[] jasperReport = generateJasperReport(reportRequest, qrCode);
+        // Generate PDF
+        byte[] pdfReport = generatePDFReport(reportRequest, qrCodeImage);
+
+        // Send email with PDF and QR code attachments
+        emailService.sendEmailWithAttachments(reportRequest.getEmail(), "Your Booking Confirmation", "Please find your booking confirmation attached.", pdfReport, qrCodeImage);
 
         // Create response
         ReportResponse reportResponse = new ReportResponse();
-        reportResponse.setQrCode(qrCode);
-        reportResponse.setJasperReport(jasperReport);
+        reportResponse.setQrCode(java.util.Base64.getEncoder().encodeToString(qrCodeImage));
+        reportResponse.setPdfReport(pdfReport);
 
         return reportResponse;
     }
 
-    private String generateQRCode(ReportRequest reportRequest) {
+    private byte[] generateQRCode(ReportRequest reportRequest) {
         // Implementation to generate QR code
         ByteArrayOutputStream stream = QRCode.from(reportRequest.getMessage()).withSize(250, 250).stream();
-        return java.util.Base64.getEncoder().encodeToString(stream.toByteArray());
+        return stream.toByteArray();
     }
 
-    private byte[] generateJasperReport(ReportRequest reportRequest, String qrCode) {
+    private byte[] generatePDFReport(ReportRequest reportRequest, byte[] qrCodeImage) {
         try {
-            // Compile the Jasper report from .jrxml to .jasper
-            JasperReport jasperReport = JasperCompileManager.compileReport("path/to/your/report_template.jrxml");
-
-            // Parameters for report
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name", reportRequest.getName());
-            parameters.put("email", reportRequest.getEmail());
-            parameters.put("message", reportRequest.getMessage());
-            parameters.put("qrCode", qrCode);
-
-            // Data source
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(java.util.Collections.singletonList(reportRequest));
-
-            // Fill the report
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
-            // Export the report to a byte array
-            return JasperExportManager.exportReportToPdf(jasperPrint);
-        } catch (Exception e) {
+            Document document = new Document();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+            document.add(new Paragraph("Booking Details: " + reportRequest.getMessage()));
+            Image qrImage = Image.getInstance(qrCodeImage);
+            document.add(qrImage);
+            document.close();
+            byte[] pdfBytes = baos.toByteArray();
+            System.out.println("PDF generated successfully, size: " + pdfBytes.length);
+            return pdfBytes;
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
             return null;
         }

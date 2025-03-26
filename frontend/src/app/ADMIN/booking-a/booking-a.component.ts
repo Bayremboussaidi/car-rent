@@ -91,58 +91,8 @@ export class BookingAComponent implements OnInit {
     this.activeButton = 'traited';
   }
 
-  /**
-   * Accept a booking (Set status to CONFIRMED)
-   */
-  /*accept(booking: BookingData): void {
-    this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
-      () => {
-        console.log(` Réservation ${booking.id} acceptée.`);
-        booking.bookingStatus = 'CONFIRMED'; //  Update UI directly
-        this.loadBookings(); //  Force UI refresh
 
-                // Send confirmation email
-                const emailRequest: EmailRequest = {
-                  name: booking.username,
-                  email: booking.userEmail,
-                  message: `Votre réservation pour ${booking.carName} a été confirmée.`
-                };
-
-                this.emailService.informEmail(emailRequest).subscribe(
-                  response => {
-                    console.log('Email sent successfully', response);
-                  },
-                  error => {
-                    console.error('Error sending email', error);
-                  }
-                );
-
-
-
-        // Send notification request
-        const notificationRequest: AppNotification = {
-          recipient: booking.userEmail,
-          message: `Votre réservation pour ${booking.carName} a été confirmée.`,
-          seen: false,
-
-        };
-
-        this.notificationService.createNotification(notificationRequest).subscribe(
-          response => {
-            console.log('Notification stored successfully', response);
-          },
-          (error: any) => {
-            console.error('Error storing notification', error);
-          }
-        );
-      },
-      (error: any) => {
-        console.error(' Erreur lors de l\'acceptation de la réservation:', error);
-      }
-    );
-}*/
-
-accept(booking: BookingData): void {
+/*accept(booking: BookingData): void {
   this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
       () => {
           console.log(`Réservation ${booking.id} acceptée.`);
@@ -193,6 +143,59 @@ accept(booking: BookingData): void {
       (error: any) => {
           console.error('Erreur lors de l\'acceptation de la réservation:', error);
       }
+  );
+}*/
+
+
+
+accept(booking: BookingData): void {
+  this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
+    () => {
+      console.log(`Réservation ${booking.id} acceptée.`);
+      booking.bookingStatus = 'CONFIRMED'; // Update UI directly
+      this.loadBookings(); // Force UI refresh
+
+      // Generate QR code data
+      const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}`;
+      const qrCode = this.qrCodeService.generateQRCode(qrCodeData);
+
+      // Create report request
+      const reportRequest: ReportRequest = {
+        name: booking.username,
+        email: booking.userEmail,
+        message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+        qrCode: qrCode // Attach QR code data
+      };
+
+      // Send confirmation email with QR code and PDF attachment
+      this.emailService.informEmail(reportRequest).subscribe(
+        response => {
+          console.log('Email sent successfully', response);
+        },
+        error => {
+          console.error('Error sending email', error);
+        }
+      );
+
+      // Send notification request
+      const notificationRequest: AppNotification = {
+        recipient: booking.userEmail,
+        message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+        seen: false,
+      };
+
+      this.notificationService.createNotification(notificationRequest).subscribe(
+        response => {
+          console.log('Notification stored successfully', response);
+        },
+        (error: any) => {
+          console.error('Error storing notification', error);
+        }
+      );
+    },
+    (error: any) => {
+      console.error('Erreur lors de l\'acceptation de la réservation:', error);
+    }
   );
 }
 

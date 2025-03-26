@@ -3,7 +3,7 @@ package com.example.comparateur.DTO;
 
 public class ReportResponse {
     private String qrCode;
-    private byte[] jasperReport;
+    private byte[] pdfReport;
 
     // Getters and Setters
     public String getQrCode() {
@@ -14,11 +14,11 @@ public class ReportResponse {
         this.qrCode = qrCode;
     }
 
-    public byte[] getJasperReport() {
-        return jasperReport;
+    public byte[] getPdfReport() {
+        return pdfReport;
     }
 
-    public void setJasperReport(byte[] jasperReport) {
-        this.jasperReport = jasperReport;
+    public void setPdfReport(byte[] pdfReport) {
+        this.pdfReport = pdfReport;
     }
 }

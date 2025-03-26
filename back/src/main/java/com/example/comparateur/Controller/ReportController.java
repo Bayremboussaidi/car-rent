@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.comparateur.DTO.ReportRequest;
 import com.example.comparateur.DTO.ReportResponse;
-
 import com.example.comparateur.Service.ReportService;
 
 @RestController
