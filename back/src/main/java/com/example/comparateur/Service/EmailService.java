@@ -38,24 +38,18 @@ public class EmailService {
     }
 
 
-    public void sendEmailWithAttachments(String to, String subject, String text, byte[] pdfAttachment, byte[] qrCodeImage) {
+    public void sendEmailWithAttachment(String to, String subject, String text, byte[] attachment) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
-            if (pdfAttachment != null) {
-                helper.addAttachment("booking-confirmation.pdf", new ByteArrayResource(pdfAttachment));
-                System.out.println("PDF attachment added successfully, size: " + pdfAttachment.length);
+            if (attachment != null) {
+                helper.addAttachment("booking-confirmation.pdf", new ByteArrayResource(attachment));
+                System.out.println("Attachment added successfully, size: " + attachment.length);
             } else {
-                System.out.println("PDF attachment is null");
-            }
-            if (qrCodeImage != null) {
-                helper.addAttachment("qr-code.png", new ByteArrayResource(qrCodeImage));
-                System.out.println("QR code attachment added successfully, size: " + qrCodeImage.length);
-            } else {
-                System.out.println("QR code attachment is null");
+                System.out.println("Attachment is null");
             }
             mailSender.send(message);
         } catch (MessagingException e) {

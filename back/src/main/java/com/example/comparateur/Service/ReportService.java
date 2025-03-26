@@ -22,7 +22,6 @@ public class ReportService {
     @Autowired
     private EmailService emailService;
 
-
     public ReportResponse generateReport(ReportRequest reportRequest) {
         // Generate QR code
         byte[] qrCodeImage = generateQRCode(reportRequest);
@@ -30,8 +29,8 @@ public class ReportService {
         // Generate PDF
         byte[] pdfReport = generatePDFReport(reportRequest, qrCodeImage);
 
-        // Send email with PDF and QR code attachments
-        emailService.sendEmailWithAttachments(reportRequest.getEmail(), "Your Booking Confirmation", "Please find your booking confirmation attached.", pdfReport, qrCodeImage);
+        // Send email with PDF attachment
+        emailService.sendEmailWithAttachment(reportRequest.getEmail(), "Your Booking Confirmation", "Please find your booking confirmation attached.", pdfReport);
 
         // Create response
         ReportResponse reportResponse = new ReportResponse();
@@ -53,7 +52,10 @@ public class ReportService {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-            document.add(new Paragraph("Booking Details: " + reportRequest.getMessage()));
+            document.add(new Paragraph("Booking Details:"));
+            document.add(new Paragraph("Name: " + reportRequest.getName()));
+            document.add(new Paragraph("Email: " + reportRequest.getEmail()));
+            document.add(new Paragraph("Message: " + reportRequest.getMessage()));
             Image qrImage = Image.getInstance(qrCodeImage);
             document.add(qrImage);
             document.close();
