@@ -6,7 +6,6 @@ import { EmailRequest } from '../../models/emailRequest.model';
 import { ReportRequest } from '../../models/ReportRequest.model';
 import { NotifService } from '../../services/notif.service';
 import { AppNotification } from '../../models/AppNotification.model';
-import { JasperReportService } from '../../services/jasper-report.service';
 
 interface BookingData {
   id: number;
@@ -36,7 +35,7 @@ export class BookingAComponent implements OnInit {
   activeButton: string = 'pending'; // Default to 'En Cours' (Pending)
 
   constructor(private bookingService: BookingService , private emailService: EmailService , private notificationService : NotifService , private qrCodeService : QRCodeService ,
-    private jasperReportService: JasperReportService ,
+
   ) {}
 
   ngOnInit(): void {
@@ -90,6 +89,123 @@ export class BookingAComponent implements OnInit {
     );
     this.activeButton = 'traited';
   }
+
+
+
+  accept(booking: BookingData): void {
+    this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
+      () => {
+        console.log(`Réservation ${booking.id} acceptée.`);
+        booking.bookingStatus = 'CONFIRMED'; // Update UI directly
+        this.loadBookings(); // Force UI refresh
+
+        // Generate QR code data
+        const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}`;
+
+        // Create report request
+        const reportRequest: ReportRequest = {
+          name: booking.username,
+          email: booking.userEmail,
+          message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+          qrCode: qrCodeData // Attach QR code data
+        };
+
+        // Send confirmation email with QR code and PDF attachment
+        this.emailService.sendReportEmail(reportRequest).subscribe(
+          response => {
+            console.log('Email sent successfully', response);
+          },
+          error => {
+            console.error('Error sending email', error);
+          }
+        );
+
+        // Send notification request
+        const notificationRequest: AppNotification = {
+          recipient: booking.userEmail,
+          message: `Votre réservation pour ${booking.carName} a été confirmée.`,
+          seen: false,
+        };
+
+        this.notificationService.createNotification(notificationRequest).subscribe(
+          response => {
+            console.log('Notification stored successfully', response);
+          },
+          (error: any) => {
+            console.error('Error storing notification', error);
+          }
+        );
+      },
+      (error: any) => {
+        console.error('Erreur lors de l\'acceptation de la réservation:', error);
+      }
+    );
+  }
+
+
+
+refuse(booking: BookingData): void {
+  this.bookingService.updateBookingStatus(booking.id, 'CANCELED').subscribe(
+    () => {
+      console.log(`Réservation ${booking.id} refusée.`);
+      booking.bookingStatus = 'CANCELED'; // Update UI directly
+      this.loadBookings(); // Force UI refresh
+
+      // Send refusal email
+      const emailRequest: EmailRequest = {
+        name: booking.username,
+        email: booking.userEmail,
+        message: `Votre réservation pour ${booking.carName} a été réfusée.`
+      };
+
+      this.emailService.informEmail(emailRequest).subscribe(
+        (response) => {
+          console.log('Email sent successfully', response);
+        },
+        (error) => {
+          console.error('Error sending email', error);
+        }
+      );
+
+      // Send notification request
+      const notificationRequest: AppNotification = {
+        recipient: booking.userEmail,
+        message: `Votre réservation pour ${booking.carName} a été réfusée.`,
+        seen: false
+      };
+
+      this.notificationService.createNotification(notificationRequest).subscribe(
+        (response) => {
+          console.log('Notification stored successfully', response);
+        },
+        (error: any) => {
+          console.error('Error storing notification', error);
+        }
+      );
+    },
+    (error: any) => {
+      console.error('Erreur lors du refus de la réservation:', error);
+    }
+  );
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*accept(booking: BookingData): void {
@@ -146,106 +262,3 @@ export class BookingAComponent implements OnInit {
   );
 }*/
 
-
-
-accept(booking: BookingData): void {
-  this.bookingService.updateBookingStatus(booking.id, 'CONFIRMED').subscribe(
-    () => {
-      console.log(`Réservation ${booking.id} acceptée.`);
-      booking.bookingStatus = 'CONFIRMED'; // Update UI directly
-      this.loadBookings(); // Force UI refresh
-
-      // Generate QR code data
-      const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}`;
-      const qrCode = this.qrCodeService.generateQRCode(qrCodeData);
-
-      // Create report request
-      const reportRequest: ReportRequest = {
-        name: booking.username,
-        email: booking.userEmail,
-        message: `Votre réservation pour ${booking.carName} a été confirmée.`,
-        qrCode: qrCode // Attach QR code data
-      };
-
-      // Send confirmation email with QR code and PDF attachment
-      this.emailService.informEmail(reportRequest).subscribe(
-        response => {
-          console.log('Email sent successfully', response);
-        },
-        error => {
-          console.error('Error sending email', error);
-        }
-      );
-
-      // Send notification request
-      const notificationRequest: AppNotification = {
-        recipient: booking.userEmail,
-        message: `Votre réservation pour ${booking.carName} a été confirmée.`,
-        seen: false,
-      };
-
-      this.notificationService.createNotification(notificationRequest).subscribe(
-        response => {
-          console.log('Notification stored successfully', response);
-        },
-        (error: any) => {
-          console.error('Error storing notification', error);
-        }
-      );
-    },
-    (error: any) => {
-      console.error('Erreur lors de l\'acceptation de la réservation:', error);
-    }
-  );
-}
-
-
-
-refuse(booking: BookingData): void {
-  this.bookingService.updateBookingStatus(booking.id, 'CANCELED').subscribe(
-    () => {
-      console.log(`Réservation ${booking.id} refusée.`);
-      booking.bookingStatus = 'CANCELED'; // Update UI directly
-      this.loadBookings(); // Force UI refresh
-
-      // Send refusal email
-      const emailRequest: EmailRequest = {
-        name: booking.username,
-        email: booking.userEmail,
-        message: `Votre réservation pour ${booking.carName} a été réfusée.`
-      };
-
-      this.emailService.informEmail(emailRequest).subscribe(
-        (response) => {
-          console.log('Email sent successfully', response);
-        },
-        (error) => {
-          console.error('Error sending email', error);
-        }
-      );
-
-      // Send notification request
-      const notificationRequest: AppNotification = {
-        recipient: booking.userEmail,
-        message: `Votre réservation pour ${booking.carName} a été réfusée.`,
-        seen: false
-      };
-
-      this.notificationService.createNotification(notificationRequest).subscribe(
-        (response) => {
-          console.log('Notification stored successfully', response);
-        },
-        (error: any) => {
-          console.error('Error storing notification', error);
-        }
-      );
-    },
-    (error: any) => {
-      console.error('Erreur lors du refus de la réservation:', error);
-    }
-  );
-}
-
-
-
-}

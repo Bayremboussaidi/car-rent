@@ -25,17 +25,9 @@ export class EmailService {
   }
 
 
-  reportEmail(reportRequest: ReportRequest): Observable<any> {
-    // Implementation to send email with attachments
-    return new Observable(observer => {
-        // Simulate email sending process
-        setTimeout(() => {
-            // Simulate success response
-            observer.next({ success: true });
-            observer.complete();
-        }, 1000); // Simulate delay
-    });
-}
+  sendReportEmail(reportRequest: ReportRequest): Observable<any> {
+    return this.http.post(`http://localhost:8084/api/reports/generate`, reportRequest);
+  }
 }
 
 
