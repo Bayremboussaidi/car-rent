@@ -102,7 +102,7 @@ export class BookingAComponent implements OnInit {
         this.loadBookings(); // Force UI refresh
 
         // Generate QR code data
-        const qrCodeData = `Booking ID: ${booking.id}\nCar: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}\nPrice: ${booking.price}`;
+        const qrCodeData = `Car: ${booking.carName}\nStart Date: ${booking.startDate}\nEnd Date: ${booking.endDate}\nPrice: ${booking.price}`;
 
 
         // Create report request

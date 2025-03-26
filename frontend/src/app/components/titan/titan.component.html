@@ -44,10 +44,10 @@
         <span class="title">Home</span>
         <a routerLink="/home" class="nav__link">.</a>
       </li>
-      <li style="--i:#ff6b6b;--j:#ff8e8e">
+      <li style="--i:#ff6b6b;--j:#ff8e8e" (click)="toggleNotificationsNavbar()">
         <span class="icon"><ion-icon name="notifications-outline"></ion-icon></span>
         <span class="title">Notifications</span>
-        <a routerLink="/notifications" class="nav__link">.</a>
+        <a class="nav__link">.</a>
       </li>
       <li style="--i:#4CAF50;--j:#2E7D32" (click)="login()">
         <span class="icon"><i class="ri-login-circle-line"></i></span>
