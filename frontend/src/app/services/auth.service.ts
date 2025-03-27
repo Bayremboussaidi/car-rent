@@ -15,10 +15,8 @@ export class AuthService {
   private clientId = 'location';
   private clientSecret = 'z1GlcCIOjQNeibhAZiS3nXTtp03JLZqz';
 
-  constructor(private http: HttpClient, private router: Router) {}
 
-
-
+    constructor(private http: HttpClient, private router: Router) {}
 
     login(credentials: { email: string; password: string }): Observable<any> {
       const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
@@ -36,10 +34,11 @@ export class AuthService {
       }).pipe(
         map((response: any) => {
           console.log("✅ Login successful:", response);
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
-          localStorage.setItem('role', this.extractRole(response.access_token));
-          return response; // Return the full response object
+          return {
+            access_token: response.access_token,
+            refresh_token: response.refresh_token,
+            role: this.extractRole(response.access_token)
+          };
         }),
         catchError((error) => {
           console.error('❌ Login error:', error);
@@ -48,51 +47,42 @@ export class AuthService {
       );
     }
 
-
-
-  // ✅ Extract Role from JWT Token
-  private extractRole(token: string): string {
-    try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      return decodedToken?.realm_access?.roles?.find((role: string) =>
-        ['ADMIN', 'USER', 'AGENCE'].includes(role)
-      ) || 'USER';
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return 'USER';
+    extractRole(token: string): string {
+      try {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        return decodedToken?.realm_access?.roles?.find((role: string) =>
+          ['ADMIN', 'USER', 'AGENCE'].includes(role)
+        ) || 'USER';
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return 'USER';
+      }
     }
-  }
 
-  // ✅ Get User Role from Local Storage
-  getRole(): string | null {
-    return localStorage.getItem('role');
-  }
+    refreshToken(): Observable<any> {
+      const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
 
-  // ✅ Refresh Token When Expired
-  refreshToken(): Observable<any> {
-    const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
+      const body = new URLSearchParams();
+      body.set('client_id', this.clientId);
+      body.set('client_secret', this.clientSecret);
+      body.set('grant_type', 'refresh_token');
+      body.set('refresh_token', localStorage.getItem('refresh_token') || '');
 
-    const body = new URLSearchParams();
-    body.set('client_id', this.clientId);
-    body.set('client_secret', this.clientSecret);
-    body.set('grant_type', 'refresh_token');
-    body.set('refresh_token', localStorage.getItem('refresh_token') || '');
+      return this.http.post(url, body.toString(), {
+        headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
+      }).pipe(
+        map((response: any) => ({
+          access_token: response.access_token,
+          refresh_token: response.refresh_token
+        })),
+        catchError((error) => {
+          console.error('Refresh token error:', error);
+          this.logout();
+          return throwError(error);
+        })
+      );
+    }
 
-    return this.http.post(url, body.toString(), {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }),
-    }).pipe(
-      map((response: any) => {
-        localStorage.setItem('access_token', response.access_token);
-        localStorage.setItem('refresh_token', response.refresh_token);
-        return response;
-      }),
-      catchError((error) => {
-        console.error('Refresh token error:', error);
-        this.logout();
-        return throwError(error);
-      })
-    );
-  }
 
 
 
@@ -125,11 +115,33 @@ export class AuthService {
 
 
 
+  //store in the localhost
 
+  private storeUserDetails(token: string) {
+    if (!token) {
+      console.error('No token provided');
+      return;
+    }
 
+    try {
+      const payload = token.split('.')[1];
+      const decodedToken = JSON.parse(atob(payload));
+      console.log('Decoded token:', decodedToken); // Log decoded token
 
-
-
+      const userDetails = {
+        username: decodedToken.preferred_username,
+        email: decodedToken.email,
+        firstName: decodedToken.given_name,
+        lastName: decodedToken.family_name,
+        workplace: decodedToken.workplace,
+        phoneNumber: decodedToken.phone_number,
+      };
+      console.log('User details:', userDetails); // Log user details
+      localStorage.setItem('user', JSON.stringify(userDetails));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
 
 }
 

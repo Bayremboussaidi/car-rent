@@ -33,7 +33,8 @@ export class UserloginService {
 
   /*teb3in Notifications*/
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem('auth_token');
+    console.log('auth_token');
   }
 
 
@@ -70,4 +71,33 @@ export class UserloginService {
     }
   }
 
+
+
+
+  //store user details
+  public storeUserDetails(token: string) {
+    if (!token) {
+      console.error('No token provided');
+      return;
+    }
+
+    try {
+      const payload = token.split('.')[1];
+      const decodedToken = JSON.parse(atob(payload));
+      console.log('Decoded token:', decodedToken); // Log decoded token
+
+      const userDetails = {
+        username: decodedToken.preferred_username,
+        email: decodedToken.email,
+        firstName: decodedToken.given_name,
+        lastName: decodedToken.family_name,
+        workplace: decodedToken.workplace,
+        phoneNumber: decodedToken.phone_number,
+      };
+      console.log('User details:', userDetails); // Log user details
+      localStorage.setItem('user', JSON.stringify(userDetails));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
 }

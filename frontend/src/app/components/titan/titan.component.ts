@@ -55,10 +55,12 @@ openNotif() {
   if (this.UserloginService.isLoggedIn()) {
   this.isNotificationsVisible = true; // Fixed space after 'this'
   const user = this.UserloginService.getCurrentUser();
+  console.log(user);
 
 } else {
   // Show sign-in prompt
   this.showSignInPrompt = true;
+  console.log('user not logged in');
 }
 }
 

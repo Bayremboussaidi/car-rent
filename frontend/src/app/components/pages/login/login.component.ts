@@ -49,18 +49,21 @@ export class LoginComponent {
       this.userloginService.login(this.credentials).subscribe({
         next: (response) => {
           console.log('Login response:', response); // Log response
-          this.storeUserDetails(response.token);
+          this.userloginService.storeUserDetails(response.token);
           this.router.navigate(['/home']);
         },
         error: (err: any) => {
           this.errorMessage = err || 'Email ou mot de passe incorrect'; // French error
         }
       });
+
+
+      //login l admin mazelet
     } else {
       this.authService.login(this.credentials).subscribe({
         next: (response) => {
           console.log('Login successful');
-          this.storeUserDetails(response.token);
+          //this.userloginService.storeUserDetails(response.token);
           this.router.navigate(['/home']);
         },
         error: (err) => {
@@ -70,31 +73,7 @@ export class LoginComponent {
       });
     }
   }
-  private storeUserDetails(token: string) {
-    if (!token) {
-      console.error('No token provided');
-      return;
-    }
 
-    try {
-      const payload = token.split('.')[1];
-      const decodedToken = JSON.parse(atob(payload));
-      console.log('Decoded token:', decodedToken); // Log decoded token
-
-      const userDetails = {
-        username: decodedToken.preferred_username,
-        email: decodedToken.email,
-        firstName: decodedToken.given_name,
-        lastName: decodedToken.family_name,
-        workplace: decodedToken.workplace,
-        phoneNumber: decodedToken.phone_number,
-      };
-      console.log('User details:', userDetails); // Log user details
-      localStorage.setItem('user', JSON.stringify(userDetails));
-    } catch (error) {
-      console.error('Error decoding token:', error);
-    }
-  }
 
   private validateEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
