@@ -1,3 +1,4 @@
+import { UserloginService } from './../../services/user_login/userlogin.service';
 import { Component, HostListener, inject } from "@angular/core";
 import { KeycloakService } from "../../services/keycloak/keycloak.service";
 import { Router } from '@angular/router';
@@ -8,12 +9,17 @@ import { EmailDialogComponent } from "../dialog/email-dialog/email-dialog.compon
 import { AuthService } from "../../services/auth.service";
 
 
+
 @Component({
   selector: "app-titan",
   templateUrl: "./titan.component.html",
   styleUrls: ["./titan.component.css"],
 })
 export class TitanComponent {
+  showSignInPrompt = false;
+
+  isNotificationsVisible = false;
+
   isMenuOpen = false;
   scrollOpacity = 0; // Starts with 0% opacity at the top
   isTopMenuVisible: boolean = true; // Tracks top menu visibility
@@ -25,7 +31,8 @@ export class TitanComponent {
     private keycloakService: KeycloakService,
     private router: Router,
     private bookingService: BookingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private UserloginService : UserloginService
   ) {}
 
 
@@ -38,12 +45,38 @@ export class TitanComponent {
       disableClose: false,
       hasBackdrop: true,
       panelClass: 'custom-dialog-container',
-      position: { top: '50%', left: '50%' }, // ✅ Ensures modal appears in the center
+      position: { top: '50%', left: '50%' },
     });
   }
 
 
+/*notifications */
+openNotif() {
+  if (this.UserloginService.isLoggedIn()) {
+  this.isNotificationsVisible = true; // Fixed space after 'this'
+  const user = this.UserloginService.getCurrentUser();
 
+} else {
+  // Show sign-in prompt
+  this.showSignInPrompt = true;
+}
+}
+
+
+
+navigateToLogin() {
+  // Remove the logout() call if you just want to navigate
+  this.router.navigate(['/login']);
+  this.closeSignInPrompt();
+}
+
+  // Close sign-in prompt
+  closeSignInPrompt() {
+    this.showSignInPrompt = false;
+  }
+closeNotificationsNavbar() {
+  this.isNotificationsVisible = false; // Fixed space after 'this'
+}
 
 
   toggleMenu(): void {

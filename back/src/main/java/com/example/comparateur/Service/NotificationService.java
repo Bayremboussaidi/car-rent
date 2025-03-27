@@ -28,4 +28,9 @@ public List<Notification> getAllNotifications() {
 }
 
 
+
+public List<Notification> getNotificationsByRecipient(String recipient) {
+        return notificationRepository.findByRecipient(recipient);
+}
+
 }

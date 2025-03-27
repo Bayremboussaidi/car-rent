@@ -44,6 +44,8 @@ export class LoginComponent {
     }
 
     if (this.isUser) {
+      this.authService.logout(); // Clear any potential invalid state
+
       this.userloginService.login(this.credentials).subscribe({
         next: (response) => {
           console.log('Login response:', response); // Log response

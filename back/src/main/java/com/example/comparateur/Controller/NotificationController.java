@@ -46,4 +46,13 @@ public ResponseEntity<List<Notification>> getAllNotifications() {
     List<Notification> notifications = notificationService.getAllNotifications();
     return ResponseEntity.ok(notifications);
 }
+
+
+
+
+@GetMapping("/recipient/{recipient}")
+public ResponseEntity<List<Notification>> getNotificationsByRecipient(@PathVariable String recipient) {
+    List<Notification> notifications = notificationService.getNotificationsByRecipient(recipient);
+    return ResponseEntity.ok(notifications);
+}
 }

@@ -44,11 +44,13 @@
         <span class="title">Home</span>
         <a routerLink="/home" class="nav__link">.</a>
       </li>
-      <li style="--i:#ff6b6b;--j:#ff8e8e" (click)="toggleNotificationsNavbar()">
+
+      <li style="--i:#ff6b6b;--j:#ff8e8e" (click)="openNotif()">
         <span class="icon"><ion-icon name="notifications-outline"></ion-icon></span>
         <span class="title">Notifications</span>
         <a class="nav__link">.</a>
       </li>
+
       <li style="--i:#4CAF50;--j:#2E7D32" (click)="login()">
         <span class="icon"><i class="ri-login-circle-line"></i></span>
         <span class="title">Login</span>
@@ -83,3 +85,44 @@
     <p *ngIf="responseMessage">{{ responseMessage }}</p>
   </nav>
 </header>
+
+
+
+
+<!-- Backdrop Overlay -->
+<div class="navbar-backdrop"
+    [class.show]="isNotificationsVisible"
+    (click)="closeNotificationsNavbar()"></div>
+
+<!-- Notifications Navbar -->
+<div id="notifications-navbar"
+    class="notifications-navbar"
+    [class.show]="isNotificationsVisible"
+    (click)="$event.stopPropagation()">
+  <div class="navbar-header">
+    <span class="navbar-title">Notifications</span>
+    <button class="close-btn" (click)="closeNotificationsNavbar()">×</button>
+  </div>
+  <!-- Notification content goes here -->
+</div>
+
+
+
+
+
+
+<!--when user not logged in-->
+<div class="signin-prompt-backdrop" *ngIf="showSignInPrompt">
+  <div class="signin-prompt-modal" (click)="$event.stopPropagation()">
+    <h3>Sign In Required</h3>
+    <p>You need to be logged in to view notifications.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" (click)="navigateToLogin()">
+        Sign In
+      </button>
+      <button class="btn btn-secondary" (click)="closeSignInPrompt()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
