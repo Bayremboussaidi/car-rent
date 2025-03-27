@@ -40,6 +40,8 @@ export class TitanComponent {
 
 
   openEmailDialog() {
+    if (this.UserloginService.isLoggedIn()) {
+
     this.dialog.open(EmailDialogComponent, {
       width: '400px',
       disableClose: false,
@@ -47,13 +49,18 @@ export class TitanComponent {
       panelClass: 'custom-dialog-container',
       position: { top: '50%', left: '50%' },
     });
+  } else {
+    // Show sign-in prompt
+    this.showSignInPrompt = true;
+    console.log('user not logged in');
+  }
   }
 
 
 /*notifications */
 openNotif() {
   if (this.UserloginService.isLoggedIn()) {
-  this.isNotificationsVisible = true; // Fixed space after 'this'
+  this.isNotificationsVisible = true;
   const user = this.UserloginService.getCurrentUser();
   console.log(user);
 
