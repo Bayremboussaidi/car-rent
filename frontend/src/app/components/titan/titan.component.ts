@@ -18,7 +18,7 @@ import { AuthService } from "../../services/auth.service";
   styleUrls: ["./titan.component.css"],
 })
 export class TitanComponent {
-  @ViewChild('notificationsComponent') notificationsComponent!: NotificationComponent;
+  @ViewChild('NotificationComponent') notificationsComponent!: NotificationComponent;
 
 
 
