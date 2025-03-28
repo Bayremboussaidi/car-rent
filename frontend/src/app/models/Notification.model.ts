@@ -3,5 +3,5 @@ export interface Notification {
   recipient: string;
   message: string;
   seen: boolean;
-  createdAt: Date;
+  createdAt?: Date;
 }

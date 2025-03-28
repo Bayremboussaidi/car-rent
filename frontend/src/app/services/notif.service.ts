@@ -18,7 +18,6 @@ export class NotifService {
   }
 
 
-
   getNotificationsByRecipient(recipient: string): Observable<Notification[]> {
     console.log('API call to fetch notifications for recipient:', recipient);
     return this.http.get<Notification[]>(`${this.apiUrl}/recipient/${recipient}`);

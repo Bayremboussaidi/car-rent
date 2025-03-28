@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotifService } from '../../services/notif.service';
+import { Notification } from '../../models/Notification.model';
 
 @Component({
   selector: 'app-notifications',
@@ -12,21 +13,22 @@ export class NotificationComponent implements OnInit {
   constructor(private notificationService: NotifService) {}
 
   ngOnInit() {
-    // Initial fetch if needed
-    const userDetails = JSON.parse(localStorage.getItem('user') || '{}');
-
-      this.fetchNotifications(userDetails.email);
-
-
+   // Initial fetch if needed
+const userDetails = JSON.parse(localStorage.getItem('user') || '{}');
+  if (userDetails.email) {
+    this.fetchNotifications(userDetails.email);
+  }
   }
 
 
   fetchNotifications(recipient: string) {
+    console.log('fetchNotifications called for recipient:', recipient);
     this.notificationService.getNotificationsByRecipient(recipient).subscribe(
-      (data:any) => {
+      (data) => {
+        console.log('Notifications fetched:', data);
         this.notifications = data;
       },
-      (error:any) => {
+      (error) => {
         console.error('Error fetching notifications:', error);
       }
     );

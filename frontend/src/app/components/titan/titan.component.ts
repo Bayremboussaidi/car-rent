@@ -66,21 +66,20 @@ export class TitanComponent {
 /*notifications */
 openNotif() {
   if (this.UserloginService.isLoggedIn()) {
-  this.isNotificationsVisible = true;
+    this.isNotificationsVisible = true;
+    const user = this.UserloginService.getCurrentUser();
+    console.log(user);
 
-  const user = this.UserloginService.getCurrentUser();
-  console.log(user);
-  if (user && user.email) {
-    this.notificationsComponent.fetchNotifications(user.email);
-
-
-}  else {
-  // Show sign-in prompt
-  this.showSignInPrompt = true;
-  console.log('user not logged in');
-}
-}
-
+    if (user && user.email) {
+      this.notificationsComponent.fetchNotifications(user.email);
+    } else {
+      console.error('User email is not available');
+    }
+  } else {
+    // Show sign-in prompt
+    this.showSignInPrompt = true;
+    console.log('user not logged in');
+  }
 }
 
 navigateToLogin() {
