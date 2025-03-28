@@ -5,7 +5,7 @@ import { EmailService } from '../../services/email.service';
 import { EmailRequest } from '../../models/emailRequest.model';
 import { ReportRequest } from '../../models/ReportRequest.model';
 import { NotifService } from '../../services/notif.service';
-import { AppNotification } from '../../models/AppNotification.model';
+import { Notification } from '../../models/Notification.model';
 
 interface BookingData {
   id: number;
@@ -124,10 +124,11 @@ export class BookingAComponent implements OnInit {
         );
 
         // Send notification request
-        const notificationRequest: AppNotification = {
+        const notificationRequest: Notification = {
           recipient: booking.userEmail,
           message: `Votre réservation pour ${booking.carName} a été confirmée.`,
           seen: false,
+          createdAt: new Date()
         };
 
         this.notificationService.createNotification(notificationRequest).subscribe(
@@ -171,11 +172,15 @@ refuse(booking: BookingData): void {
       );
 
       // Send notification request
-      const notificationRequest: AppNotification = {
+      const notificationRequest: Notification = {
         recipient: booking.userEmail,
         message: `Votre réservation pour ${booking.carName} a été réfusée.`,
-        seen: false
+        seen: false,
+        createdAt: new Date() // Provide default value for createdAt
+
       };
+
+
 
       this.notificationService.createNotification(notificationRequest).subscribe(
         (response) => {

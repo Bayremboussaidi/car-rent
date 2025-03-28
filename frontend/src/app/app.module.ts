@@ -87,7 +87,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MaterialComponent } from './test/material/material.component';
 import { ContactBadgeComponent } from './components/contact-badge/contact-badge.component';
 import { FaqComponent } from './components/faq/faq.component';
-import { NotifComponent } from './components/pages/notif/notif.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 
 
@@ -143,7 +143,7 @@ export function kcFactory(kcService: KeycloakService) {
     MaterialComponent,
     ContactBadgeComponent,
     FaqComponent,
-    NotifComponent,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,

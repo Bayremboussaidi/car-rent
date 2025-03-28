@@ -1,5 +1,6 @@
+import { NotificationComponent } from './../notification/notification.component';
 import { UserloginService } from './../../services/user_login/userlogin.service';
-import { Component, HostListener, inject } from "@angular/core";
+import { Component, HostListener, inject, ViewChild } from "@angular/core";
 import { KeycloakService } from "../../services/keycloak/keycloak.service";
 import { Router } from '@angular/router';
 import { BookingService } from "../../services/booking.service";
@@ -10,12 +11,17 @@ import { AuthService } from "../../services/auth.service";
 
 
 
+
 @Component({
   selector: "app-titan",
   templateUrl: "./titan.component.html",
   styleUrls: ["./titan.component.css"],
 })
 export class TitanComponent {
+  @ViewChild('notificationsComponent') notificationsComponent!: NotificationComponent;
+
+
+
   showSignInPrompt = false;
 
   isNotificationsVisible = false;
@@ -61,17 +67,21 @@ export class TitanComponent {
 openNotif() {
   if (this.UserloginService.isLoggedIn()) {
   this.isNotificationsVisible = true;
+
   const user = this.UserloginService.getCurrentUser();
   console.log(user);
+  if (user && user.email) {
+    this.notificationsComponent.fetchNotifications(user.email);
 
-} else {
+
+}  else {
   // Show sign-in prompt
   this.showSignInPrompt = true;
   console.log('user not logged in');
 }
 }
 
-
+}
 
 navigateToLogin() {
   // Remove the logout() call if you just want to navigate

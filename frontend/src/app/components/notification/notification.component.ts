@@ -1,5 +1,5 @@
-/*import { Component, OnInit } from '@angular/core';
-import { WebsocketService } from '../../services/websocket/websocket.service';
+import { Component, OnInit } from '@angular/core';
+import { NotifService } from '../../services/notif.service';
 
 @Component({
   selector: 'app-notifications',
@@ -7,29 +7,29 @@ import { WebsocketService } from '../../services/websocket/websocket.service';
   styleUrls: ['./notification.component.css'],
 })
 export class NotificationComponent implements OnInit {
-  public notifications: string[] = [];
-  public privateNotifications: string[] = [];
+  notifications: Notification[] = [];
 
-  constructor(private websocketService: WebsocketService) {}
+  constructor(private notificationService: NotifService) {}
 
   ngOnInit() {
-    // ✅ Subscribe to public notifications
-    this.websocketService.getNotifications().subscribe((message) => {
-      if (message) {
-        this.notifications.push(message);
-      }
-    });
+    // Initial fetch if needed
+    const userDetails = JSON.parse(localStorage.getItem('user') || '{}');
 
-    // ✅ Subscribe to private notifications
-    this.websocketService.getPrivateNotifications().subscribe((message) => {
-      if (message) {
-        this.privateNotifications.push(message);
-      }
-    });
+      this.fetchNotifications(userDetails.email);
+
+
   }
 
-  sendNotification() {
-    this.websocketService.sendNotification('New booking request received!');
+
+  fetchNotifications(recipient: string) {
+    this.notificationService.getNotificationsByRecipient(recipient).subscribe(
+      (data:any) => {
+        this.notifications = data;
+      },
+      (error:any) => {
+        console.error('Error fetching notifications:', error);
+      }
+    );
   }
+
 }
-*/
