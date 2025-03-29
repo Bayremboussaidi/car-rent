@@ -1,4 +1,4 @@
-<header class="header" [ngClass]="{'sticky-header': !isTopMenuVisible , 'no-shadow': isTopMenuVisible }"
+<header class="header" [ngClass]="{'sticky-header': !isTopMenuVisible, 'no-shadow': isTopMenuVisible}"
         [ngStyle]="{'background-color': 'rgba(255, 255, 255, ' + scrollOpacity + ')'}">
   <nav class="nav container">
     <div class="nav__data">
@@ -12,16 +12,14 @@
       </div>
     </div>
 
-    <!-- Navigation Menu  -->
+    <!-- Navigation Menu -->
     <div class="nav__menu" [ngClass]="{'show-menu': isMenuOpen}" data-aos="zoom-in" data-aos-duration="1500">
       <ul class="nav__list">
         <li><a routerLink="/home" class="nav__link">Home</a></li>
         <li><a routerLink="/about" class="nav__link">About</a></li>
-
-
         <li><a routerLink="/blogs" class="nav__link">Blogs</a></li>
 
-        <!-- Dropdown 2 -->
+        <!-- Dropdown -->
         <li class="dropdown__item">
           <div class="nav__link">
             Cars <i class="ri-arrow-down-s-line dropdown__arrow"></i>
@@ -61,23 +59,33 @@
         <span class="title">Log out</span>
       </li>
 
-      <!-- Purchase Button with Email Input -->
-<!-- Purchase Button (Opens Email Dialog) -->
-      <li style="--i:#80FF72;--j:#7EE8FA" (click)="openEmailDialog()">
-          <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
-          <span class="title">Purchase</span>
+      <!-- Purchase Button -->
+      <li style="--i:#80FF72;--j:#7EE8FA"
+          (click)="openEmailDialog()"
+          role="button"
+          aria-label="View purchases"
+          [class.has-purchases]="hasPurchases"
+          [matBadge]="pendingPurchasesCount"
+          matBadgeColor="warn"
+          [matBadgeHidden]="pendingPurchasesCount === 0"
+          [class.hover-effect]="hoverState"
+          (mouseenter)="hoverState = true"
+          (mouseleave)="hoverState = false">
+        <span class="icon">
+          <ion-icon name="cart-outline"></ion-icon>
+        </span>
+        <span class="title">Purchase</span>
+        <mat-tooltip *ngIf="!isLoggedIn"></mat-tooltip>
       </li>
-
-
     </ul>
 
-    <!-- Display bookings dynamically -->
+    <!-- Bookings Display -->
     <div *ngIf="userBookings.length > 0" class="bookings-container">
-      <h3>Vos Réservations</h3>
+      <h3>Your Bookings</h3>
       <ul>
         <li *ngFor="let booking of userBookings">
           <strong>{{ booking.carName }}</strong> -
-          {{ booking.startDate }} à {{ booking.endDate }} ({{ booking.status }})
+          {{ booking.startDate }} to {{ booking.endDate }} ({{ booking.status }})
         </li>
       </ul>
     </div>
@@ -86,19 +94,16 @@
   </nav>
 </header>
 
-
-
-
 <!-- Backdrop Overlay -->
 <div class="navbar-backdrop"
-    [class.show]="isNotificationsVisible"
-    (click)="closeNotificationsNavbar()"></div>
+     [class.show]="isNotificationsVisible"
+     (click)="closeNotificationsNavbar()"></div>
 
 <!-- Notifications Navbar -->
 <div id="notifications-navbar"
-    class="notifications-navbar"
-    [class.show]="isNotificationsVisible"
-    (click)="$event.stopPropagation()">
+     class="notifications-navbar"
+     [class.show]="isNotificationsVisible"
+     (click)="$event.stopPropagation()">
   <div class="navbar-header">
     <span class="navbar-title">Notifications</span>
     <button class="close-btn" (click)="closeNotificationsNavbar()">×</button>
@@ -106,23 +111,14 @@
   <app-notifications></app-notifications>
 </div>
 
-
-
-
-
-
-<!--when user not logged in-->
+<!-- Sign In Prompt -->
 <div class="signin-prompt-backdrop" *ngIf="showSignInPrompt">
   <div class="signin-prompt-modal" (click)="$event.stopPropagation()">
     <h3>Sign In Required</h3>
-    <p>You need to be logged in .</p>
+    <p>You need to be logged in to access this feature.</p>
     <div class="modal-actions">
-      <button class="btn btn-primary" (click)="navigateToLogin()">
-        Sign In
-      </button>
-      <button class="btn btn-secondary" (click)="closeSignInPrompt()">
-        Cancel
-      </button>
+      <button class="btn btn-primary" (click)="navigateToLogin()">Sign In</button>
+      <button class="btn btn-secondary" (click)="closeSignInPrompt()">Cancel</button>
     </div>
   </div>
 </div>
