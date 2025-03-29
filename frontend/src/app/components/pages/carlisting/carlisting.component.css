@@ -179,6 +179,68 @@
   color: #4a5568;
 }
 
+
+
+
+
+
+
+
+
+/* Sign-in Backdrop (unchanged) */
+.signin-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Sign-in Modal (updated text and spacing) */
+.signin-prompt-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  z-index: 1001;
+
+  /* Text texture */
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button container spacing */
+.modal-actions {
+  display: flex;
+  gap: 1.5rem; /* Space between buttons */
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* Text styling */
+.signin-prompt-modal h3 {
+  color: #2d3436;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+}
+
+.signin-prompt-modal p {
+  color: #4a5568;
+  line-height: 1.5;
+  margin: 0 0 2rem 0;
+}
+
+
+
+
+
 /* Responsive Design */
 @media only screen and (max-width: 768px) {
   .find__cars-left {

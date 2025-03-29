@@ -14,10 +14,7 @@ export class NotificationComponent implements OnInit {
 
   ngOnInit() {
    // Initial fetch if needed
-const userDetails = JSON.parse(localStorage.getItem('user') || '{}');
-  if (userDetails.email) {
-    this.fetchNotifications(userDetails.email);
-  }
+
   }
 
 

@@ -3,12 +3,18 @@ import { VoitureService } from '../../../services/voiture.service';
 import {BookingService} from '../../../services/booking.service';
 import { Router } from '@angular/router';
 
+import { UserloginService } from '../../../services/user_login/userlogin.service';
+
 @Component({
   selector: 'app-listcars',
   templateUrl: './carlisting.component.html',
   styleUrls: ['./carlisting.component.css']
 })
+
 export class ListcarsComponent implements OnInit {
+
+  showSignInPrompt = false;
+
 
   voitures: any[] = [];
   filteredVoitures: any[] = [];
@@ -41,6 +47,7 @@ export class ListcarsComponent implements OnInit {
     private voitureService: VoitureService,
     private BookingService : BookingService,
     private router: Router,
+    public UserloginService: UserloginService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -50,10 +57,34 @@ export class ListcarsComponent implements OnInit {
 
 
     openBookingModal(voiture: any) {
+      console.log('Is user logged in?', this.isLoggedIn);
+
+      if (this.isLoggedIn) {
       console.log('Booking car:', voiture);
       this.selectedCar = voiture; // Store car details
       this.showBookingModal = true; // Show modal
+    } else {
+      this.showSignInPrompt = true;
+      this.cd.detectChanges();
     }
+  }
+
+
+  //sign in open , close
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+    this.closeSignInPrompt();
+  }
+
+  closeSignInPrompt(): void {
+    this.showSignInPrompt = false;
+  }
+
+  get isLoggedIn(): boolean {
+    return this.UserloginService.isLoggedIn();
+  }
+
+
 
 
   closeBookingModal() {

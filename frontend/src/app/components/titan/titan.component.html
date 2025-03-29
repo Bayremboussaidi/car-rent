@@ -96,14 +96,14 @@
 
 <!-- Backdrop Overlay -->
 <div class="navbar-backdrop"
-     [class.show]="isNotificationsVisible"
-     (click)="closeNotificationsNavbar()"></div>
+    [class.show]="isNotificationsVisible"
+    (click)="closeNotificationsNavbar()"></div>
 
 <!-- Notifications Navbar -->
 <div id="notifications-navbar"
-     class="notifications-navbar"
-     [class.show]="isNotificationsVisible"
-     (click)="$event.stopPropagation()">
+    class="notifications-navbar"
+    [class.show]="isNotificationsVisible"
+    (click)="$event.stopPropagation()">
   <div class="navbar-header">
     <span class="navbar-title">Notifications</span>
     <button class="close-btn" (click)="closeNotificationsNavbar()">×</button>
