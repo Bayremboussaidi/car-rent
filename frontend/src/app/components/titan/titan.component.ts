@@ -18,13 +18,12 @@ import { AuthService } from "../../services/auth.service";
   styleUrls: ["./titan.component.css"],
 })
 export class TitanComponent {
-  @ViewChild('NotificationComponent') notificationsComponent!: NotificationComponent;
-
+  @ViewChild(NotificationComponent) notificationsComponent!: NotificationComponent;
+  isNotificationsVisible = false;
 
 
   showSignInPrompt = false;
 
-  isNotificationsVisible = false;
 
   isMenuOpen = false;
   scrollOpacity = 0; // Starts with 0% opacity at the top
