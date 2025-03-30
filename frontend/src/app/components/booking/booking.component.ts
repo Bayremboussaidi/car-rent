@@ -1,12 +1,15 @@
+import { FollowerService } from './../../services/follower.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { BookingService } from '../../services/booking.service';
 import moment from 'moment';
+import { UserloginService } from '../../services/user_login/userlogin.service';
 
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.css']
 })
+
 export class BookingModalComponent implements OnInit {
   today: Date = new Date();
   @Input() showModal: boolean = false;
@@ -17,15 +20,15 @@ export class BookingModalComponent implements OnInit {
 
   bookingData = {
     userId: 8,
-    username: 'bay',
+    username: '',
     carName: '',
     userEmail: '',
     nbrJrs: 0,
-    phone: '',
+    phone: '0',
     description: '',
     startDate: '',
     endDate: '',
-    price:0,
+    price: 0,
     voitureId: 0,
     pickupLocation: 'lac2,tunis',
     dropoffLocation: 'lac2,tunis',
@@ -34,13 +37,36 @@ export class BookingModalComponent implements OnInit {
   responseMessage: string = '';
   unavailableDates: Date[] = [];
 
-  constructor(private bookingService: BookingService) {}
+  constructor(    private bookingService: BookingService,
+    private userLoginService: UserloginService , private followerService: FollowerService) {}
 
   ngOnInit() {
+    this.loadUserData();
+
     if (this.voitureId) {
       this.bookingData.voitureId = Number(this.voitureId); // ✅ Convert once
       this.bookingData.carName = this.carName;
       this.fetchUnavailableDates();
+    }
+  }
+
+
+  public loadUserData() {
+    const  currentUser = this.userLoginService.getCurrentUser();
+    if (currentUser) {
+      this.bookingData.userId = Number(currentUser.id);
+      this.bookingData.username = currentUser.username || '';
+      this.bookingData.userEmail = currentUser.email || '';
+
+      // Handle phone number conversion and fallback
+      this.bookingData.phone = currentUser.phone ? String(currentUser.phone) : '0';
+
+      console.log('Loaded user data:', {
+        userId: this.bookingData.userId,
+        username: this.bookingData.username,
+        email: this.bookingData.userEmail,
+        phone: this.bookingData.phone
+      });
     }
   }
 
@@ -71,6 +97,24 @@ export class BookingModalComponent implements OnInit {
   };
 
   onSubmit() {
+
+    const currentUser = this.userLoginService.getCurrentUser();
+
+    if (currentUser?.email) {
+      this.followerService.addFollower(currentUser.email).subscribe({
+        next: () => {
+          console.log('added user to followers',currentUser.email);
+        },
+        error: (err) => {
+          // Handle error
+        }
+      });
+    } else {
+
+      console.error('No user email available');
+
+    }
+
     if (!this.voitureId || !this.bookingData.startDate || !this.bookingData.endDate) {
       this.responseMessage = "Please fill in all required fields!";
       return;

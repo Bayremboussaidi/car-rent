@@ -8,6 +8,10 @@ import { NotificationComponent } from '../notification/notification.component';
 import { EmailDialogComponent } from '../dialog/email-dialog/email-dialog.component';
 import { Booking } from '../../models/booking.model';
 
+
+import { interval, Subscription } from 'rxjs';
+
+
 @Component({
   selector: 'app-titan',
   templateUrl: './titan.component.html',
@@ -18,6 +22,9 @@ export class TitanComponent implements OnInit {
 
   // State properties
   isNotificationsVisible = false;
+
+  private refreshSub!: Subscription; //notif refresh
+
   hoverState = false;
   hasPurchases = false;
   pendingPurchasesCount = 0;
@@ -74,7 +81,7 @@ export class TitanComponent implements OnInit {
     }
   }
 
-  openNotif(): void {
+/* openNotif(): void {
     if (this.isLoggedIn) {
       this.isNotificationsVisible = true;
       const user = this.UserloginService.getCurrentUser();
@@ -84,7 +91,39 @@ export class TitanComponent implements OnInit {
     } else {
       this.showSignInPrompt = true;
     }
-  }
+  }*/
+
+    openNotif(): void {
+      if (this.isLoggedIn) {
+        this.isNotificationsVisible = true;
+        const user = this.UserloginService.getCurrentUser();
+
+        // Capture email safely and narrow the type
+        const email = user?.email;
+        if (email) {
+          // Clear existing interval (if any)
+          if (this.refreshSub) {
+            this.refreshSub.unsubscribe();
+          }
+
+          // Initial fetch
+          this.notificationsComponent.fetchNotifications(email);
+
+          // Refresh every 60 seconds with the latest email
+          this.refreshSub = interval(60000).subscribe(() => {
+            const currentUser = this.UserloginService.getCurrentUser();
+            const currentEmail = currentUser?.email;
+            if (currentEmail) {
+              this.notificationsComponent.fetchNotifications(currentEmail);
+            } else {
+              this.closeNotificationsNavbar(); // Handle missing email
+            }
+          });
+        }
+      } else {
+        this.showSignInPrompt = true;
+      }
+    }
 
   navigateToLogin(): void {
     this.router.navigate(['/login']);

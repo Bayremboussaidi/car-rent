@@ -4,7 +4,7 @@
 }
 
 .clickable-image:hover {
-  transform: scale(1.12);
+  transform: scale(1.08);
 }
 
 /* Responsive Row Layout */
@@ -183,7 +183,15 @@
 
 
 
+/* Remove underline from all links */
+a {
+  text-decoration: none;
+}
 
+/* Remove hover effects */
+a:hover {
+  text-decoration: none;
+}
 
 
 

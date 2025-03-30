@@ -5,8 +5,6 @@
     <h2>Réservez votre voiture</h2>
 
     <form (ngSubmit)="onSubmit()">
-      <label for="userId">ID Utilisateur :</label>
-      <input type="number" id="userId" [(ngModel)]="bookingData.userId" name="userId" required />
 
       <label for="username">Nom complet :</label>
       <input type="text" id="username" [(ngModel)]="bookingData.username" name="username" required />
@@ -14,13 +12,31 @@
       <label for="carName">Nom de la voiture :</label>
       <input type="text" id="carName" [(ngModel)]="bookingData.carName" name="carName" readonly />
 
-      <label for="userEmail">E-mail :</label>
-      <input type="email" id="userEmail" [(ngModel)]="bookingData.userEmail" name="userEmail" required />
+      <div class="form-group">
+        <label for="userEmail">E-mail :</label>
+        <input type="email"
+               id="userEmail"
+               name="userEmail"
+               [(ngModel)]="bookingData.userEmail"
+               required
+               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
+               [disabled]="true"
+               class="form-control">
+      </div>
 
 
 
-      <label for="phone">Numéro de téléphone :</label>
-      <input type="text" id="phone" [(ngModel)]="bookingData.phone" name="phone" required />
+      <div class="form-group">
+        <label for="phone">Numéro de téléphone :</label>
+        <input type="tel"
+              id="phone"
+              name="phone"
+              [(ngModel)]="bookingData.phone"
+               required
+               pattern="^(\+216[2459]\d{7}|[29]\d{7}|0)$"
+               title="Entrez un numéro Tunisien valide (ex: +21612345678 ou 99123456)"
+               class="form-control">
+      </div>
 
       <label for="description">Description :</label>
       <textarea id="description" [(ngModel)]="bookingData.description" name="description"></textarea>

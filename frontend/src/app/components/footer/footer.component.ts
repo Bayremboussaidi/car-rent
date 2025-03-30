@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { FollowerService } from '../../services/follower.service';
 
 @Component({
   selector: 'app-footer',
@@ -9,7 +10,7 @@ import { Component } from '@angular/core';
 export class FooterComponent {
   email: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private followerService :FollowerService ) {}
 
 
   currentYear: number = new Date().getFullYear();
@@ -17,17 +18,24 @@ export class FooterComponent {
 
 
 
-  subscribeToNewsletter() {
-    if (this.email) {
-      this.http.post('http://localhost:8084/followers', { email: this.email })
-        .subscribe({
-          next: () => alert('Subscription successful!'),
-          error: () => alert('Subscription failed. Please try again.')
-        });
-    } else {
-      alert('Please enter a valid email address.');
+
+    subscribeToNewsletter() {
+      if (!this.email) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      this.followerService.addFollower(this.email).subscribe({
+        next: (response) => {
+          console.log('Subscription processed'); // Optional UI feedback
+          this.email = 'Added Successfully';
+        },
+        error: (error) => {
+          // This will no longer trigger since backend doesn't throw
+          this.email = '';
+        }
+      });
     }
-  }
 
   quickLinks = [
     { path: '/home', display: 'Accueil' },

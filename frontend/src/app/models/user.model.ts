@@ -5,7 +5,7 @@ export interface User {
   lastName?: string; // Required for Keycloak
   email?: string;
   password?: string;
-  phone?: number;
+  phone?: string;
   workplace?: string | null;
   photo?: string;
   role?: 'ADMIN' | 'USER' | 'AGENCE'; // Match Java enum
