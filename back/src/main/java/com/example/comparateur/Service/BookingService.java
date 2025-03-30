@@ -33,10 +33,7 @@ public class BookingService {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid voiture_id: must not be empty"));
             }
     
-            // ✅ 2. Validate userId & username
-            if (booking.getUserId() == null || booking.getUserId() == ' ') {
-                return ResponseEntity.status(400).body(new ApiResponse(false, "User ID is required"));
-            }
+
             if (booking.getUsername() == null || booking.getUsername().isEmpty()) {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Username is required"));
             }
@@ -72,7 +69,7 @@ public class BookingService {
     
     
 
-    // ✅ Update a booking (Admin updates status → Notify Client)
+    // Update a booking (Admin updates status → Notify Client)
     @Transactional
     public ResponseEntity<Object> updateBookingStatus(Long id, BookingStatus status) {
         try {
@@ -100,7 +97,7 @@ public class BookingService {
     }
     
 
-    // ✅ Update a booking (Admin only)
+    //  Update a booking (Admin only)
     @Transactional
     public ResponseEntity<Object> updateBooking(Long id, Booking updatedBooking) {
         try {

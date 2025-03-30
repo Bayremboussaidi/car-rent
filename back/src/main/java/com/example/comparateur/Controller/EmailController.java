@@ -24,6 +24,14 @@ public class EmailController {
 
 
 
+    @PostMapping("/sendEmail/toadmin")
+    public String toadminEmail(@RequestBody EmailRequestDTO emailRequest) {
+        emailService.sendEmailtoadmin(emailRequest);
+        return "Email sent to admin successfully";
+    }
+
+
+
     @PostMapping("/sendEmail/inform")
     public String informEmail(@RequestBody EmailRequestDTO emailRequest) {
         emailService.informEmail(emailRequest);

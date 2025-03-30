@@ -2,6 +2,7 @@ package com.example.comparateur.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,14 @@ public class FollowerService {
     }
 
     public Follower addFollower(Follower follower) {
+        Optional<Follower> existing = followerRepository.findByEmail(follower.getEmail());
+    
+        if (existing.isPresent()) {
+            // Log to console instead of throwing
+            System.out.println("Duplicate email attempt: " + follower.getEmail());
+            return existing.get(); // Return existing entry
+        }
+        
         return followerRepository.save(follower);
     }
 

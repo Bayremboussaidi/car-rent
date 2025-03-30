@@ -1,5 +1,6 @@
 package com.example.comparateur.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,8 +9,9 @@ import jakarta.persistence.Id;
 @Entity
 public class Follower {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Correction du nom de l'annotation
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+      @Column(unique = true)  // Add unique constraint
     private String email;
 
     public Follower() {}

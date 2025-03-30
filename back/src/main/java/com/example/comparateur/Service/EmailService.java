@@ -56,4 +56,14 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+
+
+    public void sendEmailtoadmin(EmailRequestDTO emailRequest) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("bayremboussaidi187@gmail.com");
+        message.setSubject("New Message from " + emailRequest.getName());
+        message.setText("Email: " + emailRequest.getEmail() + "\n\nMessage:\n" + emailRequest.getMessage());
+        mailSender.send(message);
+    }
 }
