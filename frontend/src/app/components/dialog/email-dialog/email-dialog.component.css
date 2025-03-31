@@ -13,6 +13,15 @@ mat-dialog-content {
   padding: 10px;
 }
 
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
 /* Booking Item Card */
 .booking-item {
   display: flex;

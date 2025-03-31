@@ -20,6 +20,11 @@ export class EmailService {
   }
 
 
+  toadmin(emailRequest: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/toadmin`, emailRequest);
+
+  }
+
   informEmail(emailRequest: EmailRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/inform`, emailRequest);
   }
