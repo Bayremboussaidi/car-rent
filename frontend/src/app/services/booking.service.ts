@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Booking } from '../models/booking.model';
+import { ApiResponse } from '../models/ApiResponse .model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,10 @@ export class BookingService {
    */
   getAllBookings(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/all`);
+  }
+
+  getUserBookings(username: string): Observable<ApiResponse<Booking[]>> {
+    return this.http.get<ApiResponse<Booking[]>>(`${this.apiUrl}/username/${username}`);
   }
 
   /**

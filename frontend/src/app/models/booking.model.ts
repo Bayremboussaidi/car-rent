@@ -7,10 +7,12 @@ export interface Booking {
   nbrJrs: number;
   phone: string;
   description: string;
-  startDate: string | null;
-  endDate: string | null;
+  startDate:  Date | string;
+  endDate:  Date | string;
   status: string;
   pickupLocation: string;
   dropoffLocation: string;
   formattedDate?: string; //  Add this to avoid TypeScript errors
+  price?: number;
 }
+

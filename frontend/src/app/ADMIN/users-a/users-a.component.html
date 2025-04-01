@@ -127,6 +127,10 @@
             <button class="delete-button" *ngIf="user.id !== undefined" (click)="deleteUser(user.id!, i)">
               Delete
             </button>
+            <button class="Historique-button" *ngIf="user.id !== undefined" (click)="viewHistory(user.id!)">
+              Details
+            </button>
+
 
           </td>
         </tr>

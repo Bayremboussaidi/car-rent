@@ -153,6 +153,20 @@ public ResponseEntity<Object> getBookingsByUserEmail(@PathVariable String email)
 
 
 
+@GetMapping("/username/{username}")
+public ResponseEntity<Object> getBookingsByUsername(@PathVariable String username) {
+    List<Booking> bookings = bookingRepository.findByUsername(username);
+    
+    if (bookings.isEmpty()) {
+        return ResponseEntity.status(404).body(new ApiResponse(false, "No bookings found for this email"));
+    }
+    
+    return ResponseEntity.ok(new ApiResponse(true, "Bookings fetched successfully", bookings));
+}
+
+
+
+
 
 @DeleteMapping("/{id}")
 public ResponseEntity<Object> deleteBooking(@PathVariable Long id) {

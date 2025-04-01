@@ -25,6 +25,12 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
+
+
+    public List<Review> getReviewsByUsername(String username) {
+        return reviewRepository.findAllByUsername(username);
+    }
+
     public ResponseEntity<Object> createReview(Long voitureId, Review review) {
         try {
             Optional<Voiture> optionalVoiture = voitureRepository.findById(voitureId);

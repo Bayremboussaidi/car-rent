@@ -3,6 +3,8 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-users',
@@ -17,10 +19,17 @@ export class UserAComponent implements OnInit {
   userToEdit: User | null = null;
   newUser: User = this.getEmptyUser();
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService , private router: Router ,   private route: ActivatedRoute ) {}
 
   ngOnInit(): void {
     this.getUsers();
+  }
+
+
+
+  //go to user history
+  viewHistory(userId: number): void {
+    this.router.navigate([userId], { relativeTo: this.route });
   }
 
 

@@ -29,4 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 // Fetch bookings by user email
     List<Booking> findByUserEmail(String userEmail);
 
+
+public List<Booking> findByUsername(String username);
+
 }

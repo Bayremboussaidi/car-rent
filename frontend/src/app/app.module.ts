@@ -88,6 +88,7 @@ import { MaterialComponent } from './test/material/material.component';
 import { ContactBadgeComponent } from './components/contact-badge/contact-badge.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { UserADetailsComponent } from './ADMIN/user-a-details/user-a-details.component';
 
 
 
@@ -144,6 +145,7 @@ export function kcFactory(kcService: KeycloakService) {
     ContactBadgeComponent,
     FaqComponent,
     NotificationComponent,
+    UserADetailsComponent,
   ],
   imports: [
     BrowserModule,

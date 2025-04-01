@@ -17,4 +17,10 @@ export class ReviewService {
 
     return this.http.post<Review>(`${this.apiUrl}/${voitureId}`, review, { headers });
   }
+
+
+
+  getReviewsByUsername(username: string): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.apiUrl}/username/${username}`);
+  }
 }

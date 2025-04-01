@@ -314,6 +314,30 @@ button .pi {
   transform: scale(0.95);
 }
 
+
+/*historique button */
+.Historique-button {
+  background-color: #091606;
+  color: white;
+  padding: 8px 14px;
+  font-size: 14px;
+  margin-left: 5px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.Historique-button:hover {
+  background-color: #57595a;
+  transform: scale(1.05);
+}
+
+.Historique-button:active {
+  background-color: #a93226;
+  transform: scale(0.95);
+}
+
 /* Top Buttons */
 .top-buttons {
   position: sticky;
