@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Utils.ApiResponse;
+import com.example.comparateur.DTO.UserUpdateDTO;
 import com.example.comparateur.Entity.User;
 import com.example.comparateur.Service.USER.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,10 +33,15 @@ public class UserController {
         
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
-    }
+@PutMapping("/{id}")
+public ResponseEntity<ApiResponse> updateUser(
+    @PathVariable Long id,
+    @Valid @RequestBody UserUpdateDTO userUpdateDTO
+) {
+    return userService.updateUser(id, userUpdateDTO);
+}
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {

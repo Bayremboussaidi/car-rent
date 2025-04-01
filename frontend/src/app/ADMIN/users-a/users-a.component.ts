@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -21,24 +23,40 @@ export class UserAComponent implements OnInit {
     this.getUsers();
   }
 
-  // ✅ Fetch all users (Fixed response handling)
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.newUser.photo = reader.result as string;
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+      };
+    }
+  }
+
+  //  Fetch all users (Fixed response handling)
   getUsers(): void {
     this.userService.getAllUsers().subscribe(
-      (response: User[]) => {
-        if (Array.isArray(response)) {
-          this.users = response.map(user => ({
+      (response: any) => { // Use proper response interface
+        if (response.success && Array.isArray(response.data)) {
+          this.users = response.data.map((user: User) => ({
             ...user,
-            id: Number(user.id) // Ensure `id` is always a number
+            id: Number(user.id),
+            // Convert date strings to Date objects
+            createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
+            updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
           }));
         }
       },
-      (error) => {
-        console.error('Error fetching users:', error);
-      }
+      (error) => console.error('Error fetching users:', error)
     );
   }
 
-  // ✅ Delete a user (Fixed `id` type conversion)
+  //  Delete a user (Fixed `id` type conversion)
   deleteUser(userId: number | string, index: number): void {
     const id = Number(userId); // Convert `string` ID to `number`
     if (confirm('Are you sure you want to delete this user?')) {
@@ -52,48 +70,91 @@ export class UserAComponent implements OnInit {
     }
   }
 
-  // ✅ Check if a user is selected
+  // Check if a user is selected
   isSelected(user: User): boolean {
     return this.selectedUsers.some((selectedUser) => selectedUser.id === user.id);
   }
 
-  // ✅ Toggle user selection
+  //  Toggle user selection
   toggleSelection(user: User): void {
     this.isSelected(user)
       ? (this.selectedUsers = this.selectedUsers.filter((selectedUser) => selectedUser.id !== user.id))
       : this.selectedUsers.push(user);
   }
 
-  // ✅ Select or Deselect all users
+  // Select or Deselect all users
   toggleSelectAll(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     this.selectedUsers = isChecked ? [...this.users] : [];
   }
 
-  // ✅ Update multiple selected users (Fixed `id` issue)
+
+
+
+  validateNumber(event: KeyboardEvent) {
+    const pattern = /[0-9]/;
+    if (!pattern.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+
+
+
+
+  //  Update multiple selected users (Fixed `id` issue)
   updateSelectedUsers(): void {
-    this.selectedUsers.forEach((user) => {
-      if (user.id !== undefined) {
-        const userId = Number(user.id); // Convert `string` ID to `number`
-        this.userService.updateUser(userId, user).subscribe(
-          () => {
-            console.log('User updated successfully');
-            this.getUsers();
-          },
-          (error) => console.error('Error updating user:', error)
-        );
+    const updateObservables = this.selectedUsers
+      .filter(user => user.id !== undefined)
+      .map(user => {
+        const userId = Number(user.id);
+
+        // Create clean update payload
+        const updatePayload: any = {
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          phone: Number(user.phone) || null,
+          workplace: user.workplace,
+          photo: user.photo?.includes(',')
+            ? user.photo.split(',')[1]
+            : user.photo
+        };
+
+        // Remove fields that shouldn't be updated
+        delete updatePayload.id;
+        delete updatePayload.createdAt;
+        delete updatePayload.updatedAt;
+
+        return this.userService.updateUser(userId, updatePayload);
+      });
+
+    forkJoin(updateObservables).subscribe({
+      next: () => {
+        console.log('All users updated successfully');
+        this.selectedUsers = [];
+        this.getUsers();
+      },
+      error: (err) => {
+        console.error('Update error:', err);
+        if (err.error) {
+          console.error('Server response:', err.error);
+          alert(`Update failed: ${err.error.message || err.message}`);
+        }
+        this.selectedUsers = [];
+        this.getUsers();
       }
     });
   }
 
-  // ✅ Open modal for adding a new user
+  //  Open modal for adding a new user
   openAddModal(): void {
     this.isAddModalOpen = true;
     this.isEditMode = false;
     this.newUser = this.getEmptyUser();
   }
 
-  // ✅ Open modal for editing an existing user
+  //  Open modal for editing an existing user
   openEditModal(user: User): void {
     this.isAddModalOpen = true;
     this.isEditMode = true;
@@ -137,12 +198,11 @@ export class UserAComponent implements OnInit {
   // ✅ Utility function to return an empty user object
   private getEmptyUser(): User {
     return {
-      id: 0, // Set to 0 (or remove if ID is auto-generated)
       username: '',
       email: '',
       password: '',
       role: 'USER',
-      phone: undefined,
+      phone: null,  // Now matches the interface
       workplace: undefined,
       photo: undefined,
       createdAt: new Date().toISOString(),

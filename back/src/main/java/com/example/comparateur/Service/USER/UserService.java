@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.Utils.ApiResponse;
+import com.example.comparateur.DTO.UserUpdateDTO;
 import com.example.comparateur.Entity.Role;
 import com.example.comparateur.Entity.User;
 import com.example.comparateur.Repository.UserRepository;
@@ -81,51 +82,32 @@ public class UserService {
         }
     }
 
+
+
+
+
     // UPDATE USER
-    public ResponseEntity<Object> updateUser(Long id, User userDetails) {
-        try {
-            Optional<User> userOptional = userRepository.findById(id);
-            
-            if (userOptional.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ApiResponse(false, "User not found")
-                );
-            }
-
-            User existingUser = userOptional.get();
-            
-            // Update fields
-            if (userDetails.getUsername() != null) {
-                existingUser.setUsername(userDetails.getUsername());
-            }
-            if (userDetails.getEmail() != null) {
-                existingUser.setEmail(userDetails.getEmail());
-            }
-            if (userDetails.getPassword() != null) {
-                existingUser.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-            }
-            if (userDetails.getPhoto() != null) {
-                existingUser.setPhoto(userDetails.getPhoto());
-            }
-            if (userDetails.getRole() != null) {
-                existingUser.setRole(userDetails.getRole());
-            }
-            if (userDetails.getWorkplace() != null) {
-                existingUser.setWorkplace(userDetails.getWorkplace());
-            }
-
-            User updatedUser = userRepository.save(existingUser);
-            return ResponseEntity.ok().body(
-                new ApiResponse(true, "User updated successfully", updatedUser)
-            );
-
-        } catch (Exception e) {
-            logger.error("Update error: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body(
-                new ApiResponse(false, "Failed to update user")
-            );
-        }
+    public ResponseEntity<ApiResponse> updateUser(Long id, UserUpdateDTO dto) {
+        return userRepository.findById(id)
+            .map(existingUser -> {
+                // Update only allowed fields
+                existingUser.setUsername(dto.getUsername());
+                existingUser.setEmail(dto.getEmail());
+                existingUser.setPhone(dto.getPhone());
+                existingUser.setRole(Role.valueOf(dto.getRole()));
+                existingUser.setWorkplace(dto.getWorkplace());
+                existingUser.setPhoto(dto.getPhoto());
+                
+                User updatedUser = userRepository.save(existingUser);
+                return ResponseEntity.ok(new ApiResponse(true, "User updated", updatedUser));
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
+
+
+
 
     // DELETE USER
     public ResponseEntity<Object> deleteUser(Long id) {

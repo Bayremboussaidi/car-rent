@@ -5,12 +5,12 @@ export interface User {
   lastName?: string; // Required for Keycloak
   email?: string;
   password?: string;
-  phone?: string;
+  phone?: number | null;
   workplace?: string | null;
   photo?: string;
   role?: 'ADMIN' | 'USER' | 'AGENCE'; // Match Java enum
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
   anonymous?: boolean;
   bearer?: string; // Only for front-end authentication
 }
