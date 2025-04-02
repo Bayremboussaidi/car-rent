@@ -1,11 +1,13 @@
 import { BookingService } from './../../services/booking.service';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 import { Booking } from '../../models/booking.model';
 import {ReviewService } from '../../services/review-service.service';
 import { Review } from '../../models/review.model';
+import { ImageService } from '../../services/image.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-user-a-details',
@@ -20,6 +22,8 @@ export class UserADetailsComponent implements OnInit {
   userHistory: any[] = [];
   showBookingActions: boolean = false; // Set to true if you want to show actions
   userReviews: Review[] = [];
+  defaultAvatar = 'assets/images/default-avatar.png';
+
 
 
   constructor(
@@ -28,11 +32,37 @@ export class UserADetailsComponent implements OnInit {
     private userService: UserService,
     private BookingService : BookingService,
     private ReviewService  : ReviewService ,
+    private imageService: ImageService,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadUserDetails();
 
+  }
+
+  get safePhotoUrl(): SafeUrl | string {
+    try {
+      if (this.user?.photo) {
+        if (this.user.photo.startsWith('data:')) {
+          return this.sanitizer.bypassSecurityTrustResourceUrl(this.user.photo);
+        }
+        return this.sanitizer.bypassSecurityTrustUrl(this.user.photo);
+      }
+    } catch (error) {
+      console.error('Error sanitizing URL:', error);
+    }
+    return this.defaultAvatar;
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img.src !== this.defaultAvatar) {
+      console.warn('Image load error, using default avatar');
+      img.src = this.defaultAvatar;
+      img.onerror = null; // Break error loop
+    }
   }
 
   loadUserDetails(): void {
@@ -53,7 +83,9 @@ export class UserADetailsComponent implements OnInit {
             role: response.data.role,
             phone: response.data.phone,
             workplace: response.data.workplace,
-            photo: response.data.photo,
+
+            photo: response.data.photo || this.defaultAvatar,
+
             createdAt: response.data.createdAt ? new Date(response.data.createdAt) : new Date(),
             updatedAt: response.data.updatedAt ? new Date(response.data.updatedAt) : new Date(),
             isActive: response.data.isActive,
@@ -73,25 +105,6 @@ export class UserADetailsComponent implements OnInit {
       }
     });
   }
-
-  /*loadBookings(): void {
-    if (this.user?.username) {
-      this.BookingService.getUserBookings(this.user.username).subscribe({
-        next: (response: any) => {
-          if (response.success) {
-            this.bookings = response.data.map((booking: any) => ({
-              ...booking,
-              startDate: new Date(booking.startDate),
-              endDate: new Date(booking.endDate)
-            }));
-          }
-        },
-        error: (err) => {
-          console.error('Error loading bookings:', err);
-        }
-      });
-    }
-  }*/
 
 
     loadBookings(): void {

@@ -5,5 +5,5 @@ export interface Review {
   rating: number;
   createdAt: string; // Keep as string since it's in ISO format
   updatedAt: string;
-  voiture?: any;
+  carName?: string;
 }

@@ -17,14 +17,20 @@
       {{ errorMessage }}
     </div>
 
-    <!-- Profile Section -->
+
+
     <div class="profile-section">
       <div class="profile-picture-container">
-        <img [src]="user.photo || 'assets/default-profile.png'" alt="Profile Picture" class="profile-picture">
-      </div>
-      <h2 class="user-name">{{ user.username || 'N/A' }}</h2>
-      <p class="user-email">{{ user.email }}</p>
+        <img class="profile-pic"
+        [src]="safePhotoUrl"
+        alt="Profile Picture"
+        (error)="handleImageError($event)"
+        *ngIf="safePhotoUrl">
+
     </div>
+    <h2 class="user-name">{{ user.username || 'N/A' }}</h2>
+    <p class="user-email">{{ user.email }}</p>
+  </div>
 
     <!-- User Details Section -->
     <div class="details-section">
@@ -77,8 +83,8 @@
           </div>
           <p class="comment-content">{{ comment.reviewText }}</p>
           <!-- If you want to display car information -->
-          <div *ngIf="comment.voiture" class="comment-car">
-            On: {{ comment.voiture.model || 'Unknown car' }}
+          <div *ngIf="comment.carName" class="comment-car">
+            On: {{ comment.carName || 'Unknown car' }}
           </div>
         </div>
       </div>
@@ -161,7 +167,7 @@
       </div>
       <p class="history-details">{{ review.reviewText }}</p>
       <div class="review-car">
-        <small>For: {{ review.voiture }}</small>
+        <small>For: {{ review.carName }}</small>
       </div>
     </div>
   </div>

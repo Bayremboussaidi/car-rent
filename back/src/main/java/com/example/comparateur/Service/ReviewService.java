@@ -2,11 +2,13 @@ package com.example.comparateur.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.comparateur.DTO.ReviewDTO;
 import com.example.comparateur.Entity.Review;
 import com.example.comparateur.Entity.Voiture;
 import com.example.comparateur.Repository.ReviewRepository;
@@ -21,14 +23,29 @@ public class ReviewService {
     @Autowired
     private VoitureRepository voitureRepository;
 
-    public List<Review> getAllReviews() {
+    /*public List<Review> getAllReviews() {
         return reviewRepository.findAll();
+    }*/
+
+
+
+    public List<ReviewDTO> getReviewsByUsername(String username) {
+        return reviewRepository.findAllByUsername(username).stream()
+            .map(review -> new ReviewDTO(review, review.getVoiture()))
+            .collect(Collectors.toList());
     }
 
 
 
-    public List<Review> getReviewsByUsername(String username) {
+    /*public List<Review> getReviewsByUsername(String username) {
         return reviewRepository.findAllByUsername(username);
+    }*/
+
+
+    public List<ReviewDTO> getAllReviews() {
+        return reviewRepository.findAll().stream()
+            .map(review -> new ReviewDTO(review, review.getVoiture()))
+            .collect(Collectors.toList());
     }
 
     public ResponseEntity<Object> createReview(Long voitureId, Review review) {

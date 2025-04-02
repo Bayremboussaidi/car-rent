@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /* user-a-details.component.css */
 .booking-meta {
   display: flex;
@@ -80,8 +86,8 @@
 }
 
 .profile-picture-container {
-  width: 150px;
-  height: 150px;
+  width: 450px;
+  height: 450px;
   border-radius: 50%;
   overflow: hidden;
   margin: 0 auto 20px;

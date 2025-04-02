@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.comparateur.DTO.ReviewDTO;
 import com.example.comparateur.Entity.Review;
 import com.example.comparateur.Service.ReviewService;
 
@@ -29,18 +30,16 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Review>> getAllReviews() {
-        List<Review> reviews = reviewService.getAllReviews();
+    public ResponseEntity<List<ReviewDTO>> getAllReviews() {
+        List<ReviewDTO> reviews = reviewService.getAllReviews();
         return ResponseEntity.ok(reviews);
     }
-
 
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<List<Review>> getReviewsByUsername(@PathVariable String username) {
-        List<Review> reviews = reviewService.getReviewsByUsername(username);
+    public ResponseEntity<List<ReviewDTO>> getReviewsByUsername(@PathVariable String username) {
+        List<ReviewDTO> reviews = reviewService.getReviewsByUsername(username);
         return ResponseEntity.ok(reviews);
     }
-
 
 }

@@ -10,7 +10,7 @@ export interface User {
   password?: string;
   phone?: number | null;
   workplace?: string | null;
-  photo?:  string | null;
+  photo?: string | null;
   role?: 'ADMIN' | 'USER' | 'AGENCE'; // Match Java enum
   createdAt?: Date | string;
   updatedAt?: Date | string;

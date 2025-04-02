@@ -44,7 +44,8 @@ export class CardetailsAComponent implements OnInit {
             reviewText: review.reviewText || '',
             rating: review.rating ?? 0,
             createdAt: review.createdAt ? new Date(review.createdAt).toISOString() : new Date().toISOString(),
-            updatedAt: review.updatedAt ? new Date(review.updatedAt).toISOString() : new Date().toISOString()
+            updatedAt: review.updatedAt ? new Date(review.updatedAt).toISOString() : new Date().toISOString(),
+            carName: this.car?.carName || 'Unknown Car'
           }));
         }
       },
