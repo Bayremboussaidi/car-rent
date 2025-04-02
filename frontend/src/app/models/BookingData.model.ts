@@ -13,4 +13,5 @@ export interface BookingData {
   pickupLocation: string;
   dropoffLocation: string;
   formattedDate?: string; // Optional for UI display
+  price?: number;
 }

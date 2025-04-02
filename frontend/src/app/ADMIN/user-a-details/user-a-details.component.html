@@ -84,26 +84,44 @@
       </div>
     </div>
 
+
+
+
     <!-- User Bookings Section -->
     <div class="section-container" *ngIf="bookings && bookings.length > 0">
       <h3 class="section-title">User Bookings</h3>
       <div class="bookings-list">
         <div class="booking-item" *ngFor="let booking of bookings">
           <div class="booking-header">
-            <span class="booking-id">Booking #{{ booking.id }}</span>
+            <div class="booking-meta">
+              <span class="booking-id">Booking #{{ booking.id }}</span>
+              <span class="car-name">{{ booking.carName }}</span> <!-- Added car name -->
+            </div>
             <span class="booking-status" [ngClass]="{
-              'confirmed': booking.status === 'confirmed',
-              'pending': booking.status === 'pending',
-              'cancelled': booking.status === 'cancelled'
-            }">{{ booking.status | titlecase }}</span>
+              'confirmed': booking.status === 'CONFIRMED',
+              'pending': booking.status === 'PENDING',
+              'cancelled': booking.status === 'CANCELED'
+            }">{{ booking.status | lowercase | titlecase }}</span>
           </div>
+
           <div class="booking-details">
-            <span class="booking-date">
-              {{ booking.startDate | date:'mediumDate' }} - {{ booking.endDate | date:'mediumDate' }}
-            </span>
-            <span class="booking-price">{{ booking.price | currency:'USD':'symbol':'1.2-2' }}</span>
+            <!-- Dates Section -->
+            <div class="date-group">
+              <span class="detail-label">Dates:</span>
+              <span class="booking-date">
+                {{ booking.startDate | date:'mediumDate' }} - {{ booking.endDate | date:'mediumDate' }}
+              </span>
+            </div>
+
+            <!-- Price Section -->
+            <div class="price-group">
+              <span class="detail-label">Price:</span>
+              <span class="booking-price">
+                {{ booking.price ? (booking.price | currency:'USD':'symbol':'1.2-2') : 'N/A' }}
+              </span>
+            </div>
           </div>
-          <!-- Additional booking details if needed -->
+
           <div class="booking-actions" *ngIf="showBookingActions">
             <button class="btn-view-details" (click)="viewBookingDetails(booking.id)">
               View Details
@@ -127,19 +145,23 @@
 
 
     <!-- User History Section -->
-    <div class="section-container">
-      <h3 class="section-title">User Activity</h3>
-      <div class="history-placeholder" *ngIf="!userHistory || userHistory.length === 0">
-        No activity history available for this user.
+<div class="section-container">
+  <h3 class="section-title">User Reviews</h3>
+  <div class="history-placeholder" *ngIf="!userReviews || userReviews.length === 0">
+    No reviews available for this user.
+  </div>
+  <div class="history-list" *ngIf="userReviews && userReviews.length > 0">
+    <div class="history-item" *ngFor="let review of userReviews">
+      <div class="history-header">
+        <span class="history-type">
+          <i class="pi pi-star" style="color: gold;"></i>
+          {{ review.rating }}/5
+        </span>
+        <span class="history-date">{{ review.createdAt | date:'mediumDate' }}</span>
       </div>
-      <div class="history-list" *ngIf="userHistory && userHistory.length > 0">
-        <div class="history-item" *ngFor="let history of userHistory">
-          <div class="history-header">
-            <span class="history-type">{{ history.type }}</span>
-            <span class="history-date">{{ history.date | date:'medium' }}</span>
-          </div>
-          <p class="history-details">{{ history.details }}</p>
-        </div>
+      <p class="history-details">{{ review.reviewText }}</p>
+      <div class="review-car">
+        <small>For: {{ review.voiture }}</small>
       </div>
     </div>
   </div>

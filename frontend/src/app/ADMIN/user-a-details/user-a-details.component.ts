@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 import { Booking } from '../../models/booking.model';
+import {ReviewService } from '../../services/review-service.service';
+import { Review } from '../../models/review.model';
 
 @Component({
   selector: 'app-user-a-details',
@@ -17,16 +19,20 @@ export class UserADetailsComponent implements OnInit {
   bookings: Booking[] = [];
   userHistory: any[] = [];
   showBookingActions: boolean = false; // Set to true if you want to show actions
+  userReviews: Review[] = [];
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private BookingService : BookingService
+    private BookingService : BookingService,
+    private ReviewService  : ReviewService ,
   ) {}
 
   ngOnInit(): void {
     this.loadUserDetails();
+
   }
 
   loadUserDetails(): void {
@@ -54,6 +60,7 @@ export class UserADetailsComponent implements OnInit {
             comments: response.data.comments || []
           };
           this.loadBookings();
+          this.loadReviews();
         } else {
           this.errorMessage = response.message || 'User not found';
         }
@@ -67,7 +74,7 @@ export class UserADetailsComponent implements OnInit {
     });
   }
 
-  loadBookings(): void {
+  /*loadBookings(): void {
     if (this.user?.username) {
       this.BookingService.getUserBookings(this.user.username).subscribe({
         next: (response: any) => {
@@ -84,7 +91,32 @@ export class UserADetailsComponent implements OnInit {
         }
       });
     }
-  }
+  }*/
+
+
+    loadBookings(): void {
+      if (this.user?.username) {
+        this.BookingService.getUserBookings(this.user.username).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              this.bookings = response.data.map((booking: any) => ({
+                id: booking.id,
+                carName: booking.carName,
+                startDate: new Date(booking.startDate),
+                endDate: new Date(booking.endDate),
+                price: booking.price ,
+                nbrJrs: booking.nbrJrs,
+                bookingStatus: booking.bookingStatus,
+                // Add other necessary properties
+              }));
+            }
+          },
+          error: (err) => {
+            console.error('Error loading bookings:', err);
+          }
+        });
+      }
+    }
 
   viewBookingDetails(bookingId: number): void {
     this.router.navigate(['/bookings', bookingId]);
@@ -113,4 +145,20 @@ export class UserADetailsComponent implements OnInit {
       });
     }
   }
+
+
+
+  loadReviews(): void {
+    if (this.user?.username) {
+      this.ReviewService.getReviewsByUsername(this.user.username).subscribe({
+        next: (reviews) => {
+          this.userReviews = reviews;
+        },
+        error: (err) => {
+          console.error('Error loading reviews:', err);
+        }
+      });
+    }
+  }
 }
+

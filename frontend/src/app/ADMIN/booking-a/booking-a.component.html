@@ -23,11 +23,12 @@
         <th>Voiture</th>
         <th>Email</th>
         <th>Jours</th>
+        <th>Prix</th> <!-- New Price Column -->
         <th>Téléphone</th>
         <th>Description</th>
         <th>Période de Réservation</th>
         <th>Statut</th>
-        <th>Action</th> <!-- Boutons d'action -->
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -36,6 +37,7 @@
         <td>{{ booking.carName }}</td>
         <td>{{ booking.userEmail }}</td>
         <td>{{ booking.nbrJrs }}</td>
+        <td>{{ booking.price | currency }}</td> <!-- Formatted Price -->
         <td>{{ booking.phone }}</td>
         <td>{{ booking.description }}</td>
         <td>{{ booking.formattedDate }}</td>

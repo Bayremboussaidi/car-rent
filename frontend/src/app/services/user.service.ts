@@ -19,9 +19,7 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl);
   }
 
-  getUserBookings(username: string): Observable<ApiResponse<Booking[]>> {
-    return this.http.get<ApiResponse<Booking[]>>(`${this.apiUrl}/user/${username}`);
-  }
+
 
   //get user by id
   getUserById(id: number): Observable<ApiResponse<User>> {

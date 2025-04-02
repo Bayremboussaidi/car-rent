@@ -1,3 +1,36 @@
+/* user-a-details.component.css */
+.booking-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.car-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.booking-details {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.date-group, .price-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #7f8c8d;
+}
+
+
+
+
+
 /* Main Container Styles */
 .user-details-container {
   display: flex;

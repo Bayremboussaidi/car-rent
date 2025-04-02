@@ -52,14 +52,29 @@ export class BookingAComponent implements OnInit {
       (response: any) => {
         if (response.success && Array.isArray(response.data)) {
           this.bookings = response.data.map((booking: any) => ({
-            ...booking,
+            // Explicitly map critical fields (avoids TypeScript type issues)
+            id: booking.id,
+            userId: booking.userId,
+            username: booking.username,
+            carName: booking.carName,
+            userEmail: booking.userEmail,
+            nbrJrs: booking.nbrJrs,
+            phone: booking.phone,
+            description: booking.description,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+            price: booking.price || 0, // Fallback to 0 if missing
+            bookingStatus: booking.bookingStatus,
+            pickupLocation: booking.pickupLocation,
+            dropoffLocation: booking.dropoffLocation,
+            // Optional UI property
             formattedDate: this.formatDate(booking.startDate, booking.endDate)
           }));
-          this.showPending(); // Default view
+          this.showPending();
         }
       },
       (error: any) => {
-        console.error(' Erreur lors de la récupération des réservations:', error);
+        console.error('Error fetching bookings:', error);
       }
     );
   }
