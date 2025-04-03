@@ -32,13 +32,13 @@ public class VoitureController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ✅ Create a new voiture
+    //  Create a new voiture
     @PostMapping
     public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
         return voitureService.createVoiture(voiture);
     }
 
-    // ✅ Update a voiture (with optional image)
+    //  Update a voiture (with optional image)
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> updateVoiture(
             @PathVariable Long id,
@@ -52,37 +52,48 @@ public class VoitureController {
         }
     }
 
-    // ✅ Get all voitures (Paginated)
+    //  Get all voitures (Paginated)
     @GetMapping
     public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
         return voitureService.getAllVoitures(page);
     }
 
-    // ✅ Get voiture by ID
+    //  Get voiture by ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Voiture>> getOneVoiture(@PathVariable Long id) {
         return voitureService.getOneVoiture(id);
     }
 
-    // ✅ Get voiture count (Fix for frontend mismatch)
+    // Get voiture count (Fix for frontend mismatch)
     @GetMapping("/search/getVoitureCount")
     public ResponseEntity<Object> getVoitureCount() {
         return voitureService.getVoitureCount();
     }
 
-    // ✅ Get all voitures with details
+    //  Get all voitures with details
     @GetMapping("/all/details")
     public ResponseEntity<Object> getAllVoituresWithDetails() {
         return voitureService.getAllVoituresWithDetails();
     }
 
-    // ✅ Delete a voiture
+
+
+
+    // get all voiture details of agence
+    @GetMapping("/agence/{agenceName}")
+    public ResponseEntity<Object> getVoituresByAgenceWithDetails(
+        @PathVariable String agenceName
+        ) {
+    return voitureService.getVoituresByAgenceWithDetails(agenceName);
+    }
+
+    //  Delete a voiture
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteVoiture(@PathVariable Long id) {
         return voitureService.deleteVoiture(id);
     }
 
-    // ✅ Get reviews for a voiture
+    //  Get reviews for a voiture
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Object> getReviewsForVoiture(@PathVariable Long id) {
         return voitureService.getReviewsForVoiture(id);

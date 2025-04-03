@@ -27,8 +27,15 @@ public interface VoitureRepository extends JpaRepository<Voiture, Long> {
     
     @Repository
     public interface VoitureRepository extends JpaRepository<Voiture, Long> {
-        Page<Voiture> findAll(Pageable pageable);  // ✅ Ensure pagination works
+        Page<Voiture> findAll(Pageable pageable);  //  Ensure pagination works
         List<Voiture> findByFeatured(boolean featured);
         List<Voiture> findByLocalContainingIgnoreCase(String local);
+
+
+
+
+
+        //filter by agence 
+        List<Voiture> findByAgence(String nom);
     }
     

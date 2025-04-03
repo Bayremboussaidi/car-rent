@@ -283,7 +283,7 @@ public class VoitureService {
         @Autowired
         private PhotoRepository photoRepository;
     
-        // ✅ Create a new voiture
+        //  Create a new voiture
         public ResponseEntity<Object> createVoiture(Voiture voiture) {
             try {
                 voiture.setCreatedAt(LocalDateTime.now());
@@ -295,7 +295,7 @@ public class VoitureService {
             }
         }
     
-        // ✅ Update voiture (with optional image)
+        //  Update voiture (with optional image)
         public ResponseEntity<Object> updateVoiture(Long id, Voiture voiture, MultipartFile file) {
             Optional<Voiture> optionalVoiture = voitureRepository.findById(id);
             if (optionalVoiture.isEmpty()) {
@@ -313,7 +313,7 @@ public class VoitureService {
             return ResponseEntity.ok(new ApiResponse<>(true, "Successfully updated", existingVoiture));
         }
     
-        // ✅ Get all voitures (Paginated)
+        //  Get all voitures (Paginated)
         public ResponseEntity<Object> getAllVoitures(int page) {
             Pageable pageable = PageRequest.of(Math.max(page, 0), 8);
             Page<Voiture> voiturePage = voitureRepository.findAll(pageable);
@@ -325,20 +325,29 @@ public class VoitureService {
             return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures", voiturePage.getContent()));
         }
     
-        // ✅ Get a single voiture by ID
+        //  Get a single voiture by ID
         public ResponseEntity<ApiResponse<Voiture>> getOneVoiture(Long id) {
             return voitureRepository.findById(id)
                     .map(voiture -> ResponseEntity.ok(new ApiResponse<>(true, "Voiture info", voiture)))
                     .orElse(ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found")));
         }
     
-        // ✅ Get total count of voitures (Fix for Angular)
+        //  Get total count of voitures (Fix for Angular)
         public ResponseEntity<Object> getVoitureCount() {
             long voitureCount = voitureRepository.count();
             return ResponseEntity.ok(new ApiResponse<>(true, "Total number of voitures", voitureCount));
         }
+
+
+
+
+
+
+
+
+
     
-        // ✅ Get all voitures with details (Fix for frontend request)
+        //  Get all voitures with details (Fix for frontend request)
         public ResponseEntity<Object> getAllVoituresWithDetails() {
             List<Voiture> voitures = voitureRepository.findAll();
         
@@ -351,7 +360,7 @@ public class VoitureService {
                 List<Review> reviews = reviewRepository.findAllByVoitureId(voiture.getId());
                 reviews = (reviews != null) ? reviews : Collections.emptyList(); // Prevent null issues
         
-                // ✅ Fetch photos safely and convert to DTO
+                // Fetch photos safely and convert to DTO
                 List<Photo> photosList = photoRepository.findAllByVoitureId(voiture.getId()); // ✅ Corrected method name
                 List<PhotoResponseDTO> photos = (photosList != null)
                         ? photosList.stream().map(PhotoResponseDTO::new).collect(Collectors.toList())
@@ -362,11 +371,44 @@ public class VoitureService {
         
             return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures with details", voitureResponses));
         }
+
+
+
+
+        public ResponseEntity<Object> getVoituresByAgenceWithDetails(String agenceName) {
+            // ✅ Fetch voitures by agence NAME
+            List<Voiture> voitures = voitureRepository.findByAgence(agenceName);
+        
+            if (voitures.isEmpty()) {
+                return ResponseEntity.status(404)
+                    .body(new ApiResponse<>(false, "No voitures found for agence: " + agenceName));
+            }
+        
+            // ✅ Same response building as getAllVoituresWithDetails()
+            List<VoitureResponse> voitureResponses = voitures.stream().map(voiture -> {
+                List<Review> reviews = reviewRepository.findAllByVoitureId(voiture.getId());
+                reviews = (reviews != null) ? reviews : Collections.emptyList();
+        
+                List<Photo> photosList = photoRepository.findAllByVoitureId(voiture.getId());
+                List<PhotoResponseDTO> photos = (photosList != null)
+                        ? photosList.stream().map(PhotoResponseDTO::new).collect(Collectors.toList())
+                        : Collections.emptyList();
+        
+                return new VoitureResponse(voiture, photos, reviews);
+            }).collect(Collectors.toList());
+        
+            return ResponseEntity.ok(
+                new ApiResponse<>(true, "Voitures for agence: " + agenceName, voitureResponses)
+            );
+        }
         
         
+
+
+
         
     
-        // ✅ Delete voiture
+        //  Delete voiture
         public ResponseEntity<Object> deleteVoiture(Long id) {
             if (!voitureRepository.existsById(id)) {
                 return ResponseEntity.status(404).body(new ApiResponse<>(false, "Voiture not found"));
@@ -376,7 +418,7 @@ public class VoitureService {
             return ResponseEntity.ok(new ApiResponse<>(true, "Successfully deleted"));
         }
     
-        // ✅ Get reviews for a voiture
+        //  Get reviews for a voiture
         public ResponseEntity<Object> getReviewsForVoiture(Long voitureId) {
             List<Review> reviews = reviewRepository.findAllByVoitureId(voitureId);
             return ResponseEntity.ok(new ApiResponse<>(true, "Reviews retrieved successfully", reviews));
