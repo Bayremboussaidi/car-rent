@@ -89,6 +89,10 @@ import { ContactBadgeComponent } from './components/contact-badge/contact-badge.
 import { FaqComponent } from './components/faq/faq.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { UserADetailsComponent } from './ADMIN/user-a-details/user-a-details.component';
+import { HeadAgenceComponent } from './AGENCE/head-agence/head-agence.component';
+import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.component';
+import { ListAgenceComponent } from './AGENCE/list-agence/list-agence.component';
+import {AgencelayoutComponent} from './layouts/agencelayout/agencelayout.component'
 
 
 
@@ -133,6 +137,7 @@ export function kcFactory(kcService: KeycloakService) {
     PhotoAComponent,
     AdminLayoutComponent,
     UserLayoutComponent,
+    AgencelayoutComponent,
     HeaderAComponent,
     CarListAComponent,
     CardetailsAComponent,
@@ -146,6 +151,9 @@ export function kcFactory(kcService: KeycloakService) {
     FaqComponent,
     NotificationComponent,
     UserADetailsComponent,
+    HeadAgenceComponent,
+    ContactAgenceComponent,
+    ListAgenceComponent,
   ],
   imports: [
     BrowserModule,

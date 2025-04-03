@@ -30,6 +30,9 @@ import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.componen
 import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { UserADetailsComponent } from './ADMIN/user-a-details/user-a-details.component';
+import { ListAgenceComponent } from './AGENCE/list-agence/list-agence.component';
+import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.component';
+import { AgencelayoutComponent } from './layouts/agencelayout/agencelayout.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -76,8 +79,21 @@ const routes: Routes = [
 
     ]
   },
+  {
+    path: 'agence',
+    component: AgencelayoutComponent,
+    //canActivate: [AdminGuard],
+    children: [
+      { path: '', component: ListAgenceComponent },
+      { path: 'contact', component: ContactAgenceComponent },
 
-  // Not Found Page
+      { path: 'carlista', component: ListAgenceComponent },
+
+
+    ]
+  },
+
+
 ];
 
 @NgModule({

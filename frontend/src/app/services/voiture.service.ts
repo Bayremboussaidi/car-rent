@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PhotoResponseDTO } from '../models/PhotoResponseDTO.model';
+import { Voiture } from '../models/voiture.model';
+import { ApiResponseAgence } from '../models/ApiResponseAgence';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +52,14 @@ export class VoitureService {
     // Added method to fetch all voitures with details
     getAllVoituresWithDetails(): Observable<any> {
       return this.http.get(`${this.baseUrl}/all/details`);
+    }
+
+
+
+    getVoituresByAgence(agenceName: string): Observable<ApiResponseAgence> {
+      return this.http.get<ApiResponseAgence>(
+        `${this.baseUrl}/agence/${encodeURIComponent(agenceName)}`
+      );
     }
 
 
