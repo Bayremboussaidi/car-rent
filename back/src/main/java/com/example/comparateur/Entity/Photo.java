@@ -66,6 +66,7 @@ package com.example.comparateur.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -100,9 +101,9 @@ public class Photo {
     private String type;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY) // Changed to LAZY for performance
     @Column(columnDefinition = "LONGBLOB")
-    @JsonIgnore // ✅ Prevents exposing byte[] directly in JSON responses
-    private byte[] data;  // ✅ Store image in `byte[]` format
+    private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voiture_id", nullable = false)

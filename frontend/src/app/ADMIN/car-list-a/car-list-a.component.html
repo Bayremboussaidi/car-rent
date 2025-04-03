@@ -4,7 +4,11 @@
       <div *ngFor="let car of displayedCars" class="col-lg-4 col-md-6 mb-4">
         <div class="car-card">
           <a [routerLink]="['/car-details', car.id]">
-            <img [src]="car.image" alt="{{ car.carName }}" class="car-image">
+            <img [src]="car.images[0] ?
+            'data:' + car.images[0].type + ';base64,' + car.images[0].base64Data :
+            '/assets/images/default-car.png'"
+           alt="{{ car.carName }}"
+           class="car-image">
           </a>
           <div class="car-details">
             <div class="text-center">
@@ -21,7 +25,7 @@
               <li><span>Fuel</span><span class="spec">{{ car.carburant }}</span></li>
               <li><span>Availability</span><span class="spec">{{ car.disponible ? 'Available' : 'Not Available' }}</span></li>
               <li><span>Agency</span><span class="spec">{{ car.agence }} ({{ car.local }})</span></li>
-              <li><span>Reviews</span><span class="spec">{{ car.reviews?.length || 0 }} Reviews</span></li>
+              <li><span>Reviews</span><span class="spec">{{ car.reviews.length || 0 }} Reviews</span></li>
               <li><span>Added On</span><span class="spec">{{ car.createdAt | date: 'medium' }}</span></li>
               <li><span>Last Updated</span><span class="spec">{{ car.updatedAt | date: 'medium' }}</span></li>
             </ul>

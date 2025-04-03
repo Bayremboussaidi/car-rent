@@ -7,6 +7,7 @@ import { PhotoResponseDTO } from '../models/PhotoResponseDTO.model';
   providedIn: 'root'
 })
 export class VoitureService {
+
   private baseUrl = 'http://localhost:8084/api/voitures';
 
   constructor(private http: HttpClient) {}
@@ -28,7 +29,7 @@ export class VoitureService {
   }
 
 
-    // ✅ New method: Delete a voiture by ID
+    // New method: Delete a voiture by ID
     deleteVoiture(id: number): Observable<any> {
       return this.http.delete(`${this.baseUrl}/${id}`);
     }
@@ -41,7 +42,7 @@ export class VoitureService {
     );
   }
 
-  //  Added method for fetching a single voiture by ID
+  // Added method for fetching a single voiture by ID
   getOneVoiture(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
   }

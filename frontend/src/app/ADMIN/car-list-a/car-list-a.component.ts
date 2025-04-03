@@ -27,12 +27,13 @@ export class CarListAComponent implements OnInit {
         if (response.success && response.data) {
           this.cars = response.data.map(car => ({
             ...car,
-            image: car.photos && car.photos.length > 0
-              ? car.photos[0].displayUrl
+            // Map backend 'images' array to frontend model
+            images: car.images || [],
+            // Keep single image fallback if needed elsewhere
+            image: car.images?.length > 0
+              ? `data:${car.images[0].type};base64,${car.images[0].base64Data}`
               : '/assets/images/default-car.png',
-            rating: car.reviews && car.reviews.length > 0
-              ? this.calculateAverageRating(car.reviews)
-              : 4,
+            rating: this.calculateAverageRating(car.reviews)
           }));
 
           this.totalPages = Math.max(1, Math.ceil(this.cars.length / this.pageSize));

@@ -13,10 +13,17 @@ export interface Voiture {
   agenceLogo: string;
   description: string;
   imgUrl?: string; // ✅ Base64 image string
+  images: {     // Add this new property
+    type: string;
+    base64Data: string;
+    id?: number;
+    name?: string;
+  }[];
   disponible: boolean;
   createdAt?: string; // ✅ Use string instead of Date (backend returns ISO string format)
   updatedAt?: string; // ✅ Use string instead of Date (same reason)
-  reviews?: Review[];
+  reviews: Review[];
+
   photos?: Photo[];
   bookings?: Booking[];
 
