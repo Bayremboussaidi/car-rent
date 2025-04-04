@@ -81,17 +81,7 @@ export class TitanComponent implements OnInit {
     }
   }
 
-/* openNotif(): void {
-    if (this.isLoggedIn) {
-      this.isNotificationsVisible = true;
-      const user = this.UserloginService.getCurrentUser();
-      if (user?.email) {
-        this.notificationsComponent.fetchNotifications(user.email);
-      }
-    } else {
-      this.showSignInPrompt = true;
-    }
-  }*/
+
 
     openNotif(): void {
       if (this.isLoggedIn) {

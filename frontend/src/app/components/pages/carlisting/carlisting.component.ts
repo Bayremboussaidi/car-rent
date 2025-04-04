@@ -109,7 +109,7 @@ export class ListcarsComponent implements OnInit {
             this.voitureService.getCarImageById(voiture.id).subscribe(
               (photos: any[]) => {
                 if (photos?.length > 0) {
-                  voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].data}`;
+                  voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].base64Data}`;
                 } else {
                   voiture.imgUrl = '/assets/default-car.jpg'; // ✅ Default image if no photos
                 }

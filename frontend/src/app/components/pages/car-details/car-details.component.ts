@@ -1,10 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VoitureService } from '../../../services/voiture.service';
-import { PhotoResponseDTO } from '../../../models/PhotoResponseDTO.model';
 import { ReviewService } from '../../../services/review-service.service'; //  Import ReviewService
 import { Review } from '../../../models/review.model'; //  Import Review Interface
 import {UserloginService} from '../../../services/user_login/userlogin.service'
+
+
+
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+
+
+interface LocalPhotoResponseDTO {
+  id: number;
+  name: string;
+  type: string;
+  base64Data: string;
+  imageSrc: string;
+}
 
 @Component({
   selector: 'app-car-details',
@@ -44,7 +58,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
         this.loadCarDetails(this.carId);
         this.loadOtherCars(this.carId);
         this.loadCarImage(this.carId);
-        this.loadReviews(this.carId); // ✅ Load reviews
+        this.loadReviews(this.carId);
       }
     });
   }
@@ -100,12 +114,14 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     return Array(rating).fill(0);
   }
 
+
   loadCarImage(id: number): void {
     this.voitureService.getCarImageById(id).subscribe(
-      (photos: PhotoResponseDTO[]) => {
-        if (photos?.length > 0) {
-          this.carImages = photos.map(photo =>
-            `data:${photo.type};base64,${photo.data}`
+      (photos: any) => { // Use any type to bypass conflict
+        const typedPhotos = photos as LocalPhotoResponseDTO[];
+        if (typedPhotos?.length > 0) {
+          this.carImages = typedPhotos.map(photo =>
+            `data:${photo.type};base64,${photo.base64Data}`
           );
         } else {
           this.carImages = ['/assets/default-car.jpg'];
@@ -118,6 +134,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  /*
   loadOtherCars(currentCarId: number): void {
     this.voitureService.getVoitures(0).subscribe(
       (response: any) => {
@@ -137,7 +154,42 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       },
       (error) => console.error('Error fetching other cars:', error)
     );
-  }
+  }*/
+
+
+    loadOtherCars(currentCarId: number): void {
+      this.voitureService.getVoitures(0).subscribe(
+        (response: any) => {
+          if (response?.data) {
+            const otherCars = response.data.filter((car: any) => car.id !== currentCarId);
+
+            const carRequests = otherCars.map((car: any) =>
+              this.voitureService.getCarImageById(car.id).pipe(
+                map((photos: any) => ({
+                  ...car,
+                  imgUrl: photos?.length > 0
+                    ? `data:${photos[0].type};base64,${photos[0].base64Data}`
+                    : '/assets/default-car.jpg'
+                })),
+                catchError(() => of({
+                  ...car,
+                  imgUrl: '/assets/default-car.jpg'
+                }))
+              )
+            );
+
+            // Add type parameter to forkJoin
+            forkJoin<any[]>(carRequests).subscribe((cars) => {
+              this.otherCars = cars;
+              this.startCarousel();
+            });
+          }
+        },
+        (error) => console.error('Error fetching other cars:', error)
+      );
+    }
+
+
 
   startCarousel(): void {
     this.carouselInterval = setInterval(() => {
