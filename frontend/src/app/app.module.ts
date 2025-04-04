@@ -73,11 +73,16 @@ import { CarDetaComponent } from './ADMIN/car-deta/car-deta.component';
 import { TopMenuComponent } from './components/top-menu/top-menu.component';
 import { TitanComponent } from './components/titan/titan.component';
 
+import { ToastModule } from 'primeng/toast';
+
+
 // ✅ Keycloak Imports
 import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
 import { EmailDialogComponent } from './components/dialog/email-dialog/email-dialog.component';
 
+
+import { MessagesModule } from 'primeng/messages';
 
 
 import { MatButtonModule } from '@angular/material/button';
@@ -92,7 +97,8 @@ import { UserADetailsComponent } from './ADMIN/user-a-details/user-a-details.com
 import { HeadAgenceComponent } from './AGENCE/head-agence/head-agence.component';
 import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.component';
 import { ListAgenceComponent } from './AGENCE/list-agence/list-agence.component';
-import {AgencelayoutComponent} from './layouts/agencelayout/agencelayout.component'
+import {AgencelayoutComponent} from './layouts/agencelayout/agencelayout.component';
+import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component'
 
 
 
@@ -154,6 +160,7 @@ export function kcFactory(kcService: KeycloakService) {
     HeadAgenceComponent,
     ContactAgenceComponent,
     ListAgenceComponent,
+    CarDetailsAgenceComponent,
   ],
   imports: [
     BrowserModule,
@@ -163,6 +170,7 @@ export function kcFactory(kcService: KeycloakService) {
     SlickCarouselModule,
     FormsModule,
     ReactiveFormsModule,
+    MessagesModule,
     BrowserAnimationsModule,
     RouterModule, // ✅ Fixes `[routerLink]` errors
     DialogModule,
@@ -170,6 +178,7 @@ export function kcFactory(kcService: KeycloakService) {
     TableModule,
     ButtonModule,
     InputTextModule,
+    ToastModule,
     DropdownModule,
     FileUploadModule,
     TagModule,

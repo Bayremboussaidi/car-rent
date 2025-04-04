@@ -19,7 +19,9 @@
     <div class="row" *ngIf="displayedCars.length > 0">
       <div *ngFor="let car of displayedCars" class="col-lg-4 col-md-6 mb-4">
         <div class="car-card">
-          <a [routerLink]="['/car-details', car.id]">
+          <!--a [routerLink]="['/car-details', car.id]"-->
+          <a [routerLink]="['/agence/carlista', car.id]">
+
             <img [src]="car.images.length > 0 ?
             'data:' + car.images[0].type + ';base64,' + car.images[0].base64Data :
             '/assets/images/default-car.png'"
@@ -120,5 +122,5 @@
 </div>
 
 
-hhhh
+
 

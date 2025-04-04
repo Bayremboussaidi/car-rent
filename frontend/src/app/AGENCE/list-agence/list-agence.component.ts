@@ -79,7 +79,8 @@ export class ListAgenceComponent {
   }
 
   viewCarDetails(carId: number) {
-    this.router.navigate([`admin/carlista/${carId}`]);
+    console.log(carId);
+    this.router.navigate(['/admin', 'carlista', carId]);
   }
 
   getStars(rating: number): any[] {

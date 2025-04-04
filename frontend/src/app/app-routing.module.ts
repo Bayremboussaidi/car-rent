@@ -33,6 +33,7 @@ import { UserADetailsComponent } from './ADMIN/user-a-details/user-a-details.com
 import { ListAgenceComponent } from './AGENCE/list-agence/list-agence.component';
 import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.component';
 import { AgencelayoutComponent } from './layouts/agencelayout/agencelayout.component';
+import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -89,6 +90,7 @@ const routes: Routes = [
 
       { path: 'carlista', component: ListAgenceComponent },
 
+      { path: 'carlista/:id', component: CarDetailsAgenceComponent },
 
     ]
   },
