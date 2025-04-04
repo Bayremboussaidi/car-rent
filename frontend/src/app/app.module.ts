@@ -79,7 +79,10 @@ import { ToastModule } from 'primeng/toast';
 // ✅ Keycloak Imports
 import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
-import { EmailDialogComponent } from './components/dialog/email-dialog/email-dialog.component';
+
+
+
+//import { EmailDialogComponent } from './components/dialog/email-dialog/email-dialog.component';
 
 
 import { MessagesModule } from 'primeng/messages';
@@ -151,7 +154,7 @@ export function kcFactory(kcService: KeycloakService) {
 
     TopMenuComponent,
     TitanComponent,
-    EmailDialogComponent,
+    /*EmailDialogComponent,*/
     MaterialComponent,
     ContactBadgeComponent,
     FaqComponent,

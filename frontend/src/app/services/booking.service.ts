@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Booking } from '../models/booking.model';
+import { Booking, BookingEmail } from '../models/booking.model';
 import { ApiResponse } from '../models/ApiResponse .model';
 
 @Injectable({
@@ -67,10 +67,11 @@ export class BookingService {
   }
 
 
-  getBookingsByUserEmail(userEmail: string): Observable<any> {
-    const encodedEmail = userEmail.trim(); // ✅ Remove encodeURIComponent()
-    console.log(`Making API call to: ${this.apiUrl}/user/${encodedEmail}`); // ✅ Debugging log
-    return this.http.get<any>(`${this.apiUrl}/user/${encodedEmail}`);
+// In booking.service.ts
+getBookingsByUserEmail(email: string): Observable<{ success: boolean; data: BookingEmail[] }> {
+  return this.http.get<{ success: boolean; data: BookingEmail[] }>(
+    `${this.apiUrl}/user/${email}`
+  );
 }
 
 

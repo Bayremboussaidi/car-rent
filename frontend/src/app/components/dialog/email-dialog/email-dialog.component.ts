@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+/*import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BookingService } from '../../../services/booking.service';
 import { VoitureService } from '../../../services/voiture.service';
@@ -75,3 +75,4 @@ export class EmailDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 }
+*/

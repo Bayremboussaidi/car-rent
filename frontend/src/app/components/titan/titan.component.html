@@ -112,6 +112,12 @@
   <app-notifications></app-notifications>
 </div>
 
+
+
+
+
+
+
 <!-- Sign In Prompt -->
 <div class="signin-prompt-backdrop" *ngIf="showSignInPrompt">
   <div class="signin-prompt-modal" (click)="$event.stopPropagation()">
@@ -120,6 +126,103 @@
     <div class="modal-actions">
       <button class="btn btn-primary" (click)="navigateToLogin()">Sign In</button>
       <button class="btn btn-secondary" (click)="closeSignInPrompt()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Purchase Dialog -->
+<div class="email-dialog-backdrop" *ngIf="showEmailDialog" (click)="checkBackdropClick($event)">
+  <div class="email-dialog" (click)="$event.stopPropagation()">
+    <!-- Dialog Header -->
+    <div class="navbar-header">
+      <span class="navbar-title">Your Bookings</span>
+      <button class="close-btn" (click)="closeEmailDialog()">×</button>
+    </div>
+
+    <!-- Dialog Content -->
+    <div class="dialog-content">
+      <!-- Loading State -->
+      <div *ngIf="isLoadingDialog" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading your bookings...</p>
+      </div>
+
+      <!-- Content when loaded -->
+      <div *ngIf="!isLoadingDialog" class="booking-container">
+        <!-- Bookings List -->
+        <ng-container *ngIf="emailDialogBookings.length > 0; else noBookings">
+          <ul class="booking-list">
+            <li *ngFor="let booking of emailDialogBookings"
+                class="booking-item"
+                [class.disabled]="booking.status !== 'PENDING'">
+
+              <!-- Booking Link -->
+              <a [routerLink]="['/listcars', booking.voitureId]"
+                 class="booking-link">
+
+                <!-- Car Image -->
+                <img [src]="booking.imgUrl"
+                     [alt]="booking.carName"
+                     class="booking-image"
+                     (error)="handleImageError(booking)">
+
+                <!-- Booking Info -->
+                <div class="booking-info">
+                  <strong class="car-name">{{ booking.carName }}</strong>
+
+                  <!-- Booking Dates -->
+                  <div class="booking-dates">
+                    {{ booking.startDate | date }} - {{ booking.endDate | date }}
+                  </div>
+
+                  <!-- Booking Status -->
+                  <span class="booking-status"
+                        [ngClass]="booking.status.toLowerCase()">
+                    {{ booking.status }}
+                  </span>
+
+                  <!-- Delete Button -->
+                  <button mat-icon-button
+                          (click)="deleteDialogBooking(booking.id); $event.stopPropagation()"
+                          [disabled]="booking.status !== 'PENDING'"
+                          class="delete-button">
+                    <mat-icon class="delete-icon">delete</mat-icon>
+                  </button>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </ng-container>
+
+        <!-- Empty State -->
+        <ng-template #noBookings>
+          <div class="no-bookings">
+            <mat-icon class="empty-cart-icon">shopping_cart</mat-icon>
+            <p class="empty-text">No bookings found</p>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

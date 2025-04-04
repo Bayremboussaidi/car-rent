@@ -1,28 +1,351 @@
-/*purchase*/
-
-.hover-effect {
-  transform: scale(1.05);
-  transition: transform 0.2s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+/* Centered Dialog Styling */
+.email-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.3s ease;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-.has-purchases {
+.email-dialog {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(-20px);
+  animation: slideUp 0.3s ease forwards;
+  cursor: default;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.email-dialog:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+/* Header Section */
+.navbar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3436;
+  letter-spacing: -0.5px;
   position: relative;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    background: #ff4757;
-    border-radius: 50%;
+  display: inline-block;
+  background: linear-gradient(135deg, #2d3436 0%, #0984e3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: #0984e3;
+  border-radius: 2px;
+}
+
+/* Close Button */
+.close-btn {
+  font-size: 2rem;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #636e72;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.close-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.close-btn:hover::before {
+  transform: scale(1);
+}
+
+/* Content Area */
+.dialog-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Booking Items */
+.booking-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.booking-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  background: #f8f9fa;
+}
+
+.booking-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  gap: 1.2rem;
+  transition: opacity 0.2s ease;
+}
+
+.booking-link:hover {
+  opacity: 0.9;
+}
+
+.booking-image {
+  width: 120px;
+  height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.booking-item:hover .booking-image {
+  transform: scale(1.02);
+}
+
+/* Booking Info */
+.booking-info strong {
+  font-size: 1.1rem;
+  color: #34495e;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.booking-dates {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+}
+
+/* Status Badges */
+.booking-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.booking-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.booking-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.booking-status.confirmed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.booking-status.cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.booking-status.cancelled:hover {
+  background: #fecaca;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
+}
+
+/* Delete Button */
+.delete-button {
+  float: right;
+  color: #e74c3c;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  padding: 6px;
+  margin-left: 10px;
+}
+
+.delete-button:hover {
+  color: #c0392b;
+  background: rgba(231, 76, 60, 0.15);
+  transform: scale(1.15);
+}
+
+.delete-button:active {
+  transform: scale(0.95);
+}
+
+.delete-button mat-icon {
+  transition: transform 0.2s ease;
+}
+
+.delete-button:hover mat-icon {
+  transform: rotate(15deg);
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+.loading-container p {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+mat-spinner {
+  transition: opacity 0.3s ease;
+}
+
+/* Empty State */
+.no-bookings {
+  text-align: center;
+  padding: 2rem;
+  color: #7f8c8d;
+  transition: transform 0.3s ease;
+}
+
+.no-bookings:hover {
+  transform: scale(1.02);
+}
+
+.no-bookings mat-icon {
+  font-size: 3rem;
+  width: auto;
+  height: auto;
+  margin-bottom: 1rem;
+  color: #bdc3c7;
+  transition: all 0.4s ease;
+}
+
+.no-bookings:hover mat-icon {
+  color: #74b9ff;
+  transform: rotate(-5deg) scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .email-dialog {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .booking-link {
+    flex-direction: column;
+  }
+
+  .booking-image {
+    width: 100%;
+    height: 150px;
   }
 }
 
 
 
 
+/* Add these rules to your existing CSS */
+
+.booking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.car-name {
+  /* Inherits from booking-info strong but could add specific styles */
+}
+
+.delete-icon {
+  vertical-align: middle;
+}
+
+.empty-cart-icon {
+  /* Already styled but explicit class helps */
+}
+
+.empty-text {
+  /* Already styled but explicit class helps */
+}
+
+.booking-container {
+  position: relative;
+  padding: 0.5rem;
+}
 
 
 /*notification*/
