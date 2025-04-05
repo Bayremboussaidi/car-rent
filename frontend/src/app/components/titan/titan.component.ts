@@ -43,9 +43,11 @@ export class TitanComponent implements OnInit {
 
 
   //purchase
-showEmailDialog = false;
-emailDialogBookings: BookingEmail[] = [];
-isLoadingDialog = false;
+  showEmailDialog = false;
+  isLoadingDialog = false;
+  emailDialogBookings: BookingEmail[] = [];
+
+
 
 
 
@@ -215,6 +217,26 @@ isLoadingDialog = false;
 //purchase
 
 //tsaker when click outside
+
+
+
+
+/*private loadDialogCarImages(): void {
+  this.emailDialogBookings.forEach(booking => {
+    this.voitureService.getCarImageById(booking.voitureId).subscribe({
+      next: (photos: PhotoResponseDTO[]) => {
+        booking.imgUrl = photos && photos.length > 0
+          ? `data:${photos[0].type};base64,${photos[0].data}`
+          : '/assets/default-car.jpg';
+      },
+      error: () => {
+        booking.imgUrl = '/assets/default-car.jpg';
+      }
+    });
+  });
+}
+
+
 checkBackdropClick(event: MouseEvent): void {
   // Use currentTarget instead of target
   if (event.target === event.currentTarget) {
@@ -279,24 +301,6 @@ private createImageUrl(booking: BookingEmail): string {
   }
 }
 
-
-/*private loadDialogCarImages(): void {
-  this.emailDialogBookings.forEach(booking => {
-    this.voitureService.getCarImageById(booking.voitureId).subscribe({
-      next: (photos: PhotoResponseDTO[]) => {
-        booking.imgUrl = photos && photos.length > 0
-          ? `data:${photos[0].type};base64,${photos[0].data}`
-          : '/assets/default-car.jpg';
-      },
-      error: () => {
-        booking.imgUrl = '/assets/default-car.jpg';
-      }
-    });
-  });
-}*/
-
-
-
 deleteDialogBooking(bookingId: number): void {
   if (confirm('Are you sure you want to delete this booking?')) {
     this.bookingService.deleteBooking(bookingId).subscribe({
@@ -308,5 +312,152 @@ deleteDialogBooking(bookingId: number): void {
       }
     });
   }
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // Backdrop click handler
+ checkBackdropClick(event: MouseEvent): void {
+  if (event.target === event.currentTarget) {
+    this.closeEmailDialog();
+  }
 }
+
+// Dialog control methods
+openEmailDialog(): void {
+  if (this.isLoggedIn) {
+    this.showEmailDialog = true;
+    this.loadEmailDialogBookings();
+  } else {
+    this.showSignInPrompt = true;
+  }
+}
+
+closeEmailDialog(): void {
+  this.showEmailDialog = false;
+}
+
+// Data loading methods
+private loadEmailDialogBookings(): void {
+  this.isLoadingDialog = true;
+  const user = this.UserloginService.getCurrentUser();
+
+  if (user?.email) {
+    this.bookingService.getBookingsByUserEmail(user.email).subscribe({
+      next: (response: { success: boolean; data: any[] }) => {
+        if (response.success) {
+          this.processBookings(response.data);
+        }
+        this.isLoadingDialog = false;
+      },
+      error: (error) => {
+        console.error('Error loading bookings:', error);
+        this.isLoadingDialog = false;
+      }
+    });
+  }
+}
+
+private processBookings(bookingsData: any[]): void {
+  this.emailDialogBookings = bookingsData.map(booking => ({
+    id: booking.id,
+    voitureId: Number(booking.voitureId), // Convert string to number
+    userId: 0, // Add default value (not in response)
+    username: booking.username,
+    carName: booking.carName,
+    userEmail: booking.userEmail,
+    nbrJrs: booking.nbrJrs,
+    phone: booking.phone,
+    description: booking.description,
+    startDate: new Date(booking.startDate),
+    endDate: new Date(booking.endDate),
+    status: booking.bookingStatus, // Map bookingStatus to status
+    pickupLocation: booking.pickupLocation,
+    dropoffLocation: booking.dropoffLocation,
+    price: booking.price,
+    base64Data: '', // Add empty default
+    type: '',        // Add empty default
+    imageSrc: '',    // Add empty default
+    imgUrl: this.createImageUrl(booking) // Computed property
+  }));
+
+  // Load images after initial data setup
+  this.loadCarImages();
+}
+
+private createImageUrl(booking: BookingEmail): string {
+  // Priority 1: Use API image data if available
+  if (booking.base64Data && booking.type) {
+    return `data:${booking.type};base64,${booking.base64Data}`;
+  }
+
+  // Priority 2: Use external image URL
+  if (booking.imageSrc) {
+    return booking.imageSrc;
+  }
+
+  // Fallback to service-based image loading
+  return this.loadImageFromService(booking.voitureId);
+}
+
+private loadImageFromService(voitureId: number): string {
+  // This will be updated by the subsequent service call
+  return '/assets/default-car.jpg';
+}
+private loadCarImages(): void {
+  this.emailDialogBookings.forEach(booking => {
+    this.voitureService.getCarImageById(booking.voitureId).subscribe({
+      next: (photos: PhotoResponseDTO[]) => {
+        this.updateBookingImage(booking.id, photos);
+      },
+      error: () => {
+        this.updateBookingImage(booking.id, []);
+      }
+    });
+  });
+}
+
+private updateBookingImage(bookingId: number, photos: PhotoResponseDTO[]): void {
+  const booking = this.emailDialogBookings.find(b => b.id === bookingId);
+  if (booking) {
+    booking.imgUrl = photos.length > 0
+      ? `data:${photos[0].type};base64,${photos[0].data}`
+      : '/assets/default-car.jpg';
+
+    // Create new array reference to trigger change detection
+    this.emailDialogBookings = [...this.emailDialogBookings];
+  }
+}
+
+// Booking actions
+deleteDialogBooking(bookingId: number): void {
+  if (confirm('Are you sure you want to delete this booking?')) {
+    this.bookingService.deleteBooking(bookingId).subscribe({
+      next: () => {
+        this.emailDialogBookings = this.emailDialogBookings.filter(b => b.id !== bookingId);
+      },
+      error: (error) => {
+        console.error('Error deleting booking:', error);
+      }
+    });
+  }
+}
+
+
+
+
 }
