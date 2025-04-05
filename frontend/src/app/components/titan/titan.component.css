@@ -356,6 +356,8 @@ mat-spinner {
 }
 
 
+
+
 /*notification*/
 /* Backdrop overlay */
 .navbar-backdrop {
@@ -376,7 +378,11 @@ mat-spinner {
   visibility: visible;
 }
 
-/* Update notifications navbar CSS */
+
+
+
+
+/* notification update */
 .notifications-navbar {
   position: fixed;
   top: 0;
@@ -393,7 +399,6 @@ mat-spinner {
   right: 0;
   box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
 }
-
 
 
 
