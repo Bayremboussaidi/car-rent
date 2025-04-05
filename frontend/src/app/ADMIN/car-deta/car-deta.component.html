@@ -4,33 +4,34 @@
   <!-- Display if car data is loaded -->
   <ng-container *ngIf="car; else loading">
 
-    <!-- 1st Table: General Information (Editable) -->
-    <h3 class="table-title">Car Features</h3>
-    <p-table [value]="[car]" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Name</th>
-          <th>Brand</th>
-          <th>Category</th>
-          <th>Transmission</th>
-          <th>Fuel Type</th>
-          <th>Update</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-car>
-        <tr>
-          <td><input pInputText [(ngModel)]="car.carName" required /></td>
-          <td><input pInputText [(ngModel)]="car.brand" /></td>
-          <td><input pInputText [(ngModel)]="car.category" /></td>
-          <td><input pInputText [(ngModel)]="car.transmission" /></td>
-          <td><input pInputText [(ngModel)]="car.carburant" /></td>
-          <td>
-            <button pButton type="button" icon="pi pi-save"
-              (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+<!-- 1st Table: General Information (Editable) -->
+<h3 class="table-title">Car Features</h3>
+<p-table [value]="[car]" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Brand</th>
+      <th>Category</th>
+      <th>Transmission</th>
+      <th>Fuel Type</th>
+      <th>Update</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-car>
+    <tr>
+      <td><input pInputText [(ngModel)]="car.carName" required /></td>
+      <td><input pInputText [(ngModel)]="car.brand" /></td>
+      <td><input pInputText [(ngModel)]="car.category" /></td>
+      <td><input pInputText [(ngModel)]="car.transmission" /></td>
+      <td><input pInputText [(ngModel)]="car.carburant" /></td>
+      <td>
+        <button pButton type="button" icon="pi pi-save"
+          (click)="onRowEditSave(car)" text rounded severity="secondary"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
 
     <!-- 2nd Table: Pricing & Availability (Editable) -->
     <h3 class="table-title">Pricing & Availability</h3>
@@ -112,11 +113,15 @@
 </p-dialog>
 
 
+
+
+
     <!-- 3rd Table: Reviews (Read-Only) -->
     <h3 class="table-title">User Reviews</h3>
     <p-table [value]="reviews" [tableStyle]="{'min-width': '50rem'}">
       <ng-template pTemplate="header">
         <tr>
+          <th>User</th>
           <th>User Review</th>
           <th>Rating</th>
           <th>Created At</th>
@@ -124,6 +129,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-review>
         <tr>
+          <td>{{ review.username }}</td>
           <td>{{ review.reviewText }}</td>
           <td>
             <ng-container *ngIf="review.rating > 0; else noRating">
@@ -134,29 +140,41 @@
             <ng-template #noRating>—</ng-template>
           </td>
           <td>{{ review.createdAt | date: 'short' }}</td>
+          <td>
+            <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-sm"
+                    (click)="deleteReview(review.id)">
+            </button>
+          </td>
         </tr>
       </ng-template>
     </p-table>
+
+
+
 
     <!-- 4th Table: Bookings (Read-Only) -->
     <h3 class="table-title">Booking History</h3>
     <p-table [value]="car.bookings ?? []" [tableStyle]="{'min-width': '50rem'}">
       <ng-template pTemplate="header">
         <tr>
+          <th> User </th>
           <th>Start Date</th>
           <th>End Date</th>
           <th>Status</th>
           <th>Pickup Location</th>
           <th>Dropoff Location</th>
+
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-booking>
         <tr>
+          <td>{{ booking.username }}</td>
           <td>{{ booking.startDate | date: 'short' }}</td>
           <td>{{ booking.endDate | date: 'short' }}</td>
-          <td>{{ booking.status }}</td>
+          <td>{{ booking.bookingStatus }}</td>
           <td>{{ booking.pickupLocation }}</td>
           <td>{{ booking.dropoffLocation }}</td>
+          <td>
         </tr>
       </ng-template>
     </p-table>

@@ -4,6 +4,7 @@ import { VoitureService } from '../../services/voiture.service';
 import { Voiture } from '../../models/voiture.model';
 import { Review } from '../../models/review.model';
 import { MessageService } from 'primeng/api';
+import { ReviewService } from '../../services/review-service.service';
 
 @Component({
   selector: 'app-car-deta',
@@ -36,7 +37,8 @@ export class CarDetaComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private voitureService: VoitureService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private reviewService:ReviewService
   ) {}
 
   ngOnInit() {
@@ -171,4 +173,30 @@ deleteAllImages() {
     }
   });*/
 }
+
+
+
+
+
+
+deleteReview(reviewId: number): void {
+  if (confirm('Are you sure you want to delete this review?')) {
+    this.reviewService.deleteReview(reviewId).subscribe({
+      next: (response) => {
+        console.log('Review deleted successfully:', response);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Review deleted' });
+
+        // After deleting the review, refresh the car details to update the reviews
+        if (this.car && this.car.id) {
+          this.fetchCarDetails(this.car.id);  // Fetch the latest car details with updated reviews
+        }
+      },
+      error: (error) => {
+        console.error('Error deleting review:', error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete review' });
+      }
+    });
+  }
+}
+
 }

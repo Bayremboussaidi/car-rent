@@ -23,4 +23,13 @@ export class ReviewService {
   getReviewsByUsername(username: string): Observable<Review[]> {
     return this.http.get<Review[]>(`${this.apiUrl}/username/${username}`);
   }
+
+
+
+
+
+
+  deleteReview(reviewId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${reviewId}`);
+  }
 }
