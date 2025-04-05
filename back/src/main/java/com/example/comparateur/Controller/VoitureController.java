@@ -60,7 +60,7 @@ public class VoitureController {
 
     //  Get voiture by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Voiture>> getOneVoiture(@PathVariable Long id) {
+    public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
         return voitureService.getOneVoiture(id);
     }
 

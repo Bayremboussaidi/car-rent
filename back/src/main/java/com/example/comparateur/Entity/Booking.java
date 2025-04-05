@@ -58,7 +58,7 @@ public class Booking {
     private double price;
 
     @Column(nullable = false)
-    private String voitureId; // Now stored as a simple column, not a foreign key
+    private Long voitureId; // Now stored as a simple column, not a foreign key
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

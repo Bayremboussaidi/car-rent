@@ -111,4 +111,26 @@ public class ReviewService {
             this.data = data;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+        // Method to delete review by ID
+        public boolean deleteReview(Long reviewId) {
+            Optional<Review> review = reviewRepository.findById(reviewId);
+            if (review.isPresent()) {
+                reviewRepository.deleteById(reviewId);
+                return true;
+            } else {
+                return false;  // Return false if review does not exist
+            }
+        }
 }

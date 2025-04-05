@@ -13,7 +13,7 @@ import com.example.comparateur.Entity.BookingStatus;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByVoitureId(String voitureId);
+    List<Booking> findByVoitureId(Long id);
 
     @Query("SELECT b FROM Booking b WHERE b.voitureId = :voitureId")
     List<Booking> findAllBookingsByVoitureId(@Param("voitureId") String voitureId);

@@ -2,9 +2,11 @@ package com.example.comparateur.Controller;
 
 import java.util.List;
 
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +42,22 @@ public class ReviewController {
     public ResponseEntity<List<ReviewDTO>> getReviewsByUsername(@PathVariable String username) {
         List<ReviewDTO> reviews = reviewService.getReviewsByUsername(username);
         return ResponseEntity.ok(reviews);
+    }
+
+
+
+
+
+
+        // Delete review by ID
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Object> deleteReview(@PathVariable Long reviewId) {
+        boolean isDeleted = reviewService.deleteReview(reviewId);
+        if (isDeleted) {
+            return ResponseEntity.ok().body("Review deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body("Review not found");
+        }
     }
 
 }

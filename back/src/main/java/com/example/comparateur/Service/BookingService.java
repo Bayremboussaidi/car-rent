@@ -29,7 +29,7 @@ public class BookingService {
     public ResponseEntity<Object> createBooking(Booking booking) {
         try {
             // ✅ 1. Validate voitureId
-            if (booking.getVoitureId() == null || booking.getVoitureId().isBlank()) {
+            if (booking.getVoitureId() == null) {
                 return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid voiture_id: must not be empty"));
             }
     
@@ -106,7 +106,7 @@ public class BookingService {
                 Booking booking = optionalBooking.get();
     
                 // Validate that voitureId is provided, but don't check it in the database
-                if (updatedBooking.getVoitureId() == null || updatedBooking.getVoitureId().isBlank()) {
+                if (updatedBooking.getVoitureId() == null) {
                     return ResponseEntity.status(400).body(new ApiResponse(false, "Invalid voiture_id: must not be empty"));
                 }
     
