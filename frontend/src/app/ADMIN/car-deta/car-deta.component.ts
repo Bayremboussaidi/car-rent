@@ -13,7 +13,9 @@ import { ReviewService } from '../../services/review-service.service';
   providers: [MessageService]
 })
 export class CarDetaComponent implements OnInit {
-  car: Voiture | null = null; // ✅ Holds the specific car details
+  car: Voiture | null = null; //  Holds the specific car details
+  book: any[] = []; // juste pour bookings
+
   reviews: Review[] = []; // ✅ Holds reviews for the specific car
   selectedFile: File | null = null;
   imageDialogVisible: boolean = false;
@@ -65,26 +67,34 @@ export class CarDetaComponent implements OnInit {
   // ✅ Fetch details of a specific car
   fetchCarDetails(carId: number) {
     this.voitureService.getVoitureById(carId).subscribe(
-      (response: { success: boolean; data: Voiture }) => {
+      (response: any) => {
         console.log("Fetched car details:", response); // ✅ Debugging log
-        if (response.success && response.data) {
-          this.car = response.data;
 
-          // ✅ Map reviews for the specific car
-          this.reviews = (this.car.reviews || []).map((review: any) => ({
+        const voiture = response?.data;
+
+        if (response.success && voiture) {
+          this.car = voiture.voiture;
+
+          this.book = voiture.bookings;
+
+          // ✅ Map reviews (optional, only if reviews exist)
+          this.reviews = (voiture.reviews || []).map((review: any) => ({
             id: review.id ?? 0,
             username: review.username || 'Anonymous',
             reviewText: review.reviewText || '',
             rating: review.rating ?? 0,
             createdAt: review.createdAt ? new Date(review.createdAt).toISOString() : new Date().toISOString(),
             updatedAt: review.updatedAt ? new Date(review.updatedAt).toISOString() : new Date().toISOString(),
-            carName: this.car?.carName || 'Unknown Car'
+            carName: voiture.carName || 'Unknown Car'
           }));
         }
       },
-      (error) => console.error('Error fetching car details:', error)
+      (error) => {
+        console.error('Error fetching car details:', error);
+      }
     );
   }
+
 
   onRowEditSave(car: Voiture) {
     if (!car.id) {

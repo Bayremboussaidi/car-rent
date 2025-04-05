@@ -154,7 +154,8 @@
 
     <!-- 4th Table: Bookings (Read-Only) -->
     <h3 class="table-title">Booking History</h3>
-    <p-table [value]="car.bookings ?? []" [tableStyle]="{'min-width': '50rem'}">
+    <p-table [value]="book" [tableStyle]="{'min-width': '50rem'}">
+
       <ng-template pTemplate="header">
         <tr>
           <th> User </th>
