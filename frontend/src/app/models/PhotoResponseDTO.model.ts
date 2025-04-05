@@ -3,4 +3,11 @@ export interface PhotoResponseDTO {
   name: string;
   type: string;
   data: string;  // Base64-encoded image
+  base64Data?: string;
 }
+
+
+
+
+
+

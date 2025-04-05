@@ -42,5 +42,6 @@ export interface BookingEmail {
   type: string;           // From API response
   imageSrc: string;       // From API response
   imgUrl?: string;        // Add this computed property
+
 }
 
