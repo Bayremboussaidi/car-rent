@@ -26,9 +26,10 @@
                   name="name"
                   id="name"
                   [(ngModel)]="name"
-                  placeholder="Votre nom"
+                  [placeholder]="name"
                   class="formbold-form-input"
                   required
+                  disabled
                 />
               </div>
               <div class="formbold-mb-5">
@@ -38,9 +39,10 @@
                   name="email"
                   id="email"
                   [(ngModel)]="email"
-                  placeholder="example@domain.com"
+                  [placeholder]="email"
                   class="formbold-form-input"
                   required
+                  disabled
                 />
               </div>
               <div class="formbold-mb-5">
@@ -59,6 +61,8 @@
                 <button type="submit" class="formbold-btn w-full">Envoyer un message</button>
               </div>
             </form>
+
+
           </div>
         </div>
 
@@ -78,3 +82,20 @@
 
 
 <app-contact-badge></app-contact-badge>
+
+
+
+
+
+
+
+
+<div class="signin-prompt-modal" *ngIf="showSignInPrompt" role="dialog" aria-labelledby="signin-title" aria-describedby="signin-description" (click)="$event.stopPropagation()">
+  <h3 id="signin-title">Sign In Required</h3>
+  <p id="signin-description">You need to be logged in to book a car.</p>
+  <div class="modal-actions">
+    <button class="btn btn-primary" (click)="navigateToLogin()">Sign In</button>
+    <button class="btn btn-secondary" (click)="closeSignInPrompt()">Cancel</button>
+  </div>
+</div>
+

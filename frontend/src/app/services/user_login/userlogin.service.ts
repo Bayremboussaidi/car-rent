@@ -27,10 +27,6 @@ export class UserloginService {
 
 
 
-
-
-
-
   /*teb3in Notifications*/
   isLoggedIn(): boolean {
     return !!localStorage.getItem('auth_token');
