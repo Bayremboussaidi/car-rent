@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "agence")
+@Table(name = "agence") // Fixed table annotation
 public class Agence {
 
     @Id
@@ -24,7 +24,7 @@ public class Agence {
     private Long id;
 
     @Column(name = "agency_name", nullable = false, length = 100)
-    private String agencyName; // PascalCase pour le nom de variable
+    private String agencyName;
 
     @Column(nullable = false, unique = true, length = 255)
     @Pattern(regexp = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email invalide")
@@ -35,12 +35,21 @@ public class Agence {
 
     @Lob
     @Column(name = "photo", columnDefinition = "LONGTEXT")
-    private String photo; // Base64 ou URL selon l'usage
+    private String photo;
 
     @Column(name = "phone_number", nullable = false, length = 20)
     @Pattern(regexp = "^\\+?[0-9\\s()-]{7,}$", message = "Format de téléphone invalide")
-    private String phoneNumber; // String pour préserver le format
+    private String phoneNumber;
 
     @Column(length = 100)
-    private String city; // "ville" traduit en anglais pour la cohérence
+    private String city;
+
+    // Custom constructor for service layer
+    public Agence(String agencyName, String email, String phoneNumber, String city, String photo) {
+        this.agencyName = agencyName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.city = city;
+        this.photo = photo;
+    }
 }
