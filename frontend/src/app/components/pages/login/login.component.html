@@ -24,14 +24,11 @@
             <img src="assets/all-images/login.jpg" alt="login" />
           </div>
 
-
-
           <div class="login__form" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="500">
             <div class="user">
-              <img src="../../assets/all-images/logo.jpg" alt="User Icon" />
+              <img src="../../assets/all-images/logo2.png" alt="User Icon" />
             </div>
             <h2>Se connecter</h2>
-
 
             <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
 
@@ -55,22 +52,14 @@
               </div>
               <div class="robot-check">
                 <label>
-                  <input
-                    type="checkbox"
-                    [checked]="isUser"
-                    name="userCheck"
-                    (change)="toggleCheck('user')">
+                  <input type="checkbox" [checked]="isUser" name="userCheck" (change)="toggleCheck('user')">
                   Je suis un client
                 </label>
               </div>
 
               <div class="robot-check">
                 <label>
-                  <input
-                    type="checkbox"
-                    [checked]="isAgence"
-                    name="agenceCheck"
-                    (change)="toggleCheck('agence')">
+                  <input type="checkbox" [checked]="isAgence" name="agenceCheck" (change)="toggleCheck('agence')">
                   Je suis agence
                 </label>
               </div>
@@ -85,3 +74,4 @@
     </div>
   </div>
 </section>
+
