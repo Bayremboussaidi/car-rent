@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class FaqComponent {
   faqItems = [
     {
-      question: "Quel est l'âge minimum pour louer un véhicule chez Tunisia Rent Car?",
+      question: "Quel est l'âge minimum pour louer un véhicule chez My loc ?",
       answer: "Pour louer un véhicule chez Tunisia Rent Car vous devez être âgé de 26 ans au moins et être titulaire du permis de conduire depuis plus de deux ans. Dans certaines catégories, il y a d'autres conditions qui seront demandées selon la demande.",
       isOpen: false
     },

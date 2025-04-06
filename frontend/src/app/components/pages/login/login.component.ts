@@ -1,3 +1,4 @@
+import { AgenceService } from './../../../services/agence/agence.service'; // Corrected path
 import { UserloginService } from './../../../services/user_login/userlogin.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -13,16 +14,16 @@ export class LoginComponent {
   errorMessage: string = '';
   isRobot = false;
   isUser = true;
+  isAgence = false;
   showRobotError = false;
   showConditions = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private userloginService: UserloginService // Fixed casing and type annotation
+    private userloginService: UserloginService,
+    private agenceService: AgenceService // Corrected variable name casing
   ) {}
-
-
 
   closeConditions() {
     this.showConditions = false;
@@ -30,8 +31,8 @@ export class LoginComponent {
 
   handleClick(event: Event) {
     event.preventDefault();
-    this.errorMessage = ''; // Reset error message
-    this.showRobotError = false; // Reset robot error
+    this.errorMessage = '';
+    this.showRobotError = false;
 
     if (!this.isRobot) {
       this.showRobotError = true;
@@ -39,44 +40,63 @@ export class LoginComponent {
     }
 
     if (!this.validateEmail(this.credentials.email)) {
-      this.errorMessage = 'Veuillez entrer une adresse email valide'; // Consistent French error
+      this.errorMessage = 'Veuillez entrer une adresse email valide';
       return;
     }
 
     if (this.isUser) {
-      this.authService.logout(); // Clear any potential invalid state
-
-      this.userloginService.login(this.credentials).subscribe({
-        next: (response) => {
-          console.log('Login response:', response); // Log response
-          this.userloginService.storeUserDetails(response.token);
-          this.router.navigate(['/home']);
-        },
-        error: (err: any) => {
-          this.errorMessage = err || 'Email ou mot de passe incorrect'; // French error
-        }
-      });
-
-
-      //login l admin mazelet
-    } else {
-      this.authService.login(this.credentials).subscribe({
-        next: (response) => {
-          console.log('Login successful');
-          //this.userloginService.storeUserDetails(response.token);
-          this.router.navigate(['/home']);
-        },
-        error: (err) => {
-          console.error('Login failed', err);
-          this.errorMessage = 'Email ou mot de passe incorrect';
-        },
-      });
+      this.handleUserLogin();
+    } else if (this.isAgence) {
+      this.handleAgencyLogin();
     }
   }
 
+  private handleUserLogin() {
+    this.authService.logout();
+    this.userloginService.login(this.credentials).subscribe({
+      next: (response) => {
+        this.userloginService.storeUserDetails(response.token);
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.errorMessage = err?.message || 'Email ou mot de passe incorrect';
+      }
+    });
+  }
+
+  private handleAgencyLogin() {
+    this.authService.logout();
+    this.agenceService.login(this.credentials).subscribe({
+      next: (response) => {
+        // Store agency auth data
+        const agencyData = {
+          token: response.token,
+          agencyId: response.id,
+          name: response.agencyName
+        };
+
+        localStorage.setItem('agency_auth', JSON.stringify(agencyData));
+
+        // Log the stored data
+        console.log('LocalStorage after agency login:');
+        console.log('agency_auth:', JSON.parse(localStorage.getItem('agency_auth') || 'No agency data'));
+        console.log('All localStorage:', localStorage);
+
+        this.router.navigate(['/agence']);
+      },
+      error: (err) => {
+        this.errorMessage = err?.message || 'Email ou mot de passe incorrect pour agence';
+      }
+    });
+  }
 
   private validateEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  }
+
+  toggleCheck(type: 'user' | 'agence') {
+    this.isUser = type === 'user';
+    this.isAgence = type === 'agence';
   }
 }
