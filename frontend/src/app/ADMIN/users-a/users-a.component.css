@@ -293,50 +293,77 @@ button .pi {
 }
 
 /* Delete Button */
+/* Button Container */
+td {
+  white-space: nowrap; /* Prevent buttons from wrapping */
+}
+
+/* Base Button Styles */
+.delete-button,
+.Historique-button {
+  display: inline-block; /* Ensure buttons stay on same line */
+  width: auto; /* Allow buttons to size based on content */
+  min-width: 80px; /* Set minimum width */
+  height: 32px; /* Fixed height */
+  padding: 6px 12px !important; /* Consistent padding */
+  font-size: 12px !important; /* 0.8 of original 14px */
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  line-height: 1; /* Fix vertical alignment */
+  margin: 0 4px; /* Consistent spacing */
+  border: none;
+}
+
+/* Delete Button */
 .delete-button {
   background-color: #e74c3c;
   color: white;
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
 }
 
 .delete-button:hover {
   background-color: #c0392b;
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .delete-button:active {
   background-color: #a93226;
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 
-
-/*historique button */
+/* Historique Button */
 .Historique-button {
   background-color: #091606;
   color: white;
-  padding: 8px 14px;
-  font-size: 14px;
-  margin-left: 5px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  margin-left: 8px; /* Consistent spacing */
 }
 
 .Historique-button:hover {
   background-color: #57595a;
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .Historique-button:active {
-  background-color: #a93226;
-  transform: scale(0.95);
+  background-color: #3a3b3c;
+  transform: scale(0.98);
 }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .delete-button,
+  .Historique-button {
+    min-width: 70px;
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    margin: 0 3px;
+  }
+}
+
+
+/*historique button */
+
 
 /* Top Buttons */
 .top-buttons {

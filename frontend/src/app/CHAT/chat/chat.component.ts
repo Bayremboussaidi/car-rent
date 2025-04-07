@@ -6,6 +6,7 @@ import { Message } from '../../models/CHAT/Message.model';
 import { ChatService } from '../../services/CHAT/chat.service';
 import { UserService } from '../../services/user.service';
 import { AgenceService } from '../../services/agence/agence.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
@@ -38,6 +39,7 @@ export class ChatComponent implements OnInit {
     private chatService: ChatService,
     private router: Router,
     private userService: UserService,
+    private location: Location,
     private agenceService: AgenceService  // ✅ Inject AgenceService
   ) {
     this.chatForm = new FormGroup({
@@ -122,6 +124,13 @@ export class ChatComponent implements OnInit {
 
   routeHome() {
     this.router.navigateByUrl('');
+  }
+
+
+
+
+  goBack() {
+    window.history.back(); // This will navigate to the last page in the browser history
   }
 
   goToChat(username: any) {
