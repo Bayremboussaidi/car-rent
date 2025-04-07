@@ -151,4 +151,18 @@ export class AgenceService {
     }
     return error.error?.message || error.message || 'An unexpected error occurred';
   }
+
+
+
+
+
+
+  //chat requirement
+  getAll(): Observable<AgenceResponse[]> {
+    return this.http.get<AgenceResponse[]>(`${this.apiUrl}/all`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(error => throwError(() => this.handleError(error)))
+    );
+  }
 }

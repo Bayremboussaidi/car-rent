@@ -35,6 +35,9 @@ import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.c
 import { AgencelayoutComponent } from './layouts/agencelayout/agencelayout.component';
 import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component';
 
+//CHAT
+import { ChatComponent } from './CHAT/chat/chat.component';
+
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
 
@@ -75,6 +78,7 @@ const routes: Routes = [
       { path: 'reviewa', component: ReviewsAComponent },
       { path: 'carlista', component: CarListAComponent },
       { path: 'carlista/:id', component: CarDetaComponent },
+      { path: 'chat', component: ChatComponent }
 
 
 
