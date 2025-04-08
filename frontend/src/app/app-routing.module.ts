@@ -18,11 +18,9 @@ import { ListcarsComponent } from './components/pages/carlisting/carlisting.comp
 import { CarDetailsComponent } from './components/pages/car-details/car-details.component';
 //import { NotFoundComponent } from './components/pages/not-found/not-found.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
 
 // Admin Pages
 import { DashComponent } from './ADMIN/dash/dash.component';
-import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
 import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
@@ -37,6 +35,7 @@ import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-detai
 
 //CHAT
 import { ChatComponent } from './CHAT/chat/chat.component';
+import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -71,14 +70,13 @@ const routes: Routes = [
     //canActivate: [AdminGuard], // Protect Admin Routes (Optional)
     children: [
       { path: '', component: DashComponent },
-      { path: 'voiturea', component: AddVoitureComponent },
       { path: 'usera', component: UserAComponent },
       { path: 'usera/:id', component: UserADetailsComponent},
       { path: 'bookinga', component: BookingAComponent },
-      { path: 'reviewa', component: ReviewsAComponent },
       { path: 'carlista', component: CarListAComponent },
       { path: 'carlista/:id', component: CarDetaComponent },
-      { path: 'chat', component: ChatComponent }
+      { path: 'chat', component: ChatComponent },
+      { path: 'add-car', component: AddCarComponent },
 
 
 

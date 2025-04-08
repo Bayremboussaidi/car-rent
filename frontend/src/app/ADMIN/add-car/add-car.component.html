@@ -1,0 +1,142 @@
+<header id="header" class="header sticky-top">
+
+  <!-- Top Bar -->
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="d-none d-md-flex align-items-center">
+        <i class="bi bi-clock me-1"></i> Monday - Saturday, 8AM to 10PM
+      </div>
+      <div class="d-flex align-items-center">
+        <i class="bi bi-phone me-1"></i> Call us now +1 5589 55488 55
+      </div>
+    </div>
+  </div>
+
+  <!-- Branding & Navigation -->
+  <div class="branding d-flex align-items-center">
+    <div class="container position-relative d-flex align-items-center justify-content-end">
+
+      <a routerLink="/admin/carlista" class="logo d-flex align-items-center me-auto">
+        <div class="logo" data-aos="zoom-in" data-aos-duration="1500">
+          Mylock<span>_Administrator</span>
+        </div>
+
+
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a routerLink="/admin/add-car" class="active">Add Car</a></li>
+          <li><a routerLink="/admin/carlista" class="active">Cars</a></li>
+          <li><a routerLink="/admin/bookinga">bookings</a></li>
+          <li><a routerLink="/admin/usera">Users</a></li>
+
+
+          <li><a routerLink="/admin/chat">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="cta-btn" routerLink="/appointment">Agencies</a>
+
+    </div>
+  </div>
+
+</header>
+
+
+
+<div class="form-container">
+  <div class="header">
+    <h2>Add New Car</h2>
+  </div>
+
+  <!-- Nom de la voiture -->
+  <div class="input-group">
+    <label>Car Name</label>
+    <input type="text" #carName class="form-input" required>
+  </div>
+
+  <!-- Marque -->
+  <div class="input-group">
+    <label>Brand</label>
+    <input type="text" #brand class="form-input" required>
+  </div>
+
+  <!-- Catégorie -->
+  <div class="input-group">
+    <label>Category</label>
+    <input type="text" #category class="form-input">
+  </div>
+
+  <!-- Transmission -->
+  <div class="input-group">
+    <label>Transmission</label>
+    <input type="text" #transmission class="form-input">
+  </div>
+
+  <!-- Type de carburant -->
+  <div class="input-group">
+    <label>Fuel Type</label>
+    <input type="text" #fuelType class="form-input">
+  </div>
+
+  <!-- Prix -->
+  <div class="input-group">
+    <label>Price</label>
+    <input type="number" #price class="form-input" min="0">
+  </div>
+
+  <!-- Agence -->
+  <div class="input-group">
+    <label>Agency</label>
+    <input type="text" #agency class="form-input">
+  </div>
+
+  <!-- Localisation -->
+  <div class="input-group">
+    <label>Location</label>
+    <input type="text" #location class="form-input">
+  </div>
+
+  <!-- Prix / jour -->
+  <div class="input-group">
+    <label>Price per Day</label>
+    <input type="number" #pricePerDay class="form-input" min="0">
+  </div>
+
+  <!-- Description -->
+  <div class="input-group">
+    <label>Description</label>
+    <textarea #description class="form-input" rows="3"></textarea>
+  </div>
+
+  <!-- Logo de l'agence -->
+  <div class="input-group">
+    <label>Agency Logo</label>
+    <input type="file" #agencyLogo accept="image/*" class="form-input">
+  </div>
+
+  <!-- Photos de la voiture -->
+  <div class="input-group">
+    <label>Car Images (you can select multiple)</label>
+    <input type="file" #carImagesInput (change)="onImageSelect($event)" multiple accept="image/*" class="form-input">
+
+    <!-- Displaying Selected Image Previews and Filenames -->
+    <div *ngIf="imagePreviews.length > 0" class="image-previews">
+      <div *ngFor="let preview of imagePreviews; let i = index" class="image-preview">
+        <img [src]="preview" alt="Image preview" class="img-thumbnail">
+        <span>{{imageFiles[i].name}}</span> <!-- Displaying the file name -->
+        <button type="button" (click)="removeImage(i)">Remove</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="button-container">
+
+    <button class="submit-btn" (click)="onSubmit()">Add Car</button>
+
+  </div>
+</div>

@@ -59,6 +59,36 @@ export class AuthService {
       }
     }
 
+
+
+    decodeToken(token: string): User {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const user: User = {
+          id: payload.sub,
+          username: payload.preferred_username,
+          email: payload.email,
+          firstName: payload.given_name || '',
+          lastName: payload.family_name || '',
+          role: payload.realm_access?.roles?.find((role: string) =>
+            ['ADMIN', 'USER', 'AGENCE'].includes(role)
+          ) || 'USER'
+        };
+        console.log("✅ Decoded user details:", user);
+        return user;
+      } catch (error) {
+        console.error('❌ Error decoding token:', error);
+        return {
+          id: 0,
+          username: '',
+          email: '',
+          firstName: '',
+          lastName: '',
+          role: 'ADMIN'
+        };
+      }
+    }
+
     refreshToken(): Observable<any> {
       const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
 

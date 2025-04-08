@@ -3,6 +3,7 @@ import { UserloginService } from './../../../services/user_login/userlogin.servi
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+//import {KeycloakUserInfo} from'../../../services/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private userloginService: UserloginService,
+    //private keycloakService: KeycloakUserInfo,
     private agenceService: AgenceService // Corrected variable name casing
   ) {}
 
@@ -49,6 +51,9 @@ export class LoginComponent {
       this.handleUserLogin();
     } else if (this.isAgence) {
       this.handleAgencyLogin();
+    } else {
+      // When neither is selected, use Keycloak authentication
+      //this.handleKeycloakLogin();
     }
   }
 
@@ -90,6 +95,68 @@ export class LoginComponent {
       }
     });
   }
+
+
+  //keycloak login
+  /*private handleKeycloakLogin() {
+    this.authService.logout(); // Clear any existing tokens
+
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        // Store the tokens and user details
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('refresh_token', response.refresh_token);
+        localStorage.setItem('role', response.role);
+
+        // Decode and store user details
+        const userDetails = this.authService.decodeToken(response.access_token);
+        localStorage.setItem('user', JSON.stringify(userDetails));
+
+        // Navigate based on role
+        //this.navigateBasedOnRole(response.role);
+        this.router.navigate(['/admin']);
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect';
+      }
+    });
+  }*/
+   // Keycloak login
+
+   /*private async handleKeycloakLogin() {
+    try {
+      this.authService.logout(); // Clear any existing tokens
+
+      // Init Keycloak first
+      const initialized = await this.keycloakService.init();
+      if (!initialized) {
+        // If not authenticated, start login process
+        this.keycloakService.login();
+        return;
+      }
+
+      // If we get here, user is already authenticated
+      const token = await this.keycloakService.getToken();
+      const userDetails = this.keycloakService.currentUser;
+
+      if (userDetails) {
+        localStorage.setItem('access_token', token);
+        localStorage.setItem('role', userDetails.role || 'USER');
+        localStorage.setItem('user', JSON.stringify(userDetails));
+
+        // Redirect based on role
+        if (userDetails.role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/user']);
+        }
+      } else {
+        this.errorMessage = 'Failed to load user details';
+      }
+    } catch (error) {
+      this.errorMessage = `Keycloak login error: ${error}`;
+    }
+  }*/
 
   private validateEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+/*import { Component, OnInit } from '@angular/core';
 import { VoitureService } from '../../services/voiture.service';
 import { Voiture } from '../../models/voiture.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -11,8 +11,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class AddVoitureComponent implements OnInit {
   voitures: Voiture[] = []; // List of cars
-  newCar: Voiture = {} as Voiture; // New car object
-  isAddModalOpen: boolean = false; // Control modal visibility
+  newCar: Voiture = {} as Voiture;
+  isAddModalOpen: boolean = false;
   page: number = 0; // Pagination
   errors: string[] = []; // Error messages
 
@@ -23,34 +23,20 @@ export class AddVoitureComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadVoitures();
+
   }
 
-  // Load car list from API
-  loadVoitures(): void {
-    this.voitureService.getVoitures(this.page).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.voitures = response.data;
-        } else {
-          this.errors.push(response.message);
-        }
-      },
-      error: (err) => {
-        this.errors.push('Failed to load cars: ' + err.message);
-      },
-    });
-  }
+
 
   // Open modal to add a car
   openAddModal(): void {
-    this.newCar = {} as Voiture;
-    this.isAddModalOpen = true;
+    this.newCar = {} as Voiture; // Reset form
+    this.isAddModalOpen = true; // Show modal
   }
 
   // Close modal
   closeAddModal(): void {
-    this.isAddModalOpen = false;
+    this.isAddModalOpen = false; // Hide modal
   }
 
   // Handle form submission
@@ -88,3 +74,4 @@ export class AddVoitureComponent implements OnInit {
     });
   }
 }
+*/

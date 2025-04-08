@@ -15,6 +15,9 @@ export class CarListAComponent implements OnInit {
   totalPages = 0;
   currentPage = 1;
 
+  newCar: Voiture = {} as Voiture;
+  isAddModalOpen: boolean = false;
+
   constructor(private voitureService: VoitureService, private router: Router) {}
 
   ngOnInit() {
@@ -94,4 +97,45 @@ export class CarListAComponent implements OnInit {
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
     return Math.round(totalRating / reviews.length);
   }
+
+
+
+
+
+  openAddModal(): void {
+    console.log('Opening modal'); // Check if this logs
+    this.isAddModalOpen = true;
+  }
+
+  closeAddModal(): void {
+    this.isAddModalOpen = false;
+  }
+
+
+
+  onAddCar(): void {
+   /* if (!this.validateCarForm()) {
+      return;
+    }*/
+
+    this.voitureService.addVoiture(this.newCar).subscribe({
+      next: (response) => {
+        /*this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Car added successfully'
+        });*/
+        this.closeAddModal();
+        this.fetchAllCars(); // Refresh the list
+      },
+      error: (err) => {
+        /*this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to add car: ' + err.message
+        });*/
+      }
+    });
+  }
+
 }

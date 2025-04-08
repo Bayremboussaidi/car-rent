@@ -1,7 +1,8 @@
 import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {  ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router'; // ✅ Fixes `[routerLink]` issues
 
@@ -57,14 +58,11 @@ import { CommonSectionComponent } from './components/common-section/common-secti
 import { LoginComponent } from './components/pages/login/login.component';
 import { ListcarsComponent } from './components/pages/carlisting/carlisting.component';
 import { DashComponent } from './ADMIN/dash/dash.component';
-import { AddVoitureComponent } from './ADMIN/voiture-a/add-voiture.component';
 import { CarDetailsComponent } from './components/pages/car-details/car-details.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
-import { BookingModalComponent } from './components/booking/booking.component'; // ✅ Updated import
+import { BookingModalComponent } from './components/booking/booking.component';
 import { UserAComponent } from './ADMIN/users-a/users-a.component';
 import { BookingAComponent } from './ADMIN/booking-a/booking-a.component';
-import { ReviewsAComponent } from './ADMIN/reviews-a/reviews-a.component';
-import { PhotoAComponent } from './ADMIN/photo-a/photo-a.component';
 import { HeaderAComponent } from './ADMIN/header-a/header-a.component';
 import { CarListAComponent } from './ADMIN/car-list-a/car-list-a.component';
 import { CardetailsAComponent } from './ADMIN/cardetails-a/cardetails-a.component';
@@ -76,9 +74,16 @@ import { TitanComponent } from './components/titan/titan.component';
 import { ToastModule } from 'primeng/toast';
 
 
+
+
+
+import { CommonModule } from '@angular/common';
+
+
 // ✅ Keycloak Imports
 import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
+
 
 
 
@@ -104,6 +109,12 @@ import {AgencelayoutComponent} from './layouts/agencelayout/agencelayout.compone
 import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component';
 import { ChatComponent } from './CHAT/chat/chat.component'
 
+
+
+
+
+
+import { InputNumberModule } from 'primeng/inputnumber';
 
 
 // ✅ Keycloak Initialization Function
@@ -137,14 +148,12 @@ export function kcFactory(kcService: KeycloakService) {
     LoginComponent,
     ListcarsComponent,
     DashComponent,
-    AddVoitureComponent,
     CarDetailsComponent,
     VideoPlayerComponent,
     BookingModalComponent,
     UserAComponent,
     BookingAComponent,
-    ReviewsAComponent,
-    PhotoAComponent,
+
     AdminLayoutComponent,
     UserLayoutComponent,
     AgencelayoutComponent,
@@ -169,6 +178,8 @@ export function kcFactory(kcService: KeycloakService) {
   ],
   imports: [
     BrowserModule,
+    CommonModule,
+    InputNumberModule,
     AppRoutingModule,
     HttpClientModule,
     FontAwesomeModule,
