@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { PhotoResponseDTO } from '../models/PhotoResponseDTO.model';
 import { Voiture } from '../models/voiture.model';
 import { ApiResponseAgence } from '../models/ApiResponseAgence';
@@ -27,7 +27,9 @@ export class VoitureService {
   }
 
   addVoiture(voiture: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, voiture);
+    return this.http.post(`${this.baseUrl}`, voiture).pipe(
+      map((response: any) => response.data) // Extract `data` from the response
+    );
   }
 
 

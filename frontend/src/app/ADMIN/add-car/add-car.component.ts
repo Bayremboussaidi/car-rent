@@ -16,12 +16,12 @@ export class AddCarComponent {
     category: '',
     transmission: 'Automatic',
     matricule: '', // Matricule field
+    toit: 'Standard', // Roof type
     carburant: 'Gasoline', // Default dropdown value
-    price: 0,
+    price: 0, // Updated field to match the backend
     agence: '',
     local: '',
     description: '',
-    pricePerDay: 0,
     images: [],
     disponible: true
   };
@@ -32,8 +32,7 @@ export class AddCarComponent {
   constructor(
     private voitureService: VoitureService,
     private photoService: PhotoService,
-    private router: Router,
-
+    private router: Router
   ) {}
 
   // Navigates to the specified path
@@ -68,14 +67,18 @@ export class AddCarComponent {
       return;
     }
 
+    console.log('Sending Voiture Object:', this.voiture); // Log the request body
+
     this.voitureService.addVoiture(this.voiture).subscribe({
       next: (response: any) => {
-        console.log('Car successfully added:', response);
+        console.log('Full Backend Response:', response); // Log the full response
 
-        // Check if response contains `id` field
-        if (response.id) {
-          // Upload images using the voiture ID
-          this.photoService.uploadPhotos(response.id, null, this.imageFiles).subscribe({
+        // Access the ID directly from the root response
+        if (response && response.id) {
+          const voitureId = response.id; // Extract ID directly
+          console.log('Extracted Voiture ID:', voitureId);
+
+          this.photoService.uploadPhotos(voitureId, null, this.imageFiles).subscribe({
             next: () => {
               console.log('Photos successfully uploaded.');
               this.router.navigate(['/admin/carlista']);
@@ -86,16 +89,18 @@ export class AddCarComponent {
             }
           });
         } else {
-          console.error('Backend did not return an ID for the voiture:', response);
+          console.error('Backend response missing ID:', response);
           alert('An error occurred: Voiture ID is missing in the backend response.');
         }
       },
       error: (err) => {
-        console.error('Error adding car:', err);
+        console.error('Error adding car:', err); // Log full error details
         alert('An error occurred while adding the car. Please try again.');
       }
     });
   }
+
+
 
 
   // Removes an image from the selected list

@@ -99,6 +99,18 @@
     <input type="text" [(ngModel)]="voiture.agence" class="form-input">
   </div>
 
+  <div class="input-group">
+    <label>Roof Type</label>
+    <select [(ngModel)]="voiture.toit" class="form-input">
+      <option value="Standard">Standard</option>
+      <option value="Panoramic">Panoramic</option>
+      <option value="Sunroof">Sunroof</option>
+      <option value="Convertible">Convertible</option>
+      <option value="Hardtop">Hardtop</option>
+      <option value="Softtop">Softtop</option>
+    </select>
+  </div>
+
   <!-- Location -->
   <div class="input-group">
     <label>Location</label>
@@ -107,8 +119,8 @@
 
   <!-- Price Per Day -->
   <div class="input-group">
-    <label>Price per Day</label>
-    <input type="number" [(ngModel)]="voiture.pricePerDay" class="form-input" min="0">
+    <label>Price per day</label>
+    <input type="number" [(ngModel)]="voiture.price" class="form-input" min="0" required>
   </div>
 
   <!-- Description -->
