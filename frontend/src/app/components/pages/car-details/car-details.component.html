@@ -118,7 +118,7 @@
             <textarea rows="5" class="form-control w-100 py-2 px-3" placeholder="Comment..." [(ngModel)]="review.reviewText" name="reviewText" required></textarea>
           </div>
 
-          <button type="submit" class="btn comment__btn mt-3">
+          <button type="submit" class="button">
             Poster un commentaire
           </button>
         </form>
@@ -126,10 +126,13 @@
     </div>
   </div>
 
+
   <!--  Sidebar: Voitures similaires (Alone on Sidebar) -->
   <div class="car-sidebar">
-    <h5>Voitures similaires</h5>
+
     <div class="carousel-container">
+      <h5>Voitures similaires</h5>
+
       <div class="carousel-box" *ngIf="otherCars.length">
         <div
           class="car-item-box"
@@ -153,4 +156,3 @@
     </div>
   </div>
 </div>
-

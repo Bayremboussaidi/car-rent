@@ -34,7 +34,7 @@ public class VoitureController {
 
     //  Create a new voiture
     @PostMapping
-    public ResponseEntity<Object> createVoiture(@RequestBody Voiture voiture) {
+    public ResponseEntity<ApiResponse<Voiture>> createVoiture(@RequestBody Voiture voiture) {
         return voitureService.createVoiture(voiture);
     }
 

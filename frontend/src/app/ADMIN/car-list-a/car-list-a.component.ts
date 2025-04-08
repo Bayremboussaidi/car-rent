@@ -102,10 +102,6 @@ export class CarListAComponent implements OnInit {
   }
 
 
-
-
-
-
   openAddModal(): void {
     console.log('Opening modal'); // Check if this logs
     this.isAddModalOpen = true;

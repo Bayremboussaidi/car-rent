@@ -27,7 +27,7 @@
         @Autowired
         private PhotoService photoService;
     
-        // ✅ Upload Photos and Save as `byte[]`
+        
         @PostMapping("/upload/{voitureId}")
         public ResponseEntity<?> uploadPhotos(
                 @PathVariable Long voitureId,

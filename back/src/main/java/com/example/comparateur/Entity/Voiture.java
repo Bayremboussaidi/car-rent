@@ -63,8 +63,6 @@ public class Voiture {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private String imgUrl;
 
     @Column(nullable = false)
     private boolean disponible;
@@ -76,7 +74,7 @@ public class Voiture {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false, unique = true)
-    private String matricule; // Ajout de l'attribut matricule
+    private String matricule;
 
     @PrePersist
     protected void onCreate() {

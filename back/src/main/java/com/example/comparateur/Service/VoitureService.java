@@ -43,25 +43,33 @@ import com.example.comparateur.Repository.PhotoRepository;
         private BookingRepository bookingRepository; 
     
         //  Create a new voiture
-        public ResponseEntity<Object> createVoiture(Voiture voiture) {
+        public ResponseEntity<ApiResponse<Voiture>> createVoiture(Voiture voiture) {
             try {
-                // Vérifier si le matricule est déjà utilisé
-                boolean matriculeExists = voitureRepository.existsByMatricule(voiture.getMatricule());
-                if (matriculeExists) {
-                    return ResponseEntity.status(400).body(new ApiResponse<>(false, "Matricule already exists"));
+                // Check if the matricule already exists
+                if (voitureRepository.existsByMatricule(voiture.getMatricule())) {
+                    return ResponseEntity.status(400)
+                            .body(new ApiResponse<>(false, "Matricule already exists", null));
                 }
         
-                // Initialiser les champs de date
+                // Initialize timestamps for the new voiture
                 voiture.setCreatedAt(LocalDateTime.now());
                 voiture.setUpdatedAt(LocalDateTime.now());
         
-                // Enregistrer la voiture
+                // Save the voiture in the database
                 Voiture savedVoiture = voitureRepository.save(voiture);
+        
+                // Return success response with the saved voiture
                 return ResponseEntity.ok(new ApiResponse<>(true, "Successfully created", savedVoiture));
             } catch (Exception e) {
-                return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to create. Try again"));
+                // Log the exception for debugging (optional)
+                e.printStackTrace();
+        
+                // Return error response
+                return ResponseEntity.status(500)
+                        .body(new ApiResponse<>(false, "Failed to create. Try again", null));
             }
         }
+        
         
 
         
