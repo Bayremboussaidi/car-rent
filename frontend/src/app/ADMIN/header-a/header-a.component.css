@@ -68,9 +68,13 @@
 /* ====================================
   🌟 Navigation Menu
 ==================================== */
+
+/* Navigation Menu */
 .navmenu {
   display: flex;
   align-items: center;
+  justify-content: center; /* Centers the navigation menu */
+  gap: 20px; /* Adds space between menu items */
 }
 
 .navmenu ul {
@@ -79,43 +83,54 @@
   display: flex;
   list-style: none;
   align-items: center;
+  gap: 15px; /* Adds spacing between items */
 }
 
 .navmenu li {
   position: relative;
 }
 
+/* Link Styling */
 .navmenu a {
   color: var(--nav-color);
-  padding: 18px 15px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 12px 20px; /* Adjusted padding for better spacing */
+  font-size: 16px; /* Slightly larger font for readability */
+  font-weight: 600; /* Bold font for emphasis */
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  transition: 0.3s ease-in-out;
-  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none; /* Removes underline */
+  border-radius: 8px; /* Soft rounded edges */
 }
 
-.navmenu a:hover,
-.navmenu .active {
+.navmenu a:hover {
   color: var(--nav-hover-color);
+  background: rgba(0, 123, 255, 0.1); /* Adds a light hover background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hover shadow effect */
+  transform: translateY(-2px); /* Lift effect on hover */
 }
 
-/* 🌟 Dropdown Menu */
+/.navmenu .active {
+  color: var(--nav-hover-color); /* Matches hover color */
+  font-weight: 700; /* Highlight active link */
+}
+
+/* Dropdown Menu Styling */
 .navmenu .dropdown ul {
   position: absolute;
   left: 0;
   top: 100%;
   background: var(--nav-dropdown-background-color);
   padding: 10px 0;
-  min-width: 200px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  min-width: 220px; /* Adjusted width for consistency */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow effect */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   transform: translateY(10px);
-  border-radius: 4px;
+  border-radius: 8px; /* Smooth rounded edges */
+  z-index: 999; /* Ensures dropdown is above other content */
 }
 
 .navmenu .dropdown:hover > ul {
@@ -129,18 +144,21 @@
 }
 
 .navmenu .dropdown ul a {
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 20px; /* Consistent spacing */
+  font-size: 15px; /* Slightly smaller font for dropdown links */
   color: var(--nav-dropdown-color);
   text-transform: none;
   display: block;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  border-radius: 6px; /* Smooth edges for dropdown items */
 }
 
 .navmenu .dropdown ul a:hover {
   color: var(--nav-dropdown-hover-color);
+  background: rgba(0, 123, 255, 0.1); /* Adds hover background for dropdown items */
 }
 
-/* 🌟 Deep Dropdown */
+/* Deep Dropdown Styling */
 .navmenu .dropdown .dropdown ul {
   left: 100%;
   top: 0;
@@ -148,6 +166,7 @@
   opacity: 0;
   transform: translateX(10px);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
 }
 
 .navmenu .dropdown .dropdown:hover > ul {
@@ -155,6 +174,7 @@
   visibility: visible;
   transform: translateX(0);
 }
+
 
 
 

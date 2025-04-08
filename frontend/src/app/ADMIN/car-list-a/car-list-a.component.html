@@ -1,11 +1,8 @@
 <app-header-a></app-header-a>
 
 
-<div class="card">
-  <button (click)="openAddModal()" class="add-record-button">
-    <i class="pi pi-plus"></i> Add Car
-  </button>
-</div>
+
+
 
 <!-- Simplified Dialog -->
 <p-dialog
@@ -90,22 +87,3 @@
 
 
 
-
-<!--p-dialog [(visible)]="isAddModalOpen" header="Add New Car" [modal]="true">
-  <form (ngSubmit)="onAddCar()">
-    <div>
-      <label>Car Name</label>
-      <input type="text" [(ngModel)]="newCar.carName" name="carName" required>
-    </div>
-
-    <div>
-      <label>Brand</label>
-      <input type="text" [(ngModel)]="newCar.brand" name="brand" required>
-    </div>
-
-    <div class="modal-actions">
-      <button type="button" (click)="closeAddModal()">Cancel</button>
-      <button type="submit">Add Car</button>
-    </div>
-  </form>
-</p-dialog-->

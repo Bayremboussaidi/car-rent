@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { VoitureService } from '../../services/voiture.service';
 import { Router } from '@angular/router';
 import { PhotoService } from '../../services/photo.service';
-
-
 
 @Component({
   selector: 'app-add-car',
@@ -12,104 +9,98 @@ import { PhotoService } from '../../services/photo.service';
   styleUrls: ['./add-car.component.css']
 })
 export class AddCarComponent {
+  // Voiture model
   voiture: any = {
     carName: '',
     brand: '',
     category: '',
     transmission: 'Automatic',
-    carburant: 'Gasoline',
+    matricule: '', // Matricule field
+    carburant: 'Gasoline', // Default dropdown value
     price: 0,
     agence: '',
     local: '',
     description: '',
     pricePerDay: 0,
-    agenceLogo: '',
     images: [],
     disponible: true
   };
 
-  logoPreview: string | null = null;
-  logoFile: File | null = null;
+  // Handles selected image files
   imageFiles: File[] = [];
 
   constructor(
     private voitureService: VoitureService,
     private photoService: PhotoService,
-    private router: Router
+    private router: Router,
+
   ) {}
 
-  onLogoSelect(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.logoFile = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.logoPreview = reader.result as string;
-        this.voiture.agenceLogo = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
+  // Navigates to the specified path
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 
+  // Handles image selection from file input
   onImageSelect(event: any): void {
-    const files = event.target.files;
+    const files = event.target.files as FileList;
     if (files && files.length > 0) {
-      const remainingSlots = 5 - this.imageFiles.length;
-      const filesToAdd = Array.from(files).slice(0, remainingSlots) as File[];
+      const remainingSlots = 4 - this.imageFiles.length; // Limit to 4 images
+      const filesToAdd = Array.from(files).slice(0, remainingSlots); // Ensure no overflow
 
-      filesToAdd.forEach(file => {
+      filesToAdd.forEach((file: File) => {
         this.imageFiles.push(file);
       });
+
+      console.log(this.imageFiles); // Debugging selected files
     }
   }
 
+  // Generates a preview URL for the image
+  getImagePreview(file: File): string {
+    return URL.createObjectURL(file); // Convert File to object URL
+  }
+
+  // Submits the form data to the backend
   onSubmit(): void {
-    if (this.logoFile && this.imageFiles.length > 0) {
-      // Prepare form data
-      const formData = new FormData();
-      formData.append('carName', this.voiture.carName);
-      formData.append('brand', this.voiture.brand);
-      formData.append('category', this.voiture.category);
-      formData.append('transmission', this.voiture.transmission);
-      formData.append('fuelType', this.voiture.carburant);
-      formData.append('price', this.voiture.price.toString());
-      formData.append('agency', this.voiture.agence);
-      formData.append('location', this.voiture.local);
-      formData.append('pricePerDay', this.voiture.pricePerDay.toString());
-      formData.append('description', this.voiture.description);
-      formData.append('agencyLogo', this.logoFile);
+    if (!this.voiture.carName || !this.voiture.brand || !this.voiture.matricule) {
+      alert('Please fill out all required fields (Car Name, Brand, Matricule).');
+      return;
+    }
 
-      // Add image files to FormData
-      this.imageFiles.forEach(image => {
-        formData.append('carImages', image);
-      });
+    this.voitureService.addVoiture(this.voiture).subscribe({
+      next: (response: any) => {
+        console.log('Car successfully added:', response);
 
-      // Add car to the backend
-      this.voitureService.addVoiture(formData).subscribe({
-        next: (response: any) => {
-          // Upload images after car is added
-          this.photoService.uploadPhotos(response.id, this.logoFile, this.imageFiles).subscribe({
+        // Check if response contains `id` field
+        if (response.id) {
+          // Upload images using the voiture ID
+          this.photoService.uploadPhotos(response.id, null, this.imageFiles).subscribe({
             next: () => {
-              this.router.navigate(['/admin/cars']);
+              console.log('Photos successfully uploaded.');
+              this.router.navigate(['/admin/carlista']);
             },
             error: (err) => {
               console.error('Error uploading photos:', err);
+              alert('An error occurred while uploading photos. Please try again.');
             }
           });
-        },
-        error: (err) => {
-          console.error('Error adding car:', err);
+        } else {
+          console.error('Backend did not return an ID for the voiture:', response);
+          alert('An error occurred: Voiture ID is missing in the backend response.');
         }
-      });
-    } else {
-      alert('Please upload a logo and at least one image.');
-    }
+      },
+      error: (err) => {
+        console.error('Error adding car:', err);
+        alert('An error occurred while adding the car. Please try again.');
+      }
+    });
   }
 
 
-
-
+  // Removes an image from the selected list
   removeImage(index: number): void {
     this.imageFiles.splice(index, 1);
+    console.log('Image removed:', this.imageFiles); // Debug after removal
   }
 }

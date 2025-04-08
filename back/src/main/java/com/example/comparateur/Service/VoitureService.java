@@ -45,14 +45,26 @@ import com.example.comparateur.Repository.PhotoRepository;
         //  Create a new voiture
         public ResponseEntity<Object> createVoiture(Voiture voiture) {
             try {
+                // Vérifier si le matricule est déjà utilisé
+                boolean matriculeExists = voitureRepository.existsByMatricule(voiture.getMatricule());
+                if (matriculeExists) {
+                    return ResponseEntity.status(400).body(new ApiResponse<>(false, "Matricule already exists"));
+                }
+        
+                // Initialiser les champs de date
                 voiture.setCreatedAt(LocalDateTime.now());
                 voiture.setUpdatedAt(LocalDateTime.now());
+        
+                // Enregistrer la voiture
                 Voiture savedVoiture = voitureRepository.save(voiture);
                 return ResponseEntity.ok(new ApiResponse<>(true, "Successfully created", savedVoiture));
             } catch (Exception e) {
                 return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to create. Try again"));
             }
         }
+        
+
+        
 
 
         /*    public ResponseEntity<Object> getOneVoiture(Long id) {
@@ -186,7 +198,7 @@ import com.example.comparateur.Repository.PhotoRepository;
 
 
         public ResponseEntity<Object> getVoituresByAgenceWithDetails(String agenceName) {
-            // ✅ Fetch voitures by agence NAME
+            //  Fetch voitures by agence NAME
             List<Voiture> voitures = voitureRepository.findByAgence(agenceName);
         
             if (voitures.isEmpty()) {
@@ -194,7 +206,7 @@ import com.example.comparateur.Repository.PhotoRepository;
                     .body(new ApiResponse<>(false, "No voitures found for agence: " + agenceName));
             }
         
-            // ✅ Same response building as getAllVoituresWithDetails()
+            //  Same response building as getAllVoituresWithDetails()
             List<VoitureResponse> voitureResponses = voitures.stream().map(voiture -> {
                 List<Review> reviews = reviewRepository.findAllByVoitureId(voiture.getId());
                 reviews = (reviews != null) ? reviews : Collections.emptyList();
@@ -234,17 +246,17 @@ import com.example.comparateur.Repository.PhotoRepository;
             return ResponseEntity.ok(new ApiResponse<>(true, "Reviews retrieved successfully", reviews));
         }
     
-        // ✅ Get all photos for a voiture
+        //  Get all photos for a voiture
         public List<PhotoResponseDTO> getPhotosByVoitureId(Long voitureId) {
-            List<Photo> photosList = photoRepository.findAllByVoitureId(voitureId); // ✅ Correct method name
+            List<Photo> photosList = photoRepository.findAllByVoitureId(voitureId);
         
-            // ✅ Handle null values safely
+            //  Handle null values safely
             if (photosList == null || photosList.isEmpty()) {
                 return Collections.emptyList();
             }
         
             return photosList.stream()
-                    .map(PhotoResponseDTO::new) // ✅ Corrected: Pass a `Photo` object
+                    .map(PhotoResponseDTO::new)
                     .collect(Collectors.toList());
         }
         

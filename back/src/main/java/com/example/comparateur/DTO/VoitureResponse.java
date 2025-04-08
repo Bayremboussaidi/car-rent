@@ -25,9 +25,10 @@ public class VoitureResponse {
     private boolean featured;
     private String agence;
     private String local;
-    private String agenceLogo;
+
     private String description;
     private boolean disponible;
+    private String matricule; 
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
@@ -50,12 +51,14 @@ public class VoitureResponse {
         this.featured = voiture.isFeatured();
         this.agence = voiture.getAgence();
         this.local = voiture.getLocal();
-        this.agenceLogo = voiture.getAgenceLogo();
         this.description = voiture.getDescription();
         this.disponible = voiture.isDisponible();
         this.createdAt = voiture.getCreatedAt() != null ? voiture.getCreatedAt().toString() : null;
         this.updatedAt = voiture.getUpdatedAt() != null ? voiture.getUpdatedAt().toString() : null;
         this.images = images != null ? images : List.of();
         this.reviews = reviews != null ? reviews : List.of();
+        
+
+        this.matricule = voiture.getMatricule();
     }
 }

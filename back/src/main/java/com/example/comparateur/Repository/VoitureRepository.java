@@ -32,7 +32,8 @@ public interface VoitureRepository extends JpaRepository<Voiture, Long> {
         List<Voiture> findByLocalContainingIgnoreCase(String local);
 
 
-
+ 
+        boolean existsByMatricule(String matricule);
 
 
         //filter by agence 

@@ -58,8 +58,7 @@ public class Voiture {
     @Column(nullable = false)
     private String local;
 
-    @Column(nullable = false)
-    private String agenceLogo;
+
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
@@ -75,6 +74,9 @@ public class Voiture {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(nullable = false, unique = true)
+    private String matricule; // Ajout de l'attribut matricule
 
     @PrePersist
     protected void onCreate() {

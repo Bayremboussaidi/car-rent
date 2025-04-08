@@ -2,7 +2,6 @@ import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } f
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import {  ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router'; // ✅ Fixes `[routerLink]` issues
 
@@ -84,7 +83,7 @@ import { CommonModule } from '@angular/common';
 import { KeycloakService } from './services/keycloak/keycloak.service';
 import { HttpTokenInterceptor } from './services/interceptor/http-token';
 
-
+import { FormsModule } from '@angular/forms'
 
 
 //import { EmailDialogComponent } from './components/dialog/email-dialog/email-dialog.component';
@@ -115,6 +114,7 @@ import { ChatComponent } from './CHAT/chat/chat.component'
 
 
 import { InputNumberModule } from 'primeng/inputnumber';
+import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 
 
 // ✅ Keycloak Initialization Function
@@ -129,6 +129,7 @@ export function kcFactory(kcService: KeycloakService) {
     HeaderComponent,
     HomeComponent,
     AboutSectionComponent,
+    AddCarComponent,
     BecomeDriverSectionComponent,
     AboutComponent,
     BlogComponent,
@@ -182,9 +183,10 @@ export function kcFactory(kcService: KeycloakService) {
     InputNumberModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     FontAwesomeModule,
     SlickCarouselModule,
-    FormsModule,
+
     ReactiveFormsModule,
     MessagesModule,
     BrowserAnimationsModule,

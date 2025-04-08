@@ -1,3 +1,83 @@
+/*images upload */
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px; /* Increased from 15px to 20px */
+  margin-top: 15px;
+}
+
+.image-upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  width: 160px; /* Fixed width */
+  height: 160px; /* Fixed height to match width for square */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto; /* Center the boxes in their grid cells */
+}
+
+.upload-placeholder {
+  color: #888;
+  font-size: 14px;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: rgba(255,0,0,0.8);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Container styling */
 .form-container {
   max-width: 600px;
@@ -92,6 +172,41 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+
+
+.image-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-preview img {
+  max-width: 100px;  /* Controls thumbnail size */
+  max-height: 100px; /* Controls thumbnail size */
+  margin-bottom: 5px;
+}
+
+.image-preview button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.image-preview button:hover {
+  background: darkred;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .form-container {
@@ -184,9 +299,15 @@
 /* ====================================
   🌟 Navigation Menu
 ==================================== */
+/* Navigation Menu */
+/* Navigation Menu */
+
+/* Navigation Menu */
 .navmenu {
   display: flex;
   align-items: center;
+  justify-content: center; /* Centers the navigation buttons */
+  margin-top: 20px; /* Adds space above the nav menu */
 }
 
 .navmenu ul {
@@ -194,31 +315,52 @@
   padding: 0;
   display: flex;
   list-style: none;
-  align-items: center;
+  gap: 20px; /* Adds spacing between buttons */
 }
 
 .navmenu li {
   position: relative;
 }
 
-.navmenu a {
+/* Button Styling */
+.navmenu button {
+  background: none;
+  border: none;
   color: var(--nav-color);
-  padding: 18px 15px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 12px 20px; /* Increased padding for better spacing */
+  font-size: 16px;
+  font-weight: 600; /* Slightly bolder font for emphasis */
   text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  transition: 0.3s ease-in-out;
-  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+  position: relative; /* Needed for the hover underline */
+  border-radius: 8px; /* Adds a soft button effect */
 }
 
-.navmenu a:hover,
-.navmenu .active {
-  color: var(--nav-hover-color);
+.navmenu button:hover {
+  color: var(--nav-hover-color); /* Changes text color on hover */
+  background: rgba(0, 123, 255, 0.1); /* Adds light background highlight */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hover shadow effect */
 }
 
-/* 🌟 Dropdown Menu */
+/* Underline Animation */
+.navmenu button::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* Adds some space below the button */
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--nav-hover-color);
+  transition: width 0.4s ease-in-out;
+}
+
+.navmenu button:hover::after {
+  width: 100%; /* Expands underline to full width */
+}
+
+/* Dropdown Menu */
 .navmenu .dropdown ul {
   position: absolute;
   left: 0;
@@ -250,13 +392,14 @@
   color: var(--nav-dropdown-color);
   text-transform: none;
   display: block;
+  transition: color 0.3s ease-in-out;
 }
 
 .navmenu .dropdown ul a:hover {
   color: var(--nav-dropdown-hover-color);
 }
 
-/* 🌟 Deep Dropdown */
+/* Deep Dropdown Styling */
 .navmenu .dropdown .dropdown ul {
   left: 100%;
   top: 0;
@@ -271,6 +414,8 @@
   visibility: visible;
   transform: translateX(0);
 }
+
+
 
 
 
