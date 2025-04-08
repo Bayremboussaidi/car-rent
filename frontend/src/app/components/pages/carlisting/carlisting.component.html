@@ -52,11 +52,12 @@
     </div>
 
     <!--  Pagination Section (Now Works with API Pagination) -->
-    <div class="pagination text-center mt-4">
-      <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-pagination">Previous</button>
-      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-pagination">Next</button>
-    </div>
+<div class="pagination text-center mt-4">
+  <button (click)="previousPage()" [disabled]="currentPage === 1" class="btn btn-pagination">Previous</button>
+  <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-pagination">Next</button>
+</div>
+
   </div>
 </section>
 
@@ -89,3 +90,6 @@
     <button class="btn btn-secondary" (click)="closeSignInPrompt()">Cancel</button>
   </div>
 </div>
+
+
+

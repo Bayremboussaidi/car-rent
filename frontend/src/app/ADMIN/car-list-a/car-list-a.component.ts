@@ -73,7 +73,7 @@ export class CarListAComponent implements OnInit {
       this.voitureService.deleteVoiture(car.id).subscribe({
         next: (response) => {
           console.log('Car deleted successfully', response);
-          this.cars = this.cars.filter(v => v.id !== car.id);
+          this.fetchAllCars();
         },
         error: (err) => {
           console.error('Error deleting car', err);
@@ -94,9 +94,13 @@ export class CarListAComponent implements OnInit {
 
 
   calculateAverageRating(reviews: { rating: number }[]): number {
+    if (!reviews || reviews.length === 0) {
+      return 0; // Return 0 if there are no reviews
+    }
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return Math.round(totalRating / reviews.length);
+    return Math.round(totalRating / reviews.length); // Calculate average rating
   }
+
 
 
 
