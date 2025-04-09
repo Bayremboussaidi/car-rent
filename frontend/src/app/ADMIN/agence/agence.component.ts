@@ -4,13 +4,12 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AgenceService } from '../../services/agence/agence.service';
 
-// Move these interfaces to a shared file (e.g., models/agence.model.ts) if used elsewhere
 interface Agence {
   agencyName: string;
   email: string;
   password: string;
   phoneNumber: string;
-  city: string; // Changed from optional to required
+  city: string;
   photo?: File;
 }
 
@@ -31,6 +30,10 @@ export class AgenceComponent {
   errorMessage = '';
   selectedFile: File | null = null;
   previewImage: string | ArrayBuffer | null = null;
+  imageError: string = ''; // Error message for invalid image
+
+  // Maximum allowed file size (2MB in bytes)
+  maxFileSize = 2 * 1024 * 1024;
 
   constructor(
     private fb: FormBuilder,
@@ -42,13 +45,25 @@ export class AgenceComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s()-]{7,}$/)]],
-      city: ['', Validators.required] // Made city required to match interface
+      city: ['', Validators.required]
     });
   }
 
+  // Handle file selection and validate size
   onFileChange(event: any) {
     const file = event.target.files[0];
+
+    // Reset error message
+    this.imageError = '';
+
     if (file) {
+      // Check file size
+      if (file.size > this.maxFileSize) {
+        this.imageError = 'File size exceeds the maximum allowed size of 2MB.';
+        return;
+      }
+
+      // If file is valid, proceed with preview
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
@@ -58,12 +73,14 @@ export class AgenceComponent {
     }
   }
 
+  // Remove image from preview
   removeImage() {
     this.previewImage = null;
     this.selectedFile = null;
+    this.imageError = '';  // Clear error message
     const fileInput = document.getElementById('photo') as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = '';
+      fileInput.value = ''; // Reset file input
     }
   }
 
@@ -96,7 +113,7 @@ export class AgenceComponent {
         })
       )
       .subscribe({
-        next: (response: any) => { // Changed to any to avoid type issues
+        next: (response: any) => {
           this.isLoading = false;
           if (response?.success) {
             this.router.navigate(['/login'], {

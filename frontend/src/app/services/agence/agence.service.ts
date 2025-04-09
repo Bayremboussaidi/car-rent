@@ -10,8 +10,8 @@ export interface Agence {
   email: string;
   phoneNumber: string;
   city: string;
-  photo?: string;
-  password?: string;
+  photo: string;
+  password: string;
 }
 
 export interface AgenceResponse {

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { VoitureService } from '../../services/voiture.service';
 import { Router } from '@angular/router';
 import { ApiResponseAgence , Voiture} from '../../models/ApiResponseAgence';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-list-agence',
@@ -18,10 +20,18 @@ export class ListAgenceComponent {
 
   constructor(
     private voitureService: VoitureService,
-    private router: Router
+    private router: Router,private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    // Access the query params here
+    this.route.queryParams.subscribe(params => {
+      this.agencyName = params['agencyName'];
+      console.log('Agency Name:', this.agencyName);
+    });
+
+
+
     this.loadAgencyVoitures(this.agencyName);
   }
 

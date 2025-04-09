@@ -33,21 +33,32 @@
           <li><a routerLink="/admin/chat">Contact</a></li>
 
           <!-- Dropdown Menu -->
-          <li class="dropdown">
-            <a href="#" (click)="isDropdownVisible = !isDropdownVisible" class="active">Agencies</a>
+          <!--li class="dropdown">
+            <a href="#" (click)="toggleDropdown($event)" class="active">Agencies</a>
 
-            <!-- Dropdown content shown when isDropdownVisible is true -->
+
             <div *ngIf="isDropdownVisible" class="dropdown-content" (click)="$event.stopPropagation()">
               <ul>
-                <li><a href="/admin/add-agence">Agence 1</a></li>
-                <li><a href="/admin/show-agence">Agence 2</a></li>
+                <li><a routerLink="/admin/add-agence" (click)="closeDropdown($event)">Agence 1</a></li>
+                <li><a routerLink="/admin/show-agence" (click)="closeDropdown($event)">Agence 2</a></li>
               </ul>
             </div>
-          </li>
+          </li-->
+
+          <div class="dropdown" (mouseleave)="isDropdownVisible = false">
+            <span (mouseover)="toggleDropdown()">Agencies</span>
+            <div class="dropdown-content" *ngIf="isDropdownVisible">
+              <li><a routerLink="/admin/add-agence" (click)="closeDropdown($event)">Add Agence</a></li>
+              <li><a routerLink="/admin/show-agence" (click)="closeDropdown($event)">Ag List</a></li>
+            </div>
+          </div>
+
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
   </div>
+
+</div>
 
 </header>

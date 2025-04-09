@@ -38,6 +38,7 @@ import { ChatComponent } from './CHAT/chat/chat.component';
 import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 import { AgenceComponent } from './ADMIN/agence/agence.component';
 import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
+import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -81,7 +82,9 @@ const routes: Routes = [
       { path: 'add-car', component: AddCarComponent },
       { path: 'add-agence', component: AgenceComponent },
 
-      { path: 'show-agence', component: ShowAgenceComponent }
+      { path: 'show-agence', component: ShowAgenceComponent },
+      { path: 'show-agence/:name', component: AgenceDetailsComponent }
+
 
     ]
   },

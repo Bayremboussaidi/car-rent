@@ -73,7 +73,7 @@ export class LoginComponent {
   private handleAgencyLogin() {
     this.authService.logout();
     this.agenceService.login(this.credentials).subscribe({
-      next: (response) => {
+      next: (response:any) => {
         // Store agency auth data
         const agencyData = {
           token: response.token,
@@ -90,7 +90,7 @@ export class LoginComponent {
 
         this.router.navigate(['/agence']);
       },
-      error: (err) => {
+      error: (err:any) => {
         this.errorMessage = err?.message || 'Email ou mot de passe incorrect pour agence';
       }
     });

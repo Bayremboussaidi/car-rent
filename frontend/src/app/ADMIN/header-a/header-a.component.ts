@@ -8,9 +8,17 @@ import { Component, HostListener } from '@angular/core';
 export class HeaderAComponent {
   isDropdownVisible: boolean =false;
 
-  toggleDropdown() {
+  /*toggleDropdown(event: MouseEvent): void {
+    event.preventDefault(); // Correct, no deprecation warning
+    this.isDropdownVisible = !this.isDropdownVisible;
+  }*/
+
+
+
+  toggleDropdown(): void {
     this.isDropdownVisible = !this.isDropdownVisible;
   }
+
 
   // Close dropdown when clicking outside of it
   @HostListener('document:click', ['$event'])
