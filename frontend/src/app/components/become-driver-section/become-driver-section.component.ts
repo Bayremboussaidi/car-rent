@@ -1,5 +1,6 @@
 
 
+import { Router } from '@angular/router';
 
 
 import { Component, OnInit, HostListener } from '@angular/core';
@@ -10,23 +11,24 @@ import { Component, OnInit, HostListener } from '@angular/core';
   styleUrl: './become-driver-section.component.css'
 })
 export class BecomeDriverSectionComponent implements OnInit {
+  constructor(private router: Router) {}
   backgroundImage = '../../../assets/all-images/drive.jpg';
 
   testimonials = [
     {
-      text: "I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.",
-      author: "Jack Woods",
-      company: "SomeCompany INC, CEO"
+      text: "The road stretches far beneath the moon's soft glow,\nAs night whispers secrets only travelers know.\nThe hum of the engine, a comforting sound,\nWhile the world fades away, no distractions are found.",
+      author: "Night Rider",
+      company: "A Lover of the Open Road"
     },
     {
-      text: "I should be incapable of drawing a single stroke at the present moment; and yet I feel that I never was a greater artist than now.",
-      author: "Jim Stone",
-      company: "SomeCompany INC, CEO"
+      text: "Under the starlit sky, my hands grip the wheel,\nA sense of freedom only night drives can reveal.\nThe city sleeps, but I roam with pride,\nChasing the horizon with nowhere to hide.",
+      author: "Wandering Soul",
+      company: "The Night Adventurer"
     },
     {
-      text: "I am so happy, my dear friend, so absorbed in the exquisite sense of mere tranquil existence, that I neglect my talents.",
-      author: "Adele Snow",
-      company: "SomeCompany INC, CEO"
+      text: "The headlights cut through the darkened night,\nGuiding my journey, a peaceful flight.\nIn the stillness of night, I find my pace,\nWith every mile, I embrace the space.",
+      author: "Lone Traveler",
+      company: "Explorer of the Night"
     }
   ];
 
@@ -75,6 +77,12 @@ export class BecomeDriverSectionComponent implements OnInit {
     } else {
       this.cursorStyle = "e-resize"; // Change to `>` when moving right
     }
+  }
+
+
+  navigateToCars(){
+    this.router.navigate(['/cars']);
+
   }
 
   /* Handle Click to Change Slide */
