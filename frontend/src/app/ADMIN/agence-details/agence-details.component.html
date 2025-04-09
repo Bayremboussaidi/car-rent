@@ -1,1 +1,58 @@
-<p>agence-details works!</p>
+<app-header-a></app-header-a>
+
+
+<div class="card" *ngIf="agency">
+  <div class="top-buttons">
+    <button class="update-button" (click)="updateAgency()" [disabled]="!hasChanges">
+      <i class="pi pi-pencil"></i> Update Agency
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="p-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Agency Name</td>
+          <td>
+            <input type="text" [(ngModel)]="agency.agencyName" (ngModelChange)="onChange()" />
+          </td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td>
+            <input type="email" [(ngModel)]="agency.email" (ngModelChange)="onChange()" />
+          </td>
+        </tr>
+        <tr>
+          <td>Phone Number</td>
+          <td>
+            <input type="text" [(ngModel)]="agency.phoneNumber" (ngModelChange)="onChange()" />
+          </td>
+        </tr>
+        <tr>
+          <td>City</td>
+          <td>
+            <input type="text" [(ngModel)]="agency.city" (ngModelChange)="onChange()" />
+          </td>
+        </tr>
+        <tr>
+          <td>Created At</td>
+          <td>{{ agency.createdAt | date: 'mediumDate' }}</td>
+        </tr>
+        <tr>
+          <td>Updated At</td>
+          <td>{{ agency.updatedAt | date: 'mediumDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p *ngIf="!agency && !loading">No agency found.</p>
+<p *ngIf="loading">Loading agency details...</p>

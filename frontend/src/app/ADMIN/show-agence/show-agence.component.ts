@@ -67,7 +67,8 @@ export class ShowAgenceComponent implements OnInit {
 
 
   editAgency(agency: AgenceResponse): void {
-    console.log(`Navigating to edit details for ${agency.agencyName}`);
-    this.router.navigate(['/admin/show-agence', agency.agencyName]);
+    console.log(`Navigating to edit details for ${agency.id}`);
+    this.router.navigate(['/admin/show-agence', agency.id]);
+
   }
 }

@@ -83,7 +83,8 @@ const routes: Routes = [
       { path: 'add-agence', component: AgenceComponent },
 
       { path: 'show-agence', component: ShowAgenceComponent },
-      { path: 'show-agence/:name', component: AgenceDetailsComponent }
+      { path: 'show-agence/:id', component: AgenceDetailsComponent }
+
 
 
     ]
