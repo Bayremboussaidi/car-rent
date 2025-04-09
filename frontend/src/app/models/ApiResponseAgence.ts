@@ -8,6 +8,18 @@ export interface ApiResponseAgence {
 
 
 
+
+export interface AgenceResponse {
+  id: number;
+  agencyName: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  photo: string;  // This could be a URL or base64 string
+}
+
+
+
 export interface Voiture {
   id: number;
   carName: string;

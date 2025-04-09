@@ -1,6 +1,7 @@
 package com.example.comparateur.Controller;
 
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +82,17 @@ public class AgenceController {
             @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(agenceService.getAllAgences(pageable));
     }
+
+
+
+
+    @GetMapping("/all")
+public ResponseEntity<List<AgenceResponseDTO>> getAllAgences() {
+    List<AgenceResponseDTO> agences = agenceService.getAllAgenceDetails();
+    return ResponseEntity.ok(agences);
+}
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<AgenceResponseDTO> getAgenceById(@PathVariable Long id) {

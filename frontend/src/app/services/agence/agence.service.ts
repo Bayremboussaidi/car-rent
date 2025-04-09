@@ -84,18 +84,12 @@ export class AgenceService {
     );
   }
 
-  getAllAgences(page: number = 0, size: number = 10): Observable<PaginatedResponse<AgenceResponse>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    return this.http.get<PaginatedResponse<AgenceResponse>>(this.apiUrl, {
-      headers: this.getAuthHeaders(),
-      params
-    }).pipe(
-      catchError(error => throwError(() => this.handleError(error)))
-    );
+  getAllAgences(): Observable<AgenceResponse[]> {
+    return this.http.get<AgenceResponse[]>(`${this.apiUrl}/all`);
   }
+
+
+
 
   getAgenceById(id: number): Observable<AgenceResponse> {
     return this.http.get<AgenceResponse>(`${this.apiUrl}/${id}`, {

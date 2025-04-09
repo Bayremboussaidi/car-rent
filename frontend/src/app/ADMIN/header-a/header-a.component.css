@@ -241,3 +241,97 @@
 .header .cta-btn:hover {
   background: rgba(0, 123, 255, 0.85);
 }
+
+
+
+
+
+
+
+/* Style the dropdown container */
+.dropdown {
+  position: relative; /* Position relative to the button */
+  display: inline-block;
+}
+
+/* Style the dropdown content */
+.dropdown-content {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 100%; /* Position directly below the button */
+  left: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+/* Show the dropdown content when it's toggled */
+.dropdown-content p {
+  margin: 0;
+}
+
+/* Optional: Show the dropdown content on button click */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Optional: If you want the dropdown to appear only when toggled by a click */
+.dropdown-content {
+  display: block;
+}
+
+
+
+
+/* Style the dropdown container */
+.dropdown {
+  position: relative; /* Position relative to the button */
+  display: inline-block;
+}
+
+/* Style the dropdown content */
+.dropdown-content {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 100%; /* Position directly below the button */
+  left: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+/* Style the list in the dropdown */
+.dropdown-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style the individual list items in the dropdown */
+.dropdown-content li {
+  padding: 8px;
+}
+
+/* Style the links inside the dropdown */
+.dropdown-content a {
+  text-decoration: none; /* Remove the underline */
+  color: black; /* Set text color */
+  display: block; /* Make the link fill the entire list item */
+  padding: 5px;
+}
+
+/* Add a hover effect to the links */
+.dropdown-content a:hover {
+  background-color: #ddd; /* Change background color on hover */
+  color: #333; /* Optional: Change text color on hover */
+}
+
+/* Show the dropdown content when it's toggled */
+.dropdown:hover .dropdown-content,
+.dropdown-content {
+  display: block; /* Show the dropdown when toggled */
+}

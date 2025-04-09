@@ -2,7 +2,9 @@ package com.example.comparateur.Service;
 
 
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,4 +152,28 @@ public class AgenceService {
             dto.getPhoto()
         );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//get agences with details
+    public List<AgenceResponseDTO> getAllAgenceDetails() {
+    List<Agence> agences = agenceRepository.findAll(); // Fetch all agencies
+    // Map each agence entity to AgenceResponseDTO
+    return agences.stream()
+                  .map(this::mapToDTO)
+                  .collect(Collectors.toList());
+}
 }
