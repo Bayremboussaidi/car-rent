@@ -12,6 +12,7 @@ public class AgenceRequestDTO {
     private String email;
     
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+
     private String password;
     
     private String phoneNumber;
@@ -32,5 +33,5 @@ public class AgenceRequestDTO {
     public void setPassword(String password) { this.password = password; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setCity(String city) { this.city = city; }
-    public void setPhoto(String photo) { this.photo = photo; }
+    public void setPhoto(String base64Photo) { this.photo = base64Photo; }
 }

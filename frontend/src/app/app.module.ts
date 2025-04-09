@@ -115,6 +115,7 @@ import { ChatComponent } from './CHAT/chat/chat.component'
 
 import { InputNumberModule } from 'primeng/inputnumber';
 import { AddCarComponent } from './ADMIN/add-car/add-car.component';
+import { AgenceComponent } from './ADMIN/agence/agence.component';
 
 
 // ✅ Keycloak Initialization Function
@@ -176,6 +177,7 @@ export function kcFactory(kcService: KeycloakService) {
     ListAgenceComponent,
     CarDetailsAgenceComponent,
     ChatComponent,
+    AgenceComponent,
   ],
   imports: [
     BrowserModule,

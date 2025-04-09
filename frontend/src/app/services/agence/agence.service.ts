@@ -78,10 +78,8 @@ export class AgenceService {
   }
 
   // CRUD Operations
-  createAgence(agenceData: Agence): Observable<AgenceResponse> {
-    return this.http.post<AgenceResponse>(this.apiUrl, agenceData, {
-      headers: this.getAuthHeaders()
-    }).pipe(
+  createAgence(agenceData: FormData): Observable<AgenceResponse> {
+    return this.http.post<AgenceResponse>(this.apiUrl, agenceData).pipe(
       catchError(error => throwError(() => this.handleError(error)))
     );
   }
@@ -145,11 +143,10 @@ export class AgenceService {
     });
   }
 
-  private handleError(error: any): string {
+  private handleError(error: any): void {
     if (error.status === 401) {
       this.logout();
     }
-    return error.error?.message || error.message || 'An unexpected error occurred';
   }
 
 
