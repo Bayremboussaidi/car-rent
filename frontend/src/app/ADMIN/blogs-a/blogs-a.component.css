@@ -6,6 +6,8 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   margin-top: 28px;
 }
 
@@ -19,7 +21,7 @@
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 8px 8px 0 0;
 }
 
 .blog-card:hover .blog-image {
@@ -28,6 +30,10 @@
 
 /* Blog details */
 .blog-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 20px;
 }
 
@@ -60,14 +66,16 @@
   font-size: 1rem;
   color: #4a5568;
   margin-bottom: 15px;
-  height: 60px; /* Optional: limits the visible text height */
-  overflow: hidden; /* Hide overflowing text */
+  height: 60px;
+  overflow: hidden;
 }
 
 /* Action buttons */
 .action-buttons {
   display: flex;
   justify-content: space-between;
+  margin-top: auto;
+  gap: 10px;
 }
 
 .btn {
@@ -79,6 +87,8 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
   border: none;
+  flex: 1;
+  text-align: center;
 }
 
 .btn-view {
