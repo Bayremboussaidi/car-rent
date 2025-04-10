@@ -22,7 +22,7 @@ import com.example.comparateur.Repository.blog.CommentRepository;
 
 @RestController
 @RequestMapping("/api/blogs")
-@CrossOrigin(origins = "*") // Adjust for security
+@CrossOrigin(origins = "http://localhost:4200")
 public class BlogController {
 
     @Autowired
@@ -76,11 +76,13 @@ public class BlogController {
             comment.setFullName(request.getFullName());
             comment.setEmail(request.getEmail());
             comment.setContent(request.getContent());
-            comment.setBlog(blog);
-            commentRepository.save(comment);
-            return ResponseEntity.ok(comment);
+            comment.setBlog(blog); // Associate the comment with the blog
+    
+            commentRepository.save(comment); // Save the comment to the database
+            return ResponseEntity.ok(comment); // Return the saved comment
         }).orElse(ResponseEntity.notFound().build());
     }
+    
 
     // Get Blog with Comments
     @GetMapping("/{id}/with-comments")

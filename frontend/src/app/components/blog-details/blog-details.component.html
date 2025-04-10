@@ -20,6 +20,17 @@
       </h6>
     </div>
 
+
+
+    <div class="comments-section mt-5">
+      <h4>Commentaires</h4>
+      <div *ngFor="let comment of blog.comments" class="comment-box mb-4">
+        <p><strong>{{ comment.fullName || 'Anonyme' }}</strong> (<i>{{ comment.email }}</i>)</p>
+        <p>{{ comment.content || 'Aucun contenu.' }}</p>
+      </div>
+    </div>
+
+
     <!-- Comment Form -->
     <div class="leave__comment-form mt-5">
       <h4>Laisser une commentaire</h4>

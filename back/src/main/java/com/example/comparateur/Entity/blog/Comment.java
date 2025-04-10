@@ -1,6 +1,8 @@
 package com.example.comparateur.Entity.blog;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +23,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "blog_id")
+    @JsonBackReference // Prevent the infinite loop by ignoring the blog when serializing
     private Blog blog;
 
     // Getters and Setters

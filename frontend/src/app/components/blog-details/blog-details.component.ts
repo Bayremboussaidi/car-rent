@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BlogService } from '../../services/blog.service';
+import { BlogService } from '../../services/blog/blog.service';
 import { UserloginService } from '../../services/user_login/userlogin.service';
 
 @Component({
@@ -11,7 +11,8 @@ import { UserloginService } from '../../services/user_login/userlogin.service';
 export class BlogDetailsComponent implements OnInit {
   blogId: number | null = null;
   blog: any;
-  otherBlogs: any[] = [];
+  allBlogs: any[] = []; // To hold all the blogs
+  otherBlogs: any[] = []; // To hold blogs excluding the selected one
 
   review: {
     username: string;
@@ -32,17 +33,28 @@ export class BlogDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
 
-    this.route.paramMap.subscribe(params => {
-      console.log("cv1");
-      const id = params.get('id');
-      if (id) {
-        console.log("cv");
-        this.blogId = +id; // Convert the id to a number
-        this.blog = this.blogService.getBlogById(this.blogId);
-        this.otherBlogs = this.blogService.getOtherBlogs(this.blogId);
-      }
+    // Fetch all blogs and filter the selected one
+    this.blogService.getAllBlogs().subscribe((data) => {
+      this.allBlogs = data;
+
+      // Subscribe to the route params to get the blogId dynamically
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.blogId = +id; // Convert the id to a number
+
+          // Fetch the blog by ID dynamically from the backend
+          this.blogService.getBlogById(this.blogId).subscribe((data) => {
+            this.blog = data; // Assign the response to blog
+          });
+
+          // Filter out the selected blog from all blogs to display in the sidebar
+          this.otherBlogs = this.allBlogs.filter(blog => blog.id !== this.blogId);
+        }
+      });
     });
   }
+
 
   private loadUserData(): void {
     const currentUser = this.userLoginService.getCurrentUser();
@@ -56,14 +68,24 @@ export class BlogDetailsComponent implements OnInit {
     if (!this.review.commentText) return;
 
     const commentPayload = {
-      username: this.review.username,
+      fullName: this.review.username,
       email: this.review.email,
-      commentText: this.review.commentText
+      content: this.review.commentText
     };
 
-    console.log('Comment submitted:', commentPayload);
-
-    // Optionally: send this to your backend here
-    this.review.commentText = '';
+    // Send the comment to the backend using the service
+    if (this.blogId) {
+      this.blogService.addCommentToBlog(this.blogId, commentPayload).subscribe(
+        (response) => {
+          console.log('Comment added successfully:', response);
+          this.blog.comments.push(response); // Add the new comment to the displayed list
+          this.review.commentText = ''; // Clear the comment input field
+        },
+        (error) => {
+          console.error('Error submitting comment:', error);
+        }
+      );
+    }
   }
+
 }
