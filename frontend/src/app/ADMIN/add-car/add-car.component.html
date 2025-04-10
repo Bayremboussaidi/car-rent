@@ -67,8 +67,16 @@
   <!-- Category -->
   <div class="input-group">
     <label>Category</label>
-    <input type="text" [(ngModel)]="voiture.category" class="form-input">
+    <select [(ngModel)]="voiture.category" class="form-input">
+      <option value="sedan">Sedan</option>
+      <option value="suvan">SUV</option>
+      <option value="Luxury Car">Luxury Car</option>
+      <option value="Hybrid">Hybrid</option>
+      <option value="truck">Truck</option>
+      <option value="electric">Electric</option>
+    </select>
   </div>
+
 
   <!-- Transmission -->
   <div class="input-group">
@@ -97,7 +105,9 @@
   <div class="input-group">
     <label for="agency">Agency</label>
     <select [(ngModel)]="voiture.agence" class="form-input" id="agency">
-      <option *ngFor="let agency of agencies" [value]="agency.name">{{ agency.name }}</option>
+      <option *ngFor="let agency of agencies" [value]="agency.agencyName">
+        {{ agency.agencyName }}  <!-- Use agencyName instead of name -->
+      </option>
     </select>
   </div>
 

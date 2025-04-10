@@ -370,7 +370,7 @@ td {
   position: sticky;
   top: 0;
   background: white; /* Ensure it stays visible */
-  z-index: 1000; /* Keep it above other elements */
+  z-index: 0; /* Keep it above other elements */
   padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
   display: flex;

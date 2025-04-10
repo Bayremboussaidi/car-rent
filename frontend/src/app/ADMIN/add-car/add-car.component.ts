@@ -25,7 +25,7 @@ export class AddCarComponent implements OnInit {
     carburant: 'Gasoline', // Default dropdown value
     price: 0, // Updated field to match the backend
     agence: '',
-    local: '',
+    local: 'lac2,tunis',
     description: '',
     images: [],
     disponible: true
@@ -139,20 +139,24 @@ export class AddCarComponent implements OnInit {
 
   fetchAgencies(): void {
     this.agenceService.getAllAgences().subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          this.agencies = response.data; // Populate agencies array
-          // Ensure "MyLoc" is in the list, or add it if it's not
-          if (!this.agencies.some(agency => agency.name === 'MyLoc')) {
-            this.agencies.unshift({ name: 'MyLoc' }); // Add "MyLoc" to the top
+      (response: any) => {  // Response is the array itself
+        if (response && Array.isArray(response)) {
+          this.agencies = response;  // Assign response directly (not response.data)
+
+          // Add "MyLoc" with correct property name
+          if (!this.agencies.some(agency => agency.agencyName === 'MyLoc')) {
+            this.agencies.unshift({
+              id: 0,  // Add a dummy ID if needed
+              agencyName: 'MyLoc',
+              email: '',
+              phoneNumber: '',
+              city: '',
+              photo: ''
+            });
           }
-        } else {
-          console.error('Failed to load agencies');
         }
       },
-      (error) => {
-        console.error('Error fetching agencies:', error);
-      }
+      (error) => { /* Handle error */ }
     );
   }
 }
