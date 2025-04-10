@@ -158,7 +158,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
 
 
     loadOtherCars(currentCarId: number): void {
-      this.voitureService.getVoitures(0).subscribe(
+      this.voitureService.getVoitures().subscribe(
         (response: any) => {
           if (response?.data) {
             const otherCars = response.data.filter((car: any) => car.id !== currentCarId);
@@ -188,6 +188,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
         (error) => console.error('Error fetching other cars:', error)
       );
     }
+
 
 
 

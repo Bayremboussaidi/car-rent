@@ -1,3 +1,45 @@
+/*drop down*/
+/* Ensure the dropdown has a visible style */
+.select-wrapper {
+  width: 100%;
+  display: inline-block;
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: white;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*images upload */
 .image-upload-grid {
   display: grid;

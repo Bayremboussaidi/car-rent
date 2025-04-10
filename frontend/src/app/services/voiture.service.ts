@@ -14,8 +14,8 @@ export class VoitureService {
 
   constructor(private http: HttpClient) {}
 
-  getVoitures(page: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}?page=${page}`);
+  getVoitures(): Observable<any> {
+    return this.http.get(`${this.baseUrl}`);  // Removed page parameter for all voitures
   }
 
   getVoitureCount(): Observable<any> {

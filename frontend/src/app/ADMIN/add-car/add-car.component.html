@@ -95,9 +95,12 @@
 
   <!-- Agency -->
   <div class="input-group">
-    <label>Agency</label>
-    <input type="text" [(ngModel)]="voiture.agence" class="form-input">
+    <label for="agency">Agency</label>
+    <select [(ngModel)]="voiture.agence" class="form-input" id="agency">
+      <option *ngFor="let agency of agencies" [value]="agency.name">{{ agency.name }}</option>
+    </select>
   </div>
+
 
   <div class="input-group">
     <label>Roof Type</label>

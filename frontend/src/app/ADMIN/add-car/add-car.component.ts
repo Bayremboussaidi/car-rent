@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { VoitureService } from '../../services/voiture.service';
 import { Router } from '@angular/router';
 import { PhotoService } from '../../services/photo.service';
 import { EmailRequest } from '../../models/emailRequest.model';
 import { EmailService } from '../../services/email.service';
+import { AgenceService } from '../../services/agence/agence.service';
 
 @Component({
   selector: 'app-add-car',
   templateUrl: './add-car.component.html',
   styleUrls: ['./add-car.component.css']
 })
-export class AddCarComponent {
+export class AddCarComponent implements OnInit {
+  agencies: any[] = [];
+
   // Voiture model
   voiture: any = {
     carName: '',
@@ -35,8 +38,12 @@ export class AddCarComponent {
     private voitureService: VoitureService,
     private photoService: PhotoService,
     private router: Router,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private agenceService: AgenceService
   ) {}
+  ngOnInit(): void {
+    this. fetchAgencies();
+  }
 
   // Navigates to the specified path
   navigateTo(path: string): void {
@@ -125,5 +132,27 @@ export class AddCarComponent {
   removeImage(index: number): void {
     this.imageFiles.splice(index, 1);
     console.log('Image removed:', this.imageFiles); // Debug after removal
+  }
+
+
+
+
+  fetchAgencies(): void {
+    this.agenceService.getAllAgences().subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.agencies = response.data; // Populate agencies array
+          // Ensure "MyLoc" is in the list, or add it if it's not
+          if (!this.agencies.some(agency => agency.name === 'MyLoc')) {
+            this.agencies.unshift({ name: 'MyLoc' }); // Add "MyLoc" to the top
+          }
+        } else {
+          console.error('Failed to load agencies');
+        }
+      },
+      (error) => {
+        console.error('Error fetching agencies:', error);
+      }
+    );
   }
 }

@@ -76,50 +76,49 @@ export class ListcarsComponent implements OnInit {
     this.showBookingModal = false;
   }
 
-  // Fetch all cars from the backend and initialize pagination
-  fetchAllVoitures(): void {
-    this.loading = true;
-    this.voitureService.getVoitures(0).subscribe(
-      (response: any) => {
-        console.log('API Response:', response);
-        if (response && response.data) {
-          this.allVoitures = response.data;
-          this.filteredVoitures = [...this.allVoitures];
-          this.totalVoitures = this.filteredVoitures.length;
-          this.totalPages = Math.ceil(this.totalVoitures / this.itemsPerPage); // Calculate total pages
 
-          // Fetch images for each car and set the default image if none exists
-          this.allVoitures.forEach((voiture: any) => {
-            this.voitureService.getCarImageById(voiture.id).subscribe(
-              (photos: any[]) => {
-                if (photos?.length > 0) {
-                  voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].base64Data}`;
-                } else {
-                  voiture.imgUrl = '/assets/default-car.jpg'; // Default image
-                }
-              },
-              (error) => {
-                console.error(`Error fetching images for voiture ${voiture.id}:`, error);
-                voiture.imgUrl = '/assets/default-car.jpg'; // Default on error
+// Fetch all cars from the backend
+fetchAllVoitures(): void {
+  this.loading = true;
+  this.voitureService.getVoitures().subscribe(
+    (response: any) => {
+      console.log('API Response:', response);
+      if (response && response.data) {
+        this.allVoitures = response.data;
+        this.filteredVoitures = [...this.allVoitures]; // Initialize filteredVoitures with all cars
+
+        // Fetch images for each car and set the default image if none exists
+        this.allVoitures.forEach((voiture: any) => {
+          this.voitureService.getCarImageById(voiture.id).subscribe(
+            (photos: any[]) => {
+              if (photos?.length > 0) {
+                voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].base64Data}`;
+              } else {
+                voiture.imgUrl = '/assets/default-car.jpg'; // Default image
               }
-            );
-          });
+            },
+            (error) => {
+              console.error(`Error fetching images for voiture ${voiture.id}:`, error);
+              voiture.imgUrl = '/assets/default-car.jpg'; // Default on error
+            }
+          );
+        });
 
-          this.updateDisplayedVoitures(); // Display cars for the current page
-        } else {
-          this.error = 'No data available.';
-          this.allVoitures = [];
-          this.filteredVoitures = [];
-        }
-        this.loading = false;
-      },
-      (error) => {
-        console.error('Error fetching cars:', error);
-        this.error = 'Failed to load cars. Please try again.';
-        this.loading = false;
+      } else {
+        this.error = 'No data available.';
+        this.allVoitures = [];
+        this.filteredVoitures = [];
       }
-    );
-  }
+      this.loading = false;
+    },
+    (error) => {
+      console.error('Error fetching cars:', error);
+      this.error = 'Failed to load cars. Please try again.';
+      this.loading = false;
+    }
+  );
+}
+
 
   // Update the displayed cars based on the current page
   updateDisplayedVoitures(): void {
