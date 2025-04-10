@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,13 +41,13 @@ public class UserSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(req -> req
-                .anyRequest().permitAll() // Allow all requests
+                .anyRequest().permitAll()  // Allow all requests temporarily
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless session (optional)
             )
-            .authenticationProvider(authenticationProvider());
-            //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Optional if you want JWT handling later
 
         return http.build();
     }
@@ -80,3 +81,4 @@ public class UserSecurityConfig {
         return source;
     }
 }
+

@@ -246,7 +246,7 @@
 
 /* Comment Form */
 .leave__comment-form {
-  background: var(--light-bg);
+  background: white;
   padding: 2rem;
   border-radius: 12px;
 }

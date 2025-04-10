@@ -7,25 +7,22 @@
     import java.util.stream.Collectors;
 
     import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.data.domain.Page;
-    import org.springframework.data.domain.PageRequest;
-    import org.springframework.data.domain.Pageable;
     import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Service;
     import org.springframework.web.multipart.MultipartFile;
     
     import com.example.comparateur.DTO.ApiResponse;
     import com.example.comparateur.DTO.PhotoResponseDTO;
-import com.example.comparateur.DTO.VoitureAdmin;
-import com.example.comparateur.DTO.VoitureResponse;
-import com.example.comparateur.Entity.Booking;
+    import com.example.comparateur.DTO.VoitureAdmin;
+    import com.example.comparateur.DTO.VoitureResponse;
+    import com.example.comparateur.Entity.Booking;
 import com.example.comparateur.Entity.Photo;
-    import com.example.comparateur.Entity.Review;
-    import com.example.comparateur.Entity.Voiture;
+import com.example.comparateur.Entity.Review;
+import com.example.comparateur.Entity.Voiture;
 import com.example.comparateur.Repository.BookingRepository;
-import com.example.comparateur.Repository.PhotoRepository;
+    import com.example.comparateur.Repository.PhotoRepository;
     import com.example.comparateur.Repository.ReviewRepository;
-    import com.example.comparateur.Repository.VoitureRepository;
+import com.example.comparateur.Repository.VoitureRepository;
     
     @Service
     public class VoitureService {
@@ -111,17 +108,16 @@ import com.example.comparateur.Repository.PhotoRepository;
             return ResponseEntity.ok(new ApiResponse<>(true, "Successfully updated", existingVoiture));
         }
     
-        //  Get all voitures (Paginated)
-        public ResponseEntity<Object> getAllVoitures(int page) {
-            Pageable pageable = PageRequest.of(Math.max(page, 0), 8);
-            Page<Voiture> voiturePage = voitureRepository.findAll(pageable);
-    
-            if (voiturePage.isEmpty()) {
+        public ResponseEntity<Object> getAllVoitures() {
+            List<Voiture> voitures = voitureRepository.findAll();  // Fetch all voitures without pagination
+            
+            if (voitures.isEmpty()) {
                 return ResponseEntity.status(404).body(new ApiResponse<>(false, "No cars found"));
             }
-    
-            return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures", voiturePage.getContent()));
+            
+            return ResponseEntity.ok(new ApiResponse<>(true, "List of voitures", voitures));
         }
+        
 
 
 

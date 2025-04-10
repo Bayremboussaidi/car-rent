@@ -98,7 +98,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     this.voitureService.getVoitureById(id).subscribe(
       (response: any) => {
         if (response && response.success) {
-          this.car = response.data;
+          this.car = response.data.voiture; // ✅ FIXED: access .voiture explicitly
           this.car.reviews = this.car.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
@@ -133,29 +133,6 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       }
     );
   }
-
-  /*
-  loadOtherCars(currentCarId: number): void {
-    this.voitureService.getVoitures(0).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          this.otherCars = response.data
-            .filter((car: any) => car.id !== currentCarId)
-            .map((car: any) => {
-              this.voitureService.getCarImageById(car.id).subscribe(photos => {
-                if (photos?.length > 0) {
-                  car.imgUrl = `data:${photos[0].type};base64,${photos[0].data}`;
-                }
-              });
-              return car;
-            });
-          this.startCarousel();
-        }
-      },
-      (error) => console.error('Error fetching other cars:', error)
-    );
-  }*/
-
 
     loadOtherCars(currentCarId: number): void {
       this.voitureService.getVoitures().subscribe(

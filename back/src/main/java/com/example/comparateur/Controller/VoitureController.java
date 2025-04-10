@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,10 +53,12 @@ public class VoitureController {
 
     //  Get all voitures (Paginated)
     @GetMapping
-    public ResponseEntity<Object> getAllVoitures(@RequestParam(defaultValue = "0") int page) {
-        return voitureService.getAllVoitures(page);
+    public ResponseEntity<Object> getAllVoitures() {
+        return voitureService.getAllVoitures();
     }
 
+
+    
     //  Get voiture by ID
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneVoiture(@PathVariable Long id) {
