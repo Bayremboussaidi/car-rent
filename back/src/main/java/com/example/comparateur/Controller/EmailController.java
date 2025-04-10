@@ -34,8 +34,8 @@ public class EmailController {
 
     @PostMapping("/sendEmail/inform")
     public String informEmail(@RequestBody EmailRequestDTO emailRequest) {
-        emailService.informEmail(emailRequest);
-        return "Email sent successfully";
+        emailService.informEmail(emailRequest);  // This will send the email to all followers
+        return "Emails sent successfully to all followers";
     }
 
     

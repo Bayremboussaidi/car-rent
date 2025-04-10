@@ -24,11 +24,29 @@ export class ListAgenceComponent {
   ) {}
 
   ngOnInit() {
-    // Access the query params here
+    // First, try to get the agencyName from the query params
     this.route.queryParams.subscribe(params => {
-      this.agencyName = params['agencyName'];
-      console.log('Agency Name:', this.agencyName);
+      if (params['agencyName']) {
+        this.agencyName = params['agencyName'];
+        console.log('Agency Name from query params:', this.agencyName);
+      } else {
+        // If no agencyName in query params, get it from localStorage
+        const agencyData = localStorage.getItem('agency_data');
+        if (agencyData) {
+          const parsedData = JSON.parse(agencyData);
+          this.agencyName = parsedData.agencyName;  // Fallback to localStorage
+          console.log('Agency Name from localStorage:', this.agencyName);
+        } else {
+          console.error('No agencyName found in query params or localStorage');
+        }
+      }
+
+      // If agencyName is found (either from query params or localStorage), load the cars
+      if (this.agencyName) {
+        this.loadAgencyVoitures(this.agencyName);
+      }
     });
+
 
 
 

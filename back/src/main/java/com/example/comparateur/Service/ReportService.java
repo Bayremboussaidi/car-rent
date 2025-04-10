@@ -57,7 +57,7 @@ public class ReportService {
     private byte[] generateQRCode(ReportRequest reportRequest) {
         try {
             ByteArrayOutputStream stream = QRCode.from(reportRequest.getQrCode())
-                .withSize(200, 200)
+                .withSize(300, 300)
                 .stream();
             return stream.toByteArray();
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class ReportService {
                             Image logo = Image.getInstance(logoUrl);
                             
                             // Logo sizing and positioning
-                            logo.scaleToFit(150, 150); // Width, height in pixels
+                            logo.scaleToFit(250, 250); // Width, height in pixels
                             float xPosition = (float) (((document.right()*1.1) - document.left() - logo.getScaledWidth()) / 2);
                             logo.setAbsolutePosition(
                                 xPosition, // Centered horizontally

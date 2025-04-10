@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { VoitureService } from '../../services/voiture.service';
 import { Router } from '@angular/router';
 import { PhotoService } from '../../services/photo.service';
+import { EmailRequest } from '../../models/emailRequest.model';
+import { EmailService } from '../../services/email.service';
 
 @Component({
   selector: 'app-add-car',
@@ -32,7 +34,8 @@ export class AddCarComponent {
   constructor(
     private voitureService: VoitureService,
     private photoService: PhotoService,
-    private router: Router
+    private router: Router,
+    private emailService: EmailService
   ) {}
 
   // Navigates to the specified path
@@ -67,39 +70,54 @@ export class AddCarComponent {
       return;
     }
 
-    console.log('Sending Voiture Object:', this.voiture); // Log the request body
+    console.log('Sending Voiture Object:', this.voiture);
 
     this.voitureService.addVoiture(this.voiture).subscribe({
       next: (response: any) => {
-        console.log('Full Backend Response:', response); // Log the full response
-
-        // Access the ID directly from the root response
         if (response && response.id) {
-          const voitureId = response.id; // Extract ID directly
+          const voitureId = response.id;
           console.log('Extracted Voiture ID:', voitureId);
 
           this.photoService.uploadPhotos(voitureId, null, this.imageFiles).subscribe({
             next: () => {
               console.log('Photos successfully uploaded.');
-              this.router.navigate(['/admin/carlista']);
+
+              //  Send email to followers
+              const emailRequest: EmailRequest = {
+                name: this.voiture.carName,
+                email: "zahidaaloui506@gmail.com", // or leave it for backend to handle
+                message: ` A new car "${this.voiture.carName}" has just been added to our agency. Check it out now!`
+              };
+
+              this.emailService.informEmail(emailRequest).subscribe({
+                next: () => {
+                  console.log('Inform email sent to followers.');
+                  this.router.navigate(['/admin/carlista']);
+                },
+                error: (err:any) => {
+                  console.error('Error sending email to followers:', err);
+                  console.log('Car added, but email notification failed.');
+                  this.router.navigate(['/admin/carlista']);
+                }
+              });
             },
             error: (err) => {
               console.error('Error uploading photos:', err);
               alert('An error occurred while uploading photos. Please try again.');
             }
           });
+
         } else {
           console.error('Backend response missing ID:', response);
           alert('An error occurred: Voiture ID is missing in the backend response.');
         }
       },
       error: (err) => {
-        console.error('Error adding car:', err); // Log full error details
+        console.error('Error adding car:', err);
         alert('An error occurred while adding the car. Please try again.');
       }
     });
   }
-
 
 
 
