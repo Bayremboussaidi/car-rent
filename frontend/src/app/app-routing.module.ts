@@ -39,6 +39,8 @@ import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 import { AgenceComponent } from './ADMIN/agence/agence.component';
 import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
 import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.component';
+import { BlogsAComponent } from './ADMIN/blogs-a/blogs-a.component';
+import { BlogDetailsAComponent } from './ADMIN/blog-details/blog-details.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -83,8 +85,11 @@ const routes: Routes = [
       { path: 'add-agence', component: AgenceComponent },
 
       { path: 'show-agence', component: ShowAgenceComponent },
-      { path: 'show-agence/:id', component: AgenceDetailsComponent }
+      { path: 'show-agence/:id', component: AgenceDetailsComponent },
 
+
+      { path: 'admin-show-blogs', component: BlogsAComponent },  // Changed path for admin blogs
+      { path: 'admin-show-blogs/:id', component: BlogDetailsAComponent }
 
 
     ]
@@ -99,7 +104,7 @@ const routes: Routes = [
 
       { path: 'carlista', component: ListAgenceComponent },
 
-      { path: 'carlista/:id', component: CarDetailsAgenceComponent },
+      { path: 'carlista/:id', component: CarDetailsAgenceComponent }
 
     ]
   },

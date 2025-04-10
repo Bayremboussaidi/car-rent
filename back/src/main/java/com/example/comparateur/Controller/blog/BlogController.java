@@ -3,12 +3,14 @@ package com.example.comparateur.Controller.blog;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus; // Correct import for Spring HttpStatus
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,7 @@ import com.example.comparateur.Entity.blog.Blog;
 import com.example.comparateur.Entity.blog.Comment;
 import com.example.comparateur.Repository.blog.BlogRepository;
 import com.example.comparateur.Repository.blog.CommentRepository;
+import com.example.comparateur.Service.blog.BlogService;
 
 @RestController
 @RequestMapping("/api/blogs")
@@ -27,6 +30,9 @@ public class BlogController {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private BlogService blogService;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -82,7 +88,6 @@ public class BlogController {
             return ResponseEntity.ok(comment); // Return the saved comment
         }).orElse(ResponseEntity.notFound().build());
     }
-    
 
     // Get Blog with Comments
     @GetMapping("/{id}/with-comments")
@@ -90,5 +95,16 @@ public class BlogController {
         return blogRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Update Blog
+    @PutMapping("/{id}")
+    public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog updatedBlog) {
+        try {
+            Blog blog = blogService.updateBlog(id, updatedBlog);
+            return new ResponseEntity<>(blog, HttpStatus.OK);  // Return 200 OK with the updated blog
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Return 404 if blog is not found
+        }
     }
 }

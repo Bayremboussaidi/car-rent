@@ -20,6 +20,17 @@ export class BlogService {
     );
   }
 
+
+  //update blog
+  updateBlog(id: number, blog: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${id}`, blog).pipe(
+      catchError(error => {
+        console.error('Error updating blog:', error);
+        throw error;
+      })
+    );
+  }
+
   // Get blog by ID from the backend
   getBlogById(id: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(

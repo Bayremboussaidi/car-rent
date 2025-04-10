@@ -118,6 +118,8 @@ import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 import { AgenceComponent } from './ADMIN/agence/agence.component';
 import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
 import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.component';
+import { BlogsAComponent } from './ADMIN/blogs-a/blogs-a.component';
+import { BlogDetailsAComponent } from './ADMIN/blog-details/blog-details.component';
 
 
 // ✅ Keycloak Initialization Function
@@ -182,6 +184,8 @@ export function kcFactory(kcService: KeycloakService) {
     AgenceComponent,
     ShowAgenceComponent,
     AgenceDetailsComponent,
+    BlogsAComponent,
+    BlogDetailsAComponent
   ],
   imports: [
     BrowserModule,
