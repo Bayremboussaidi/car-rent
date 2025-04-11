@@ -1,5 +1,5 @@
-export class Message {
-  replymessage?: string;
-  senderEmail?: string;
-  timestamp?: Date;
+export interface Message {
+  senderEmail: string;  // Not optional
+  replymessage: string;
+  time: string;
 }

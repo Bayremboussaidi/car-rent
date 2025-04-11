@@ -1,8 +1,8 @@
 import { Message } from "./Message.model";
 
 export class Chat {
-  chatId?: number;
-  firstUserName?: string;
-  secondUserName?: string;
-  messageList?: Message[];
+  chatId?: number = undefined;
+  firstUserName: string = '';
+  secondUserName: string = '';
+  messageList: Message[] = [];
 }

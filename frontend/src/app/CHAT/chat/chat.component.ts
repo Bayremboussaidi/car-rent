@@ -17,30 +17,38 @@ export class ChatComponent implements OnInit {
 
   chatForm: FormGroup;
   chatObj: Chat = new Chat();
-  messageObj: Message = new Message();
-  public messageList: any = [];
-  public chatList: any = [];
-  replymessage: String = "checking";
-  public chatData: any;
-  chatId: any = sessionStorage.getItem('chatId');
-  secondUserName = "";
-  public alluser: any = [];  // ✅ To store all users fetched from AgenceService
-  check = sessionStorage.getItem('username');
+  messageObj: Message = {
+    senderEmail: '',
+    replymessage: '',
+    time: ''
+  };
+
+  public messageList: Message[] = [];
+  public chatList: Chat[] = [];
+  public chatData: Chat | any;
+
+  public alluser: any[] = [];
+
+  replymessage: string = "checking";
+
+  chatId: string = sessionStorage.getItem('chatId') || '';
+  secondUserName: string = '';
+  firstUserName: string = sessionStorage.getItem('username') || '';
+  senderEmail: string = sessionStorage.getItem('username') || '';
+  senderCheck: string = sessionStorage.getItem('username') || '';
+
   timesRun = 0;
   timesRun2 = 0;
 
-  firstUserName = sessionStorage.getItem('username');
-  senderEmail = sessionStorage.getItem('username');
-
-  // Define senderCheck as the logged-in username
-  senderCheck = sessionStorage.getItem('username') || ''; // Make sure it's defined
+  // Adding the 'check' property as mentioned in the template error
+  check: string = 'someValue';  // Define 'check' with a valid value
 
   constructor(
     private chatService: ChatService,
     private router: Router,
     private userService: UserService,
     private location: Location,
-    private agenceService: AgenceService  // ✅ Inject AgenceService
+    private agenceService: AgenceService
   ) {
     this.chatForm = new FormGroup({
       replymessage: new FormControl()
@@ -48,110 +56,99 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get chat data and message list on an interval (every second)
+    // Refresh current chat messages every second
     setInterval(() => {
-      this.chatService.getChatById(sessionStorage.getItem('chatId')).subscribe(data => {
-        this.chatData = data;
-        this.messageList = this.chatData.messageList;
-        this.secondUserName = this.chatData.secondUserName;
-        this.firstUserName = this.chatData.firstUserName;
-      });
-    }, 1000);
-
-    // Get all chat list for the logged-in user
-    let getByname = setInterval(() => {
-      this.chatService.getChatByFirstUserNameOrSecondUserName(sessionStorage.getItem('username')).subscribe(data => {
-        this.chatData = data;
-        this.chatList = this.chatData;
-      });
-      this.timesRun2 += 1;
-      if (this.timesRun2 === 2) {
-        clearInterval(getByname);
+      const chatId = sessionStorage.getItem('chatId');
+      if (chatId) {
+        this.chatService.getChatById(chatId).subscribe(data => {
+          this.chatData = data;
+          this.messageList = data.messageList || [];
+          this.secondUserName = data.secondUserName || '';
+          this.firstUserName = data.firstUserName || '';
+        });
       }
     }, 1000);
 
-    // Fetch all users using AgenceService
-    let all = setInterval(() => {
-      this.agenceService.getAll().subscribe((data: any) => {
-        this.alluser = data;  // Populate the `alluser` array with data
-      });
+    // Fetch chats for the logged-in user
+    const username = sessionStorage.getItem('username');
+    if (username) {
+      const chatListInterval = setInterval(() => {
+        this.chatService.getChatByFirstUserNameOrSecondUserName(username).subscribe(data => {
+          this.chatList = data || [];
+        });
+        this.timesRun2 += 1;
+        if (this.timesRun2 === 2) {
+          clearInterval(chatListInterval);
+        }
+      }, 1000);
+    }
 
+    // Fetch all users
+    const userInterval = setInterval(() => {
+      this.agenceService.getAll().subscribe((data: any) => {
+        this.alluser = data || [];
+      });
       this.timesRun += 1;
       if (this.timesRun === 2) {
-        clearInterval(all);
+        clearInterval(userInterval);
       }
     }, 1000);
   }
 
-  loadChatByEmail(event: string, event1: string) {
+  loadChatByEmail(firstUser: string | undefined, secondUser: string | undefined): void {
     sessionStorage.removeItem("chatId");
-    this.chatService.getChatByFirstUserNameAndSecondUserName(event, event1).subscribe(data => {
-      this.chatData = data;
-      this.chatId = this.chatData[0].chatId;
-      sessionStorage.setItem('chatId', this.chatId);
 
-      setInterval(() => {
-        this.chatService.getChatById(this.chatId).subscribe(data => {
-          this.chatData = data;
-          this.messageList = this.chatData.messageList;
-          this.secondUserName = this.chatData.secondUserName;
-          this.firstUserName = this.chatData.firstUserName;
-        });
-      }, 1000);
-    });
+    if (firstUser && secondUser) {
+      this.chatService.getChatByFirstUserNameAndSecondUserName(firstUser, secondUser).subscribe(data => {
+        if (data && data.length > 0) {
+          this.chatData = data[0];
+          this.chatId = this.chatData.chatId;
+          sessionStorage.setItem('chatId', this.chatId.toString());
+
+          this.chatService.getChatById(this.chatId.toString()).subscribe(chat => {
+            this.chatData = chat;
+            this.messageList = chat.messageList || [];
+            this.secondUserName = chat.secondUserName || '';
+            this.firstUserName = chat.firstUserName || '';
+          });
+        } else {
+          console.warn('No chat found between the specified users.');
+        }
+      }, error => {
+        console.error('Error fetching chat by usernames', error);
+      });
+    } else {
+      console.error('User names are undefined');
+    }
   }
 
-  sendMessage() {
+  sendMessage(): void {
     this.messageObj.replymessage = this.chatForm.value.replymessage;
-    //this.messageObj.senderEmail = this.senderEmail;
-    this.chatService.updateChat(this.messageObj, this.chatId).subscribe(data => {
+    this.chatService.updateChat(this.messageObj, this.chatId).subscribe(() => {
       this.chatForm.reset();
-
-      // Refresh the message list after sending a message
-      this.chatService.getChatById(this.chatId).subscribe(data => {
+      this.chatService.getChatById(this.chatId.toString()).subscribe(data => {
         this.chatData = data;
-        this.messageList = this.chatData.messageList;
-        this.secondUserName = this.chatData.secondUserName;
-        this.firstUserName = this.chatData.firstUserName;
+        this.messageList = this.chatData.messageList || [];
+        this.secondUserName = this.chatData.secondUserName || '';
+        this.firstUserName = this.chatData.firstUserName || '';
       });
     });
   }
 
-  routeX() {
+  routeX(): void {
     sessionStorage.clear();
     this.router.navigateByUrl('');
   }
 
-  routeHome() {
+  routeHome(): void {
     this.router.navigateByUrl('');
   }
 
-
-
-
-  goBack() {
-    window.history.back(); // This will navigate to the last page in the browser history
+  goBack(): void {
+    window.history.back();
   }
 
-  goToChat(username: any) {
-    /*this.chatService.getChatByFirstUserNameAndSecondUserName(username, sessionStorage.getItem("username")).subscribe(
-      (data) => {
-        this.chatId = data.chatId;
-        sessionStorage.setItem("chatId", this.chatId);
-      },
-      (error) => {
-        if (error.status == 404) {
-          this.chatObj.firstUserName = sessionStorage.getItem("username");
-          this.chatObj.secondUserName = username;
-          this.chatService.createChatRoom(this.chatObj).subscribe(
-            (data) => {
-              this.chatData = data;
-              this.chatId = this.chatData.chatId;
-              sessionStorage.setItem("chatId", this.chatData.chatId);
-            }
-          );
-        }
-      }
-    );*/
+  goToChat(username: string): void {
+    // (Intentionally left empty for now as you commented it out)
   }
 }

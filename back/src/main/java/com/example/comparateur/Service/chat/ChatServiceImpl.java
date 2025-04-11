@@ -23,11 +23,8 @@ public class ChatServiceImpl {
     @Autowired
     private MessageRepository messageRepository;
 
-    // Removed the sequence generator as MySQL handles auto-incrementing the chatId
-
     // Add a new chat, MySQL will auto-generate the chatId
     public Chat addChat(Chat chat) {
-        // No need for sequence generation; MySQL will auto-generate the chatId
         return chatRepository.save(chat);
     }
 
@@ -50,9 +47,9 @@ public class ChatServiceImpl {
         }
     }
 
-    // Get chats by first username
-    public List<Chat> getChatByFirstUserName(String username) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findByFirstUserName(username);
+    // Get chats by first user email
+    public List<Chat> getChatByFirstUserEmail(String email) throws ChatNotFoundException {
+        List<Chat> chat = chatRepository.findByFirstUserEmail(email);
         if (chat.isEmpty()) {
             throw new ChatNotFoundException();
         } else {
@@ -60,9 +57,9 @@ public class ChatServiceImpl {
         }
     }
 
-    // Get chats by second username
-    public List<Chat> getChatBySecondUserName(String username) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findBySecondUserName(username);
+    // Get chats by second user email
+    public List<Chat> getChatBySecondUserEmail(String email) throws ChatNotFoundException {
+        List<Chat> chat = chatRepository.findBySecondUserEmail(email);
         if (chat.isEmpty()) {
             throw new ChatNotFoundException();
         } else {
@@ -70,10 +67,10 @@ public class ChatServiceImpl {
         }
     }
 
-    // Get chats by either first or second username
-    public List<Chat> getChatByFirstUserNameOrSecondUserName(String username) throws ChatNotFoundException {
-        List<Chat> chatFirstUser = chatRepository.findByFirstUserName(username);
-        List<Chat> chatSecondUser = chatRepository.findBySecondUserName(username);
+    // Get chats by either first or second user email
+    public List<Chat> getChatByFirstUserEmailOrSecondUserEmail(String email) throws ChatNotFoundException {
+        List<Chat> chatFirstUser = chatRepository.findByFirstUserEmail(email);
+        List<Chat> chatSecondUser = chatRepository.findBySecondUserEmail(email);
 
         chatFirstUser.addAll(chatSecondUser);
 
@@ -84,9 +81,9 @@ public class ChatServiceImpl {
         }
     }
 
-    // Get chat by both first and second usernames
-    public List<Chat> getChatByFirstUserNameAndSecondUserName(String firstUserName, String secondUserName) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findByFirstUserNameAndSecondUserName(firstUserName, secondUserName);
+    // Get chat by both first and second user email
+    public List<Chat> getChatByFirstUserEmailAndSecondUserEmail(String firstUserEmail, String secondUserEmail) throws ChatNotFoundException {
+        List<Chat> chat = chatRepository.findByFirstUserEmailAndSecondUserEmail(firstUserEmail, secondUserEmail);
         if (chat.isEmpty()) {
             throw new ChatNotFoundException();
         } else {

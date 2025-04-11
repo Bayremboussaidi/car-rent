@@ -1,8 +1,8 @@
 package com.example.comparateur.Entity.chat;
 
-
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,12 +23,13 @@ public class Chat {
     @Column(name = "chat_id")
     private int chatId;
 
-    @Column(name = "first_user_name")
-    private String firstUserName;
+    @Column(name = "first_user_email")
+    private String firstUserEmail;
 
-    @Column(name = "second_user_name")
-    private String secondUserName;
+    @Column(name = "second_user_email")
+    private String secondUserEmail;
 
+    @JsonManagedReference  // Prevent infinite recursion
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "chat_id")
     private List<Message> messageList;
@@ -38,9 +39,9 @@ public class Chat {
     }
 
     // Constructor with parameters
-    public Chat(String firstUserName, String secondUserName, List<Message> messageList) {
-        this.firstUserName = firstUserName;
-        this.secondUserName = secondUserName;
+    public Chat(String firstUserEmail, String secondUserEmail, List<Message> messageList) {
+        this.firstUserEmail = firstUserEmail;
+        this.secondUserEmail = secondUserEmail;
         this.messageList = messageList;
     }
 
@@ -53,20 +54,20 @@ public class Chat {
         this.chatId = chatId;
     }
 
-    public String getFirstUserName() {
-        return firstUserName;
+    public String getFirstUserEmail() {
+        return firstUserEmail;
     }
 
-    public void setFirstUserName(String firstUserName) {
-        this.firstUserName = firstUserName;
+    public void setFirstUserEmail(String firstUserEmail) {
+        this.firstUserEmail = firstUserEmail;
     }
 
-    public String getSecondUserName() {
-        return secondUserName;
+    public String getSecondUserEmail() {
+        return secondUserEmail;
     }
 
-    public void setSecondUserName(String secondUserName) {
-        this.secondUserName = secondUserName;
+    public void setSecondUserEmail(String secondUserEmail) {
+        this.secondUserEmail = secondUserEmail;
     }
 
     public List<Message> getMessageList() {
