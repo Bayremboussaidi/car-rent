@@ -34,7 +34,7 @@
 
             <form (ngSubmit)="handleClick($event)">
               <div class="form-group">
-                <input [(ngModel)]="credentials.username" placeholder="Nom d'utilisateur" />
+                <input type="email" placeholder="Email" required id="email" [(ngModel)]="credentials.email" name="email">
               </div>
               <div class="form-group">
                 <input type="password" placeholder="Mot de passe" required id="password" [(ngModel)]="credentials.password" name="password">
@@ -52,15 +52,14 @@
               </div>
               <div class="robot-check">
                 <label>
-                  <input type="checkbox" [(ngModel)]="isUser" name="userCheck">
-
+                  <input type="checkbox" [checked]="isUser" name="userCheck" (change)="toggleCheck('user')">
                   Je suis un client
                 </label>
               </div>
 
               <div class="robot-check">
                 <label>
-                  <input type="checkbox" [(ngModel)]="isAgence" name="agenceCheck">
+                  <input type="checkbox" [checked]="isAgence" name="agenceCheck" (change)="toggleCheck('agence')">
                   Je suis agence
                 </label>
               </div>

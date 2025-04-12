@@ -1,19 +1,23 @@
+import { AgenceService } from './../../../services/agence/agence.service'; // Corrected path
+import { UserloginService } from './../../../services/user_login/userlogin.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { UserloginService } from '../../../services/user_login/userlogin.service';
-import { AgenceService } from '../../../services/agence/agence.service';
+import { AdminService } from '../../../services/admin/admin.service';
+
+//import {KeycloakUserInfo} from'../../../services/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent {
-  credentials = { username: '', password: '' };
+  credentials = { email: '', password: '' };
   errorMessage: string = '';
   isRobot = false;
-  isUser = false;
+  isUser = true;
   isAgence = false;
   showRobotError = false;
   showConditions = false;
@@ -22,7 +26,9 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private userloginService: UserloginService,
-    private agenceService: AgenceService
+    private adminService: AdminService,
+    //private keycloakService: KeycloakUserInfo,
+    private agenceService: AgenceService // Corrected variable name casing
   ) {}
 
   closeConditions() {
@@ -39,13 +45,8 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.credentials.username) {
-      this.errorMessage = 'Veuillez entrer un nom d\'utilisateur';
-      return;
-    }
-
-    if (!this.credentials.password) {
-      this.errorMessage = 'Veuillez entrer un mot de passe';
+    if (!this.validateEmail(this.credentials.email)) {
+      this.errorMessage = 'Veuillez entrer une adresse email valide';
       return;
     }
 
@@ -53,12 +54,12 @@ export class LoginComponent {
       this.handleUserLogin();
     } else if (this.isAgence) {
       this.handleAgencyLogin();
-    } else {
-      this.handleKeycloakLogin();
+    } else if (!this.isUser && !this.isAgence) {
+
+      this.handleAdminLogin()
+      //this.handleKeycloakLogin();
     }
   }
-  private handleUserLogin() {}
-  /*
 
   private handleUserLogin() {
     this.authService.logout();
@@ -68,16 +69,16 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        this.errorMessage = err?.message || 'Nom d\'utilisateur ou mot de passe incorrect';
+        this.errorMessage = err?.message || 'Email ou mot de passe incorrect';
       }
     });
   }
-*/
-/*
+
   private handleAgencyLogin() {
     this.authService.logout();
     this.agenceService.login(this.credentials).subscribe({
-      next: (response: any) => {
+      next: (response:any) => {
+        // Store agency auth data
         const agencyData = {
           token: response.token,
           agencyId: response.id,
@@ -85,19 +86,26 @@ export class LoginComponent {
         };
 
         localStorage.setItem('agency_auth', JSON.stringify(agencyData));
+
+        // Log the stored data
+        console.log('LocalStorage after agency login:');
+        console.log('agency_auth:', JSON.parse(localStorage.getItem('agency_auth') || 'No agency data'));
+        console.log('All localStorage:', localStorage);
+
         this.router.navigate(['/agence']);
       },
-      error: (err: any) => {
-        this.errorMessage = err?.message || 'Nom d\'utilisateur ou mot de passe incorrect pour agence';
+      error: (err:any) => {
+        this.errorMessage = err?.message || 'Email ou mot de passe incorrect pour agence';
       }
     });
-  }*/
-    private handleAgencyLogin() {}
+  }
 
-  private handleKeycloakLogin() {
+
+  private handleAdminLogin() {
     this.authService.logout();
-    this.authService.login(this.credentials).subscribe({
-      next: (response) => {
+
+    this.adminService.login(this.credentials).subscribe({
+      next: (response:any) => {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
         localStorage.setItem('role', response.role);
@@ -105,12 +113,26 @@ export class LoginComponent {
         const userDetails = this.authService.decodeToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(userDetails));
 
-        this.router.navigate(['/admin']);
+        // Navigate based on admin role
+        if (response.role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.errorMessage = 'Accès refusé : rôle non autorisé';
+        }
       },
-      error: (err) => {
-        this.errorMessage = err?.error?.error_description || 'Nom d\'utilisateur ou mot de passe incorrect';
+      error: (err:any) => {
+        this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect (admin)';
       }
     });
+  }
+
+
+
+
+
+  private validateEmail(email: string): boolean {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   }
 
   toggleCheck(type: 'user' | 'agence') {
@@ -118,3 +140,70 @@ export class LoginComponent {
     this.isAgence = type === 'agence';
   }
 }
+
+
+
+
+
+
+
+  //keycloak login
+  /*private handleKeycloakLogin() {
+    this.authService.logout(); // Clear any existing tokens
+
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        // Store the tokens and user details
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('refresh_token', response.refresh_token);
+        localStorage.setItem('role', response.role);
+
+        // Decode and store user details
+        const userDetails = this.authService.decodeToken(response.access_token);
+        localStorage.setItem('user', JSON.stringify(userDetails));
+
+        // Navigate based on role
+        //this.navigateBasedOnRole(response.role);
+        this.router.navigate(['/admin']);
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect';
+      }
+    });
+  }*/
+   // Keycloak login
+
+   /*private async handleKeycloakLogin() {
+    try {
+      this.authService.logout(); // Clear any existing tokens
+
+      // Init Keycloak first
+      const initialized = await this.keycloakService.init();
+      if (!initialized) {
+        // If not authenticated, start login process
+        this.keycloakService.login();
+        return;
+      }
+
+      // If we get here, user is already authenticated
+      const token = await this.keycloakService.getToken();
+      const userDetails = this.keycloakService.currentUser;
+
+      if (userDetails) {
+        localStorage.setItem('access_token', token);
+        localStorage.setItem('role', userDetails.role || 'USER');
+        localStorage.setItem('user', JSON.stringify(userDetails));
+
+        // Redirect based on role
+        if (userDetails.role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/user']);
+        }
+      } else {
+        this.errorMessage = 'Failed to load user details';
+      }
+    } catch (error) {
+      this.errorMessage = `Keycloak login error: ${error}`;
+    }
+  }*/
