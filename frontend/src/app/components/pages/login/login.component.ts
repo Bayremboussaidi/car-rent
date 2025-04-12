@@ -1,22 +1,20 @@
-import { AgenceService } from './../../../services/agence/agence.service'; // Corrected path
-import { UserloginService } from './../../../services/user_login/userlogin.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-//import {KeycloakUserInfo} from'../../../services/keycloak/keycloak.service';
+import { UserloginService } from '../../../services/user_login/userlogin.service';
+import { AgenceService } from '../../../services/agence/agence.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-
 export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage: string = '';
   isRobot = false;
-  isUser = true;
-  isAgence = false;
+  isUser = false;       // changed to false to allow neutral state
+  isAgence = false;     // changed to false to allow neutral state
   showRobotError = false;
   showConditions = false;
 
@@ -24,8 +22,7 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private userloginService: UserloginService,
-    //private keycloakService: KeycloakUserInfo,
-    private agenceService: AgenceService // Corrected variable name casing
+    private agenceService: AgenceService
   ) {}
 
   closeConditions() {
@@ -47,14 +44,19 @@ export class LoginComponent {
       return;
     }
 
+    // Login flow depending on role selection
     if (this.isUser) {
       this.handleUserLogin();
     } else if (this.isAgence) {
       this.handleAgencyLogin();
     } else {
-      // When neither is selected, use Keycloak authentication
-      //this.handleKeycloakLogin();
+      this.handleKeycloakLogin(); // fallback if both are unchecked
     }
+  }
+
+  private validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   private handleUserLogin() {
@@ -73,8 +75,7 @@ export class LoginComponent {
   private handleAgencyLogin() {
     this.authService.logout();
     this.agenceService.login(this.credentials).subscribe({
-      next: (response:any) => {
-        // Store agency auth data
+      next: (response: any) => {
         const agencyData = {
           token: response.token,
           agencyId: response.id,
@@ -83,44 +84,35 @@ export class LoginComponent {
 
         localStorage.setItem('agency_auth', JSON.stringify(agencyData));
 
-        // Log the stored data
-        console.log('LocalStorage after agency login:');
-        console.log('agency_auth:', JSON.parse(localStorage.getItem('agency_auth') || 'No agency data'));
-        console.log('All localStorage:', localStorage);
-
         this.router.navigate(['/agence']);
       },
-      error: (err:any) => {
+      error: (err: any) => {
         this.errorMessage = err?.message || 'Email ou mot de passe incorrect pour agence';
       }
     });
   }
 
-
-  //keycloak login
-  /*private handleKeycloakLogin() {
-    this.authService.logout(); // Clear any existing tokens
+  private handleKeycloakLogin() {
+    this.authService.logout();
 
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
-        // Store the tokens and user details
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
         localStorage.setItem('role', response.role);
 
-        // Decode and store user details
         const userDetails = this.authService.decodeToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(userDetails));
 
-        // Navigate based on role
-        //this.navigateBasedOnRole(response.role);
         this.router.navigate(['/admin']);
       },
       error: (err) => {
         this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect';
       }
     });
-  }*/
+  }
+}
+
    // Keycloak login
 
    /*private async handleKeycloakLogin() {
@@ -156,7 +148,7 @@ export class LoginComponent {
     } catch (error) {
       this.errorMessage = `Keycloak login error: ${error}`;
     }
-  }*/
+  }
 
   private validateEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -168,3 +160,4 @@ export class LoginComponent {
     this.isAgence = type === 'agence';
   }
 }
+*/

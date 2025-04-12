@@ -52,14 +52,15 @@
               </div>
               <div class="robot-check">
                 <label>
-                  <input type="checkbox" [checked]="isUser" name="userCheck" (change)="toggleCheck('user')">
+                  <input type="checkbox" [(ngModel)]="isUser" name="userCheck">
+
                   Je suis un client
                 </label>
               </div>
 
               <div class="robot-check">
                 <label>
-                  <input type="checkbox" [checked]="isAgence" name="agenceCheck" (change)="toggleCheck('agence')">
+                  <input type="checkbox" [(ngModel)]="isAgence" name="agenceCheck">
                   Je suis agence
                 </label>
               </div>
