@@ -17,7 +17,7 @@ export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage: string = '';
   isRobot = false;
-  isUser = true;
+  isUser = false;
   isAgence = false;
   showRobotError = false;
   showConditions = false;
@@ -108,7 +108,7 @@ export class LoginComponent {
       next: (response:any) => {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('role', response.role);
+        localStorage.setItem('role', "ADMIN");
 
         const userDetails = this.authService.decodeToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(userDetails));

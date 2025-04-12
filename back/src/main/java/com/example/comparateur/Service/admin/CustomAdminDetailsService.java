@@ -1,6 +1,7 @@
 package com.example.comparateur.Service.admin;
 
 
+
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,9 @@ public class CustomAdminDetailsService implements UserDetailsService {
 
         return new User(
                 admin.getEmail(),
-                admin.getPassword(), // should be encoded (BCrypt)
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                admin.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name()))
         );
     }
 }
+
