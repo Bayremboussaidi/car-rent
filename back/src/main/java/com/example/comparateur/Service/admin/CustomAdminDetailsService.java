@@ -1,8 +1,6 @@
 package com.example.comparateur.Service.admin;
 
-
-
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,8 +31,9 @@ public class CustomAdminDetailsService implements UserDetailsService {
         return new User(
                 admin.getEmail(),
                 admin.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name()))
+                admin.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                        .collect(Collectors.toList())
         );
     }
 }
-

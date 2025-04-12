@@ -1,8 +1,5 @@
 package com.example.comparateur.Controller.admin;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +36,19 @@ public class AdminController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AdminLoginRequest loginRequest) {
+        // Find the admin by email
         Admin admin = adminRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
     
+        // Validate the password
         if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     
-        // Convert Set<Role> to List<String>
-        List<String> roleNames = admin.getRoles().stream()
-                .map(role -> role.name()) // Convert Role enum to string
-                .collect(Collectors.toList());
+        // Always set the role to "ADMIN" for the response
+        String role = "ADMIN"; // Set role to "ADMIN" explicitly
     
+        // Create and return the response with the desired information
         return ResponseEntity.ok(
                 new AdminLoginResponse(
                         "Login successful",
@@ -58,10 +56,12 @@ public class AdminController {
                         admin.getEmail(),
                         admin.getPhone(),
                         admin.getWorkplace(),
-                        roleNames // Should contain "ADMIN" if the role is assigned properly
+                        role // Always "ADMIN"
                 )
         );
     }
+    
+    
     
     
 

@@ -101,30 +101,38 @@ export class LoginComponent {
   }
 
 
+
+
   private handleAdminLogin() {
+    // Log out the user first (clearing any existing session)
     this.authService.logout();
 
+    // Call the login method from the adminService
     this.adminService.login(this.credentials).subscribe({
-      next: (response:any) => {
+      next: (response: any) => {
+        // Assuming response has access_token, refresh_token, and role
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('role', "ADMIN");
+        localStorage.setItem('role', response.roles || "ADMIN"); // Set the role to "ADMIN" if it's not present
 
+        // Decode the token (you should have a decodeToken method for JWT decoding)
         const userDetails = this.authService.decodeToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(userDetails));
 
-        // Navigate based on admin role
-        if (response.role === 'ADMIN') {
-          this.router.navigate(['/admin']);
+        // Navigate based on the role (check if it's "ADMIN")
+        if (response.roles === 'ADMIN') {
+          this.router.navigate(['/admin/bookinga']);
         } else {
-          this.errorMessage = 'Accès refusé : rôle non autorisé';
+          this.errorMessage = 'Unauthorized role'; // Set an error message if the role is unexpected
         }
       },
-      error: (err:any) => {
-        this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect (admin)';
+      error: (err: any) => {
+        // Handle errors (e.g., invalid credentials)
+        this.errorMessage = err?.error?.error_description || 'Email or password incorrect (admin)';
       }
     });
   }
+
 
 
 

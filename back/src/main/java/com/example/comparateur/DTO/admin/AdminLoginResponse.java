@@ -1,6 +1,5 @@
 package com.example.comparateur.DTO.admin;
 
-import java.util.List;
 
 public class AdminLoginResponse {
 
@@ -9,24 +8,22 @@ public class AdminLoginResponse {
     private String email;
     private Long phone;
     private String workplace;
-    private List<String> roles; // Keeps the roles list (optional if you still need it)
-    private String role; // New field to store a single role as a string
+    private String role; // 👈 single role as String
 
     public AdminLoginResponse() {
-        // Default constructor
     }
 
-    public AdminLoginResponse(String message, String username, String email, Long phone, String workplace, List<String> roles) {
+    public AdminLoginResponse(String message, String username, String email, Long phone, String workplace, String role) {
         this.message = message;
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.workplace = workplace;
-        this.roles = roles;
-        this.role = roles.isEmpty() ? "" : roles.get(0); // Set the first role as a single role (if available)
+        this.role = role;
     }
 
     // Getters and Setters
+
     public String getMessage() {
         return message;
     }
@@ -67,16 +64,7 @@ public class AdminLoginResponse {
         this.workplace = workplace;
     }
 
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-        this.role = roles.isEmpty() ? "" : roles.get(0); // Set role based on the list
-    }
-
-    public String getRole() {
+    public String getRoles() {
         return role;
     }
 
@@ -84,3 +72,4 @@ public class AdminLoginResponse {
         this.role = role;
     }
 }
+

@@ -1,3 +1,25 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+  margin: 15px 0;
+}
+
+/* Keep existing table styles, add min-width if needed */
+.p-table {
+  min-width: 1000px; /* Minimum width to force scrolling on smaller screens */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+
+
+
+
+
+
+
 /* Style for status */
 .status-confirmed {
   color: green;

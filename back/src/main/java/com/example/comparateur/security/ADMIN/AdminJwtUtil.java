@@ -1,15 +1,17 @@
 package com.example.comparateur.security.ADMIN;
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.example.comparateur.Entity.Role;
 import com.example.comparateur.Entity.admin.Admin;
 
 import io.jsonwebtoken.Claims;
@@ -32,7 +34,13 @@ public class AdminJwtUtil {
         claims.put("email", admin.getEmail());
         claims.put("workplace", admin.getWorkplace());
         claims.put("phone_number", admin.getPhone());
-        claims.put("role", admin.getRole().toString()); // Admin-specific role
+
+        // Convert Set<Role> to comma-separated string
+        Set<Role> roles = admin.getRoles();
+        String roleString = roles.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(","));
+        claims.put("role", roleString);
 
         return createToken(claims, userDetails.getUsername());
     }
@@ -72,7 +80,10 @@ public class AdminJwtUtil {
 
     // Extract all claims from the token
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     // Check if the token has expired
