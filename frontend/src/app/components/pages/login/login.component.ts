@@ -104,20 +104,33 @@ export class LoginComponent {
 
 
   private handleAdminLogin() {
-    // Log out the user first (clearing any existing session)
+    // Log out the user first (clearing any existing session data)
     this.authService.logout();
+
+    // Clear all previous stored data related to old user logins
+    localStorage.removeItem('admin_auth');  // Removes old admin data from localStorage
+    localStorage.removeItem('agency_auth'); // Removes any previous agency data
+    localStorage.removeItem('agency_data'); // Removes any previous agency-specific data
 
     // Call the login method from the adminService
     this.adminService.login(this.credentials).subscribe({
       next: (response: any) => {
-        // Assuming response has access_token, refresh_token, and role
-        localStorage.setItem('access_token', response.access_token);
-        localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('role', response.roles || "ADMIN"); // Set the role to "ADMIN" if it's not present
+        // Store the new admin details in localStorage
+        const adminData = {
+          username: response.username,
+          email: response.email,
+          phone: response.phone,
+          workplace: response.workplace,
+          roles: response.roles || "ADMIN" // Default to "ADMIN" if no role is provided
+        };
 
-        // Decode the token (you should have a decodeToken method for JWT decoding)
-        const userDetails = this.authService.decodeToken(response.access_token);
-        localStorage.setItem('user', JSON.stringify(userDetails));
+        // Save the new admin details to localStorage
+        localStorage.setItem('admin_auth', JSON.stringify(adminData));
+
+        // Log the stored data for debugging
+        console.log('LocalStorage after admin login:');
+        console.log('admin_auth:', JSON.parse(localStorage.getItem('admin_auth') || '{}'));
+        console.log('All localStorage:', localStorage);
 
         // Navigate based on the role (check if it's "ADMIN")
         if (response.roles === 'ADMIN') {
@@ -132,6 +145,9 @@ export class LoginComponent {
       }
     });
   }
+
+
+
 
 
 
