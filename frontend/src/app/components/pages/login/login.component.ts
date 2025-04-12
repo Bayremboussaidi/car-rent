@@ -10,11 +10,11 @@ import { AgenceService } from '../../../services/agence/agence.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  credentials = { email: '', password: '' };
+  credentials = { username: '', password: '' };
   errorMessage: string = '';
   isRobot = false;
-  isUser = false;       // changed to false to allow neutral state
-  isAgence = false;     // changed to false to allow neutral state
+  isUser = false;
+  isAgence = false;
   showRobotError = false;
   showConditions = false;
 
@@ -39,25 +39,26 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.validateEmail(this.credentials.email)) {
-      this.errorMessage = 'Veuillez entrer une adresse email valide';
+    if (!this.credentials.username) {
+      this.errorMessage = 'Veuillez entrer un nom d\'utilisateur';
       return;
     }
 
-    // Login flow depending on role selection
+    if (!this.credentials.password) {
+      this.errorMessage = 'Veuillez entrer un mot de passe';
+      return;
+    }
+
     if (this.isUser) {
       this.handleUserLogin();
     } else if (this.isAgence) {
       this.handleAgencyLogin();
     } else {
-      this.handleKeycloakLogin(); // fallback if both are unchecked
+      this.handleKeycloakLogin();
     }
   }
-
-  private validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+  private handleUserLogin() {}
+  /*
 
   private handleUserLogin() {
     this.authService.logout();
@@ -67,11 +68,12 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        this.errorMessage = err?.message || 'Email ou mot de passe incorrect';
+        this.errorMessage = err?.message || 'Nom d\'utilisateur ou mot de passe incorrect';
       }
     });
   }
-
+*/
+/*
   private handleAgencyLogin() {
     this.authService.logout();
     this.agenceService.login(this.credentials).subscribe({
@@ -83,18 +85,17 @@ export class LoginComponent {
         };
 
         localStorage.setItem('agency_auth', JSON.stringify(agencyData));
-
         this.router.navigate(['/agence']);
       },
       error: (err: any) => {
-        this.errorMessage = err?.message || 'Email ou mot de passe incorrect pour agence';
+        this.errorMessage = err?.message || 'Nom d\'utilisateur ou mot de passe incorrect pour agence';
       }
     });
-  }
+  }*/
+    private handleAgencyLogin() {}
 
   private handleKeycloakLogin() {
     this.authService.logout();
-
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
@@ -107,52 +108,9 @@ export class LoginComponent {
         this.router.navigate(['/admin']);
       },
       error: (err) => {
-        this.errorMessage = err?.error?.error_description || 'Email ou mot de passe incorrect';
+        this.errorMessage = err?.error?.error_description || 'Nom d\'utilisateur ou mot de passe incorrect';
       }
     });
-  }
-}
-
-   // Keycloak login
-
-   /*private async handleKeycloakLogin() {
-    try {
-      this.authService.logout(); // Clear any existing tokens
-
-      // Init Keycloak first
-      const initialized = await this.keycloakService.init();
-      if (!initialized) {
-        // If not authenticated, start login process
-        this.keycloakService.login();
-        return;
-      }
-
-      // If we get here, user is already authenticated
-      const token = await this.keycloakService.getToken();
-      const userDetails = this.keycloakService.currentUser;
-
-      if (userDetails) {
-        localStorage.setItem('access_token', token);
-        localStorage.setItem('role', userDetails.role || 'USER');
-        localStorage.setItem('user', JSON.stringify(userDetails));
-
-        // Redirect based on role
-        if (userDetails.role === 'ADMIN') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/user']);
-        }
-      } else {
-        this.errorMessage = 'Failed to load user details';
-      }
-    } catch (error) {
-      this.errorMessage = `Keycloak login error: ${error}`;
-    }
-  }
-
-  private validateEmail(email: string): boolean {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
   }
 
   toggleCheck(type: 'user' | 'agence') {
@@ -160,4 +118,3 @@ export class LoginComponent {
     this.isAgence = type === 'agence';
   }
 }
-*/

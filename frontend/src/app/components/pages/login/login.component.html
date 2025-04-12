@@ -34,7 +34,7 @@
 
             <form (ngSubmit)="handleClick($event)">
               <div class="form-group">
-                <input type="email" placeholder="Email" required id="email" [(ngModel)]="credentials.email" name="email">
+                <input [(ngModel)]="credentials.username" placeholder="Nom d'utilisateur" />
               </div>
               <div class="form-group">
                 <input type="password" placeholder="Mot de passe" required id="password" [(ngModel)]="credentials.password" name="password">

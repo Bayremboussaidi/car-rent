@@ -18,14 +18,15 @@ export class AuthService {
 
     constructor(private http: HttpClient, private router: Router) {}
 
-    login(credentials: { email: string; password: string }): Observable<any> {
+    login(credentials: { username: string; password: string }): Observable<any> {
+
       const url = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`;
 
       const body = new URLSearchParams();
       body.set('client_id', this.clientId);
       body.set('client_secret', this.clientSecret);
       body.set('grant_type', 'password');
-      body.set('username', credentials.email);
+      body.set('username', credentials.username);
       body.set('password', credentials.password);
       body.set('scope', 'openid offline_access');
 
