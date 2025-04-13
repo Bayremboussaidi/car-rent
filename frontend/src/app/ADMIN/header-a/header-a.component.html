@@ -7,7 +7,7 @@
         <i class="bi bi-clock me-1"></i> Monday - Saturday, 8AM to 10PM
       </div>
       <div class="d-flex align-items-center">
-        <i class="bi bi-phone me-1"></i> Call us now +1 5589 55488 55
+        <i class="bi bi-phone me-1"></i> Call us now +216 22 559 645
       </div>
     </div>
   </div>
@@ -34,18 +34,6 @@
           <li><a routerLink="/admin/admin-show-blogs">Blogs</a></li>
 
 
-          <!-- Dropdown Menu -->
-          <!--li class="dropdown">
-            <a href="#" (click)="toggleDropdown($event)" class="active">Agencies</a>
-
-
-            <div *ngIf="isDropdownVisible" class="dropdown-content" (click)="$event.stopPropagation()">
-              <ul>
-                <li><a routerLink="/admin/add-agence" (click)="closeDropdown($event)">Agence 1</a></li>
-                <li><a routerLink="/admin/show-agence" (click)="closeDropdown($event)">Agence 2</a></li>
-              </ul>
-            </div>
-          </li-->
 
           <div class="dropdown" (mouseleave)="isDropdownVisible = false">
             <span (mouseover)="toggleDropdown()">Agencies</span>
@@ -54,6 +42,10 @@
               <li><a routerLink="/admin/show-agence" (click)="closeDropdown($event)">Ag List</a></li>
             </div>
           </div>
+
+          <li><a (click)="onLogout()">Logout</a></li>
+
+
 
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

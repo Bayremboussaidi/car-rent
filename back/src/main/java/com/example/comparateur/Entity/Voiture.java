@@ -55,6 +55,7 @@ public class Voiture {
     @Column(nullable = false)
     private String agence;
 
+
     @Column(nullable = false)
     private String local;
 

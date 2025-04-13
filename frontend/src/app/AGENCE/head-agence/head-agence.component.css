@@ -93,13 +93,18 @@
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  transition: 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   text-decoration: none;
+  transform-origin: center;
 }
 
+/* Added hover effects */
 .navmenu a:hover,
 .navmenu .active {
   color: var(--nav-hover-color);
+  transform: scale(1.1);
+  background-color: #f8f9fa;
+  border-radius: 4px;
 }
 
 /* 🌟 Dropdown Menu */
@@ -156,10 +161,6 @@
   transform: translateX(0);
 }
 
-
-
-
-
 .logo {
   font-size: 1rem;
   font-weight: bold;
@@ -167,8 +168,9 @@
 }
 
 .logo span {
-  color: #a19d1b; /* Add some color to the secondary name */
+  color: #a19d1b;
 }
+
 /* ====================================
   🌟 Mobile Navigation
 ==================================== */

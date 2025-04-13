@@ -1,5 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-header-a',
   templateUrl: './header-a.component.html',
@@ -13,6 +16,11 @@ export class HeaderAComponent {
     this.isDropdownVisible = !this.isDropdownVisible;
   }*/
 
+
+    constructor(
+      private authService: AuthService,
+      private router: Router
+    ) {}
 
 
   toggleDropdown(): void {
@@ -31,4 +39,22 @@ export class HeaderAComponent {
       this.isDropdownVisible = false;
     }
   }
+
+
+
+
+
+  onLogout(){
+
+    this.authService.logout();
+
+    // Clear all previous stored data related to old user logins
+    localStorage.removeItem('admin_auth');  // Removes old admin data from localStorage
+    localStorage.removeItem('agency_auth'); // Removes any previous agency data
+    localStorage.removeItem('agency_data'); // Removes any previous agency-specific data
+
+    this.router.navigate(['/login']);
+
+  }
 }
+

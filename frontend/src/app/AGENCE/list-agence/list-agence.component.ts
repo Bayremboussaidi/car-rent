@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./list-agence.component.css']
 })
 export class ListAgenceComponent {
-  agencyName = "Tesla Agency";
+  agencyName = "";
   cars: Voiture[] = [];
   displayedCars: Voiture[] = [];
   pageSize = 6;
