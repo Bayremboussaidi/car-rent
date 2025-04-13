@@ -27,9 +27,7 @@ export class VoitureService {
   }
 
   addVoiture(voiture: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, voiture).pipe(
-      map((response: any) => response.data) // Extract `data` from the response
-    );
+    return this.http.post(`${this.baseUrl}`, voiture); // Remove the .pipe(map(...))
   }
 
 

@@ -41,8 +41,9 @@ export class AddCarComponent implements OnInit {
     private emailService: EmailService,
     private agenceService: AgenceService
   ) {}
+
   ngOnInit(): void {
-    this. fetchAgencies();
+    this.fetchAgencies();
   }
 
   // Navigates to the specified path
@@ -81,19 +82,19 @@ export class AddCarComponent implements OnInit {
 
     this.voitureService.addVoiture(this.voiture).subscribe({
       next: (response: any) => {
-        if (response && response.id) {
-          const voitureId = response.id;
+        if (response && response.data && response.data.id) {
+          const voitureId = response.data.id;
           console.log('Extracted Voiture ID:', voitureId);
 
           this.photoService.uploadPhotos(voitureId, null, this.imageFiles).subscribe({
             next: () => {
               console.log('Photos successfully uploaded.');
 
-              //  Send email to followers
+              // Send email to followers
               const emailRequest: EmailRequest = {
                 name: this.voiture.carName,
-                email: "zahidaaloui506@gmail.com", // or leave it for backend to handle
-                message: ` A new car "${this.voiture.carName}" has just been added to our agency. Check it out now!`
+                email: "zahidaaloui506@gmail.com",
+                message: `A new car "${this.voiture.carName}" has just been added to our agency. Check it out now!`
               };
 
               this.emailService.informEmail(emailRequest).subscribe({
@@ -101,7 +102,7 @@ export class AddCarComponent implements OnInit {
                   console.log('Inform email sent to followers.');
                   this.router.navigate(['/admin/carlista']);
                 },
-                error: (err:any) => {
+                error: (err: any) => {
                   console.error('Error sending email to followers:', err);
                   console.log('Car added, but email notification failed.');
                   this.router.navigate(['/admin/carlista']);
@@ -126,27 +127,21 @@ export class AddCarComponent implements OnInit {
     });
   }
 
-
-
   // Removes an image from the selected list
   removeImage(index: number): void {
     this.imageFiles.splice(index, 1);
-    console.log('Image removed:', this.imageFiles); // Debug after removal
+    console.log('Image removed:', this.imageFiles);
   }
-
-
-
 
   fetchAgencies(): void {
     this.agenceService.getAllAgences().subscribe(
-      (response: any) => {  // Response is the array itself
+      (response: any) => {
         if (response && Array.isArray(response)) {
-          this.agencies = response;  // Assign response directly (not response.data)
+          this.agencies = response;
 
-          // Add "MyLoc" with correct property name
           if (!this.agencies.some(agency => agency.agencyName === 'MyLoc')) {
             this.agencies.unshift({
-              id: 0,  // Add a dummy ID if needed
+              id: 0,
               agencyName: 'MyLoc',
               email: '',
               phoneNumber: '',
@@ -156,7 +151,9 @@ export class AddCarComponent implements OnInit {
           }
         }
       },
-      (error) => { /* Handle error */ }
+      (error) => {
+        console.error('Error fetching agencies:', error);
+      }
     );
   }
 }
