@@ -16,8 +16,9 @@ public class BeansConfig {
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // Match security config
+        
+        config.setAllowCredentials(true); // Allow cookies, authorization headers
+        config.setAllowedOrigins(List.of("http://localhost:4200")); // Allow frontend app origin
         config.setAllowedHeaders(List.of(
             "Origin",
             "Content-Type",
@@ -25,19 +26,12 @@ public class BeansConfig {
             "Authorization",
             "X-Requested-With"
         ));
-        config.setExposedHeaders(List.of(
-            "Authorization",
-            "Content-Disposition"
-        ));
-        config.setAllowedMethods(List.of(
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "OPTIONS",
-            "PATCH"
-        ));
+        config.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        
+        // Register configuration for all routes
         source.registerCorsConfiguration("/**", config);
+        
         return new CorsFilter(source);
     }
 }

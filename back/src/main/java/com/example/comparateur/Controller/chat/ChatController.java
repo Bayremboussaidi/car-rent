@@ -1,25 +1,65 @@
 package com.example.comparateur.Controller.chat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.example.comparateur.DTO.CHAT.UserDTO;
+import com.example.comparateur.Entity.Agence;
+import com.example.comparateur.Entity.admin.Admin;
 import com.example.comparateur.Entity.chat.Chat;
 import com.example.comparateur.Entity.chat.Message;
 import com.example.comparateur.Exception.chat.ChatNotFoundException;
 import com.example.comparateur.Exception.chat.NoChatExistsInTheRepository;
+import com.example.comparateur.Repository.AgenceRepository;
+import com.example.comparateur.Repository.admin.AdminRepository;
 import com.example.comparateur.Service.chat.ChatServiceImpl;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
+
 @RequestMapping("/api/chats")
 public class ChatController {
 
     @Autowired
     private ChatServiceImpl chatService;
+    
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private AgenceRepository agenceRepository;
+
+
+
+        @GetMapping("/allUSERS")
+    public List<UserDTO> getAllUsers() {
+        List<UserDTO> allUsers = new ArrayList<>();
+
+        List<Admin> admins = adminRepository.findAll();
+        for (Admin admin : admins) {
+            allUsers.add(new UserDTO(admin.getEmail(), admin.getUsername()));
+        }
+
+        List<Agence> agences = agenceRepository.findAll();
+        for (Agence agence : agences) {
+            allUsers.add(new UserDTO(agence.getEmail(), agence.getAgencyName()));
+        }
+
+        return allUsers;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> createChat(@RequestBody Chat chat) {

@@ -197,7 +197,7 @@ export class LoginComponent {
   }*/
    // Keycloak login
 
-   /*private async handleKeycloakLogin() {
+  /*private async handleKeycloakLogin() {
     try {
       this.authService.logout(); // Clear any existing tokens
 

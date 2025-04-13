@@ -25,23 +25,19 @@ export class ChatComponent implements OnInit {
 
   public messageList: Message[] = [];
   public chatList: Chat[] = [];
-  public chatData: Chat | any;
-
+  public chatData: Chat = new Chat();
   public alluser: any[] = [];
 
-  replymessage: string = "checking";
-
   chatId: string = sessionStorage.getItem('chatId') || '';
-  secondUserName: string = '';
-  firstUserName: string = sessionStorage.getItem('username') || '';
+  secondUserEmail: string = '';
+  firstUserEmail: string = sessionStorage.getItem('username') || '';
   senderEmail: string = sessionStorage.getItem('username') || '';
-  senderCheck: string = sessionStorage.getItem('username') || '';
+
+  public senderCheck: string = '';
+  public check: string = '';
 
   timesRun = 0;
   timesRun2 = 0;
-
-  // Adding the 'check' property as mentioned in the template error
-  check: string = 'someValue';  // Define 'check' with a valid value
 
   constructor(
     private chatService: ChatService,
@@ -56,24 +52,28 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Refresh current chat messages every second
+    // Set the current logged-in user's email from sessionStorage
+    this.senderCheck = this.senderEmail = sessionStorage.getItem('username') || '';
+    this.check = this.senderCheck;
+
+    // Fetch the chat details every second (adjust the interval as needed)
     setInterval(() => {
       const chatId = sessionStorage.getItem('chatId');
       if (chatId) {
         this.chatService.getChatById(chatId).subscribe(data => {
           this.chatData = data;
           this.messageList = data.messageList || [];
-          this.secondUserName = data.secondUserName || '';
-          this.firstUserName = data.firstUserName || '';
+          this.secondUserEmail = data.secondUserEmail || '';
+          this.firstUserEmail = data.firstUserEmail || '';
         });
       }
     }, 1000);
 
-    // Fetch chats for the logged-in user
-    const username = sessionStorage.getItem('username');
-    if (username) {
+    // Fetch all chats related to the logged-in user (both firstUserEmail and secondUserEmail)
+    const email = sessionStorage.getItem('username');
+    if (email) {
       const chatListInterval = setInterval(() => {
-        this.chatService.getChatByFirstUserNameOrSecondUserName(username).subscribe(data => {
+        this.chatService.getChatByFirstUserEmailOrSecondUserEmail(email).subscribe(data => {
           this.chatList = data || [];
         });
         this.timesRun2 += 1;
@@ -83,10 +83,10 @@ export class ChatComponent implements OnInit {
       }, 1000);
     }
 
-    // Fetch all users
+    // Fetch all users (combined from admin and agence)
     const userInterval = setInterval(() => {
-      this.agenceService.getAll().subscribe((data: any) => {
-        this.alluser = data || [];
+      this.chatService. getAllUsers().subscribe((data: any) => {
+        this.alluser = data || []; // All users will be stored here
       });
       this.timesRun += 1;
       if (this.timesRun === 2) {
@@ -99,38 +99,41 @@ export class ChatComponent implements OnInit {
     sessionStorage.removeItem("chatId");
 
     if (firstUser && secondUser) {
-      this.chatService.getChatByFirstUserNameAndSecondUserName(firstUser, secondUser).subscribe(data => {
+      this.chatService.getChatByFirstUserEmailAndSecondUserEmail(firstUser, secondUser).subscribe(data => {
         if (data && data.length > 0) {
           this.chatData = data[0];
-          this.chatId = this.chatData.chatId;
-          sessionStorage.setItem('chatId', this.chatId.toString());
+          this.chatId = this.chatData.chatId!;
+          sessionStorage.setItem('chatId', this.chatId);
 
-          this.chatService.getChatById(this.chatId.toString()).subscribe(chat => {
+          this.chatService.getChatById(this.chatId).subscribe(chat => {
             this.chatData = chat;
             this.messageList = chat.messageList || [];
-            this.secondUserName = chat.secondUserName || '';
-            this.firstUserName = chat.firstUserName || '';
+            this.secondUserEmail = chat.secondUserEmail || '';
+            this.firstUserEmail = chat.firstUserEmail || '';
           });
         } else {
           console.warn('No chat found between the specified users.');
         }
       }, error => {
-        console.error('Error fetching chat by usernames', error);
+        console.error('Error fetching chat by emails', error);
       });
     } else {
-      console.error('User names are undefined');
+      console.error('User emails are undefined');
     }
   }
 
   sendMessage(): void {
     this.messageObj.replymessage = this.chatForm.value.replymessage;
+    this.messageObj.senderEmail = this.senderEmail;
+    this.messageObj.time = new Date().toISOString();
+
     this.chatService.updateChat(this.messageObj, this.chatId).subscribe(() => {
       this.chatForm.reset();
-      this.chatService.getChatById(this.chatId.toString()).subscribe(data => {
+      this.chatService.getChatById(this.chatId).subscribe(data => {
         this.chatData = data;
         this.messageList = this.chatData.messageList || [];
-        this.secondUserName = this.chatData.secondUserName || '';
-        this.firstUserName = this.chatData.firstUserName || '';
+        this.secondUserEmail = this.chatData.secondUserEmail || '';
+        this.firstUserEmail = this.chatData.firstUserEmail || '';
       });
     });
   }
@@ -148,7 +151,7 @@ export class ChatComponent implements OnInit {
     window.history.back();
   }
 
-  goToChat(username: string): void {
-    // (Intentionally left empty for now as you commented it out)
+  goToChat(email: string): void {
+    console.log("Go to chat with:", email);
   }
 }

@@ -5,11 +5,11 @@
 
     <div class="col-md-0 col-xl-1 order-lg-1"></div>
 
-    <!-- Left Body -->
+    <!-- Left: User List -->
     <div class="col-md-4 col-xl-2 chat order-last order-lg-2">
       <div class="card mb-sm-3 mb-md-0 contacts_card">
         <div class="card-header">
-          <h1 class="chat-list-title">All User</h1>
+          <h1 class="chat-list-title">All Users</h1>
         </div>
         <div class="card-body contacts_body">
           <ul class="contacts chatList">
@@ -17,7 +17,7 @@
               <div *ngIf="presentation.userName !== check" class="d-flex bd-highlight">
                 <div class="img_cont">
                   <div class="rounded-circle user_img text_inside_circle">
-                    {{ presentation.userName.substring(0, 1) || '?' }}
+                    {{ (presentation.userName || '')[0] || '?' }}
                   </div>
                 </div>
                 <div class="user_info" (click)="goToChat(presentation.userName)">
@@ -33,40 +33,38 @@
 
     <div class="col-md-0 col-xl-1 order-lg-3"></div>
 
-    <!-- Middle Body -->
+    <!-- Center: Chat Body -->
     <div class="col-md-8 col-xl-5 chat order-md-1 order-lg-4">
       <div class="card">
         <div class="card-header msg_head">
           <div class="d-flex bd-highlight">
             <div class="img_cont">
-              <div class="rounded-circle user_img text_inside_circle1" *ngIf="secondUserName !== senderCheck">
-                {{ secondUserName.substring(0, 1) || '?' }}
-              </div>
-              <div class="rounded-circle user_img text_inside_circle1" *ngIf="secondUserName === senderCheck">
-                {{ firstUserName.substring(0, 1) || '' }}
+              <div class="rounded-circle user_img text_inside_circle1">
+                {{ ((secondUserEmail !== senderCheck ? secondUserEmail : firstUserEmail) || '')[0] || '?' }}
               </div>
             </div>
             <div class="user_info">
-              <span *ngIf="secondUserName !== senderCheck">{{ secondUserName }}</span>
-              <span *ngIf="secondUserName === senderCheck">{{ firstUserName }}</span>
+              <span>
+                {{ (secondUserEmail !== senderCheck ? secondUserEmail : firstUserEmail) || '' }}
+              </span>
               <p>Message</p>
             </div>
-            <div class="video_cam"></div>
           </div>
-          <span id="action_menu_btn"></span>
         </div>
 
+        <!-- Messages -->
         <div class="card-body msg_card_body" #scrollMe [scrollTop]="scrollMe.scrollHeight">
           <div *ngFor="let msg of messageList">
+
             <!-- Sent Message -->
             <div class="d-flex justify-content-end mb-4" *ngIf="msg.senderEmail === senderCheck">
               <div class="msg_cotainer_send">
                 {{ msg.replymessage }}
-                <span class="msg_time_send">{{ msg.time ? msg.time.substring(11, 16) : '?' }}</span>
+                <span class="msg_time_send">{{ (msg.time || '').substring(11, 16) || '?' }}</span>
               </div>
               <div class="img_cont_msg">
                 <span class="rounded-circle user_img_msg text_inside_circle2">
-                  {{ msg.senderEmail.substring(0, 1) || '?' }}
+                  {{ (msg.senderEmail || '')[0] || '?' }}
                 </span>
               </div>
             </div>
@@ -75,17 +73,19 @@
             <div class="d-flex justify-content-start mb-4" *ngIf="msg.senderEmail !== senderCheck">
               <div class="img_cont_msg">
                 <span class="rounded-circle user_img_msg text_inside_circle3">
-                  {{ msg.senderEmail.substring(0, 1) || '?' }}
+                  {{ (msg.senderEmail || '')[0] || '?' }}
                 </span>
               </div>
               <div class="msg_cotainer">
                 {{ msg.replymessage }}
-                <span class="msg_time">{{ msg.time ? msg.time.substring(11, 16) : '?' }}</span>
+                <span class="msg_time">{{ (msg.time || '').substring(11, 16) || '?' }}</span>
               </div>
             </div>
+
           </div>
         </div>
 
+        <!-- Send Message -->
         <div class="card-footer">
           <form [formGroup]="chatForm">
             <div class="input-group">
@@ -106,10 +106,11 @@
             </div>
           </form>
         </div>
+
       </div>
     </div>
 
-    <!-- Right Body -->
+    <!-- Right: Chat List -->
     <div class="col-md-4 col-xl-2 chat order-md-2 order-lg-5">
       <div class="card mb-sm-3 mb-md-0 contacts_card">
         <div class="card-header">
@@ -118,26 +119,15 @@
         <div class="card-body contacts_body">
           <ul class="contacts chatList">
             <li *ngFor="let chats of chatList">
-              <div class="d-flex bd-highlight" (click)="loadChatByEmail(chats.secondUserName || '', chats.firstUserName || '')">
+              <div class="d-flex bd-highlight"
+                   (click)="loadChatByEmail(chats.secondUserEmail || '', chats.firstUserEmail || '')">
                 <div class="img_cont">
-                  <div
-                    class="rounded-circle user_img text_inside_circle"
-                    *ngIf="chats.secondUserName !== senderCheck">
-                    {{ chats.secondUserName.substring(0, 1) || '?' }}
-                  </div>
-                  <div
-                    class="rounded-circle user_img text_inside_circle"
-                    *ngIf="chats.secondUserName === senderCheck">
-                    {{ chats.firstUserName.substring(0, 1) || '?' }}
+                  <div class="rounded-circle user_img text_inside_circle">
+                    {{ ((chats.secondUserEmail !== senderCheck ? chats.secondUserEmail : chats.firstUserEmail) || '')[0] || '?' }}
                   </div>
                 </div>
-                <div class="user_info">
-                  <div *ngIf="chats.secondUserName !== senderCheck" style="margin-top: 1rem;">
-                    {{ chats.secondUserName }}
-                  </div>
-                  <div *ngIf="chats.secondUserName === senderCheck" style="margin-top: 1rem;">
-                    {{ chats.firstUserName }}
-                  </div>
+                <div class="user_info" style="margin-top: 1rem;">
+                  {{ (chats.secondUserEmail !== senderCheck ? chats.secondUserEmail : chats.firstUserEmail) || '' }}
                 </div>
               </div>
             </li>
