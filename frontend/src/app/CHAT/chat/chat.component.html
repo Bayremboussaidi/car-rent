@@ -5,31 +5,32 @@
 
     <div class="col-md-0 col-xl-1 order-lg-1"></div>
 
-    <!-- Left: User List -->
-    <div class="col-md-4 col-xl-2 chat order-last order-lg-2">
-      <div class="card mb-sm-3 mb-md-0 contacts_card">
-        <div class="card-header">
-          <h1 class="chat-list-title">All Users</h1>
-        </div>
-        <div class="card-body contacts_body">
-          <ul class="contacts chatList">
-            <li *ngFor="let presentation of alluser">
-              <div *ngIf="presentation.userName !== check" class="d-flex bd-highlight">
-                <div class="img_cont">
-                  <div class="rounded-circle user_img text_inside_circle">
-                    {{ (presentation.userName || '')[0] || '?' }}
-                  </div>
-                </div>
-                <div class="user_info" (click)="goToChat(presentation.userName)">
-                  <div style="margin-top: 1rem;">{{ presentation.userName }}</div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="card-footer"></div>
-      </div>
+<!-- Left: User List -->
+<div class="col-md-4 col-xl-2 chat order-last order-lg-2">
+  <div class="card mb-sm-3 mb-md-0 contacts_card">
+    <div class="card-header">
+      <h1 class="chat-list-title">All Users</h1>
     </div>
+    <div class="card-body contacts_body">
+      <ul class="contacts chatList">
+        <li *ngFor="let presentation of alluser">
+          <div *ngIf="presentation.userName !== check" class="d-flex bd-highlight">
+            <div class="img_cont">
+              <div class="rounded-circle user_img text_inside_circle">
+                {{ (presentation.userName || '')[0] || '?' }}
+              </div>
+            </div>
+            <div class="user_info" (click)="goToChat(presentation.email)">
+              <div style="margin-top: 1rem;">{{ presentation.userName }}</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</div>
+
 
     <div class="col-md-0 col-xl-1 order-lg-3"></div>
 
@@ -99,7 +100,7 @@
                 (keyup.enter)="sendMessage()">
               </textarea>
               <div class="input-group-append">
-                <button mat-raised-button class="input-group-text send_btn" (click)="sendMessage()">
+                <button mat-raised-button type="button" class="input-group-text send_btn" (click)="sendMessage()">
                   <i class="fa fa-location-arrow"></i>
                 </button>
               </div>

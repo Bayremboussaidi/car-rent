@@ -83,13 +83,14 @@ public class ChatServiceImpl {
 
     // Get chat by both first and second user email
     public List<Chat> getChatByFirstUserEmailAndSecondUserEmail(String firstUserEmail, String secondUserEmail) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findByFirstUserEmailAndSecondUserEmail(firstUserEmail, secondUserEmail);
+        List<Chat> chat = chatRepository.findChatByEmailsBidirectional(firstUserEmail, secondUserEmail);
         if (chat.isEmpty()) {
             throw new ChatNotFoundException();
         } else {
             return chat;
         }
     }
+    
 
     // Add a message to an existing chat
     public Chat addMessage(Message add, int chatId) throws ChatNotFoundException {

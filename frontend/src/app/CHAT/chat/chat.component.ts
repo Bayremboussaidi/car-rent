@@ -7,6 +7,7 @@ import { ChatService } from '../../services/CHAT/chat.service';
 import { UserService } from '../../services/user.service';
 import { AgenceService } from '../../services/agence/agence.service';
 import { Location } from '@angular/common';
+import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-chat',
@@ -44,7 +45,8 @@ export class ChatComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private location: Location,
-    private agenceService: AgenceService
+    private agenceService: AgenceService,
+    private adminService: AdminService
   ) {
     this.chatForm = new FormGroup({
       replymessage: new FormControl()
@@ -52,41 +54,68 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const currentAdmin = this.adminService.getCurrentAdmin();
+    if (currentAdmin) {
+      this.senderEmail = currentAdmin.email;
+      this.senderCheck = currentAdmin.email;
+      this.check = currentAdmin.email;
+      console.log('Utilisateur courant (init):', currentAdmin.email);
+    } else {
+      console.warn('Aucun admin connecté');
+    }
+
     // Set the current logged-in user's email from sessionStorage
     this.senderCheck = this.senderEmail = sessionStorage.getItem('username') || '';
     this.check = this.senderCheck;
 
-    // Fetch the chat details every second (adjust the interval as needed)
-    setInterval(() => {
-      const chatId = sessionStorage.getItem('chatId');
-      if (chatId) {
-        this.chatService.getChatById(chatId).subscribe(data => {
-          this.chatData = data;
-          this.messageList = data.messageList || [];
-          this.secondUserEmail = data.secondUserEmail || '';
-          this.firstUserEmail = data.firstUserEmail || '';
-        });
-      }
-    }, 1000);
-
-    // Fetch all chats related to the logged-in user (both firstUserEmail and secondUserEmail)
-    const email = sessionStorage.getItem('username');
-    if (email) {
-      const chatListInterval = setInterval(() => {
-        this.chatService.getChatByFirstUserEmailOrSecondUserEmail(email).subscribe(data => {
-          this.chatList = data || [];
-        });
-        this.timesRun2 += 1;
-        if (this.timesRun2 === 2) {
-          clearInterval(chatListInterval);
-        }
-      }, 1000);
-    }
-
     // Fetch all users (combined from admin and agence)
     const userInterval = setInterval(() => {
-      this.chatService. getAllUsers().subscribe((data: any) => {
+      this.chatService.getAllUsers().subscribe((data: any) => {
         this.alluser = data || []; // All users will be stored here
+
+        // Check for each pair of users and create a chat if it doesn't exist
+        this.alluser.forEach(user => {
+          if (user.email !== this.senderEmail) {
+            this.chatService.getChatByFirstUserEmailAndSecondUserEmail(this.senderEmail, user.email).subscribe(chatData => {
+              if (chatData.length === 0) {
+                // No chat exists, create a new chat
+                const newChat: Chat = {
+                  firstUserEmail: this.senderEmail,
+                  secondUserEmail: user.email,
+                  messageList: []
+                };
+                this.chatService.createChatRoom(newChat).subscribe(createdChat => {
+                  console.log('Chat created successfully between', this.senderEmail, 'and', user.email);
+
+                  // Now send "hello" message from both users
+                  const initialMessage = "hello";
+
+                  // Message from logged-in user
+                  const messageFromUser: Message = {
+                    senderEmail: this.senderEmail,
+                    replymessage: initialMessage,
+                    time: new Date().toISOString()
+                  };
+
+                  this.chatService.updateChat(messageFromUser, createdChat.chatId!).subscribe(() => {
+                    console.log('Message from', this.senderEmail, 'sent: hello');
+                  });
+
+                  // Message from the other user (the second user)
+                  const messageFromOtherUser: Message = {
+                    senderEmail: user.email,
+                    replymessage: initialMessage,
+                    time: new Date().toISOString()
+                  };
+
+                  this.chatService.updateChat(messageFromOtherUser, createdChat.chatId!).subscribe(() => {
+                    console.log('Message from', user.email, 'sent: hello');
+                  });
+                });
+              }
+            });
+          }
+        });
       });
       this.timesRun += 1;
       if (this.timesRun === 2) {
@@ -95,17 +124,24 @@ export class ChatComponent implements OnInit {
     }, 1000);
   }
 
+
+
   loadChatByEmail(firstUser: string | undefined, secondUser: string | undefined): void {
+    console.log('Trying to load chat between:', firstUser, 'and', secondUser);
+
     sessionStorage.removeItem("chatId");
 
     if (firstUser && secondUser) {
       this.chatService.getChatByFirstUserEmailAndSecondUserEmail(firstUser, secondUser).subscribe(data => {
+        console.log('API Response:', data); // ✅ voir si API renvoie quelque chose
+
         if (data && data.length > 0) {
           this.chatData = data[0];
           this.chatId = this.chatData.chatId!;
           sessionStorage.setItem('chatId', this.chatId);
 
           this.chatService.getChatById(this.chatId).subscribe(chat => {
+            console.log('Chat loaded by ID:', chat); // ✅ 2e appel
             this.chatData = chat;
             this.messageList = chat.messageList || [];
             this.secondUserEmail = chat.secondUserEmail || '';
@@ -121,6 +157,7 @@ export class ChatComponent implements OnInit {
       console.error('User emails are undefined');
     }
   }
+
 
   sendMessage(): void {
     this.messageObj.replymessage = this.chatForm.value.replymessage;
@@ -151,7 +188,16 @@ export class ChatComponent implements OnInit {
     window.history.back();
   }
 
+
+
   goToChat(email: string): void {
-    console.log("Go to chat with:", email);
+    const currentAdmin = this.adminService.getCurrentAdmin();
+    if (currentAdmin && email) {
+      console.log(' goToChat cliqué, utilisateur courant:', currentAdmin.email, 'autre utilisateur:', email);
+      this.loadChatByEmail(currentAdmin.email, email);
+    } else {
+      console.warn(' utilisateur courant ou cible non défini');
+    }
   }
+
 }

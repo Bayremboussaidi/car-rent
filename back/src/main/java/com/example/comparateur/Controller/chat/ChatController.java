@@ -103,7 +103,7 @@ public class ChatController {
     }
 
     // Updated to use email instead of username
-    @GetMapping("/getChatByFirstUserEmailOrSecondUserEmail/{email}")
+    /*@GetMapping("/getChatByFirstUserEmailOrSecondUserEmail/{email}")
     public ResponseEntity<?> getChatByFirstUserEmailOrSecondUserEmail(@PathVariable String email) {
         try {
             List<Chat> byChat = chatService.getChatByFirstUserEmailOrSecondUserEmail(email);
@@ -111,7 +111,7 @@ public class ChatController {
         } catch (ChatNotFoundException e) {
             return new ResponseEntity<>("Chat not found for either user email", HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
     // Updated to use email instead of username
     @GetMapping("/getChatByFirstUserEmailAndSecondUserEmail")

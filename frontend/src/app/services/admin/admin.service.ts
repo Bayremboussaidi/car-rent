@@ -28,4 +28,25 @@ export class AdminService {
 
 
 
+
+
+
+
+  getCurrentAdmin(): { username: string; email: string } | null {
+    const stored = localStorage.getItem('admin_auth');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        return {
+          username: parsed.username,
+          email: parsed.email
+        };
+      } catch (error) {
+        console.error('Erreur parsing admin_auth:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
 }
