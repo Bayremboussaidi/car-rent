@@ -2,10 +2,10 @@ package com.example.comparateur.Service.chat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.comparateur.Entity.chat.Chat;
 import com.example.comparateur.Entity.chat.Message;
@@ -23,95 +23,73 @@ public class ChatServiceImpl {
     @Autowired
     private MessageRepository messageRepository;
 
-    // Add a new chat, MySQL will auto-generate the chatId
     public Chat addChat(Chat chat) {
         return chatRepository.save(chat);
     }
 
-    // Get all chats
     public List<Chat> findAllChats() throws NoChatExistsInTheRepository {
-        if (chatRepository.findAll().isEmpty()) {
+        List<Chat> chats = chatRepository.findAll();
+        if (chats.isEmpty()) {
             throw new NoChatExistsInTheRepository();
-        } else {
-            return chatRepository.findAll();
         }
+        return chats;
     }
 
-    // Get chat by ID
     public Chat getById(int id) throws ChatNotFoundException {
-        Optional<Chat> chat = chatRepository.findById(id);
-        if (chat.isPresent()) {
-            return chat.get();
-        } else {
-            throw new ChatNotFoundException();
-        }
+        return chatRepository.findById(id)
+            .orElseThrow(ChatNotFoundException::new);
     }
 
-    // Get chats by first user email
     public List<Chat> getChatByFirstUserEmail(String email) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findByFirstUserEmail(email);
-        if (chat.isEmpty()) {
+        List<Chat> chats = chatRepository.findByFirstUserEmail(email);
+        if (chats.isEmpty()) {
             throw new ChatNotFoundException();
-        } else {
-            return chat;
         }
+        return chats;
     }
 
-    // Get chats by second user email
     public List<Chat> getChatBySecondUserEmail(String email) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findBySecondUserEmail(email);
-        if (chat.isEmpty()) {
+        List<Chat> chats = chatRepository.findBySecondUserEmail(email);
+        if (chats.isEmpty()) {
             throw new ChatNotFoundException();
-        } else {
-            return chat;
         }
+        return chats;
     }
 
-    // Get chats by either first or second user email
     public List<Chat> getChatByFirstUserEmailOrSecondUserEmail(String email) throws ChatNotFoundException {
-        List<Chat> chatFirstUser = chatRepository.findByFirstUserEmail(email);
-        List<Chat> chatSecondUser = chatRepository.findBySecondUserEmail(email);
-
-        chatFirstUser.addAll(chatSecondUser);
-
-        if (chatFirstUser.isEmpty()) {
+        List<Chat> chats = chatRepository.findByFirstUserEmailOrSecondUserEmail(email);
+        if (chats.isEmpty()) {
             throw new ChatNotFoundException();
-        } else {
-            return chatFirstUser;
         }
+        return chats;
     }
 
-    // Get chat by both first and second user email
-    public List<Chat> getChatByFirstUserEmailAndSecondUserEmail(String firstUserEmail, String secondUserEmail) throws ChatNotFoundException {
-        List<Chat> chat = chatRepository.findChatByEmailsBidirectional(firstUserEmail, secondUserEmail);
-        if (chat.isEmpty()) {
+    public List<Chat> getChatByFirstUserEmailAndSecondUserEmail(String firstUserEmail, String secondUserEmail) 
+        throws ChatNotFoundException {
+        List<Chat> chats = chatRepository.findChatByEmailsBidirectional(firstUserEmail, secondUserEmail);
+        if (chats.isEmpty()) {
             throw new ChatNotFoundException();
-        } else {
-            return chat;
         }
+        return chats;
     }
-    
 
-    // Add a message to an existing chat
-    public Chat addMessage(Message add, int chatId) throws ChatNotFoundException {
-        Optional<Chat> chat = chatRepository.findById(chatId);
-        if (chat.isPresent()) {
-            Chat existingChat = chat.get();
+    @Transactional
+    public Chat addMessage(Message newMessage, int chatId) throws ChatNotFoundException {
+        Chat chat = chatRepository.findById(chatId)
+            .orElseThrow(ChatNotFoundException::new);
 
-            // Adding the message to the chat's message list
-            List<Message> messages = existingChat.getMessageList();
-            if (messages == null) {
-                messages = new ArrayList<>();
-            }
-            messages.add(add);
-            existingChat.setMessageList(messages);
-
-            // Save the message itself to the message table
-            messageRepository.save(add);
-            // Save the updated chat with the new message
-            return chatRepository.save(existingChat);
-        } else {
-            throw new ChatNotFoundException();
+        // Set bidirectional relationship
+        newMessage.setChat(chat);
+        
+        // Initialize message list if needed
+        if (chat.getMessageList() == null) {
+            chat.setMessageList(new ArrayList<>());
         }
+        
+        // Add message to chat's collection
+        chat.getMessageList().add(newMessage);
+        
+        // Cascade save through chat repository
+        return chatRepository.save(chat);
     }
 }

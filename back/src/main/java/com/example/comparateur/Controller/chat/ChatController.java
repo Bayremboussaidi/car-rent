@@ -44,7 +44,7 @@ public class ChatController {
 
 
 
-        @GetMapping("/allUSERS")
+    @GetMapping("/allUSERS")
     public List<UserDTO> getAllUsers() {
         List<UserDTO> allUsers = new ArrayList<>();
 

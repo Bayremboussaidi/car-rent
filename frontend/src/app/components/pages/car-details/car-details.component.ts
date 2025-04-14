@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VoitureService } from '../../../services/voiture.service';
 import { ReviewService } from '../../../services/review-service.service'; //  Import ReviewService
 import { Review } from '../../../models/review.model'; //  Import Review Interface
 import {UserloginService} from '../../../services/user_login/userlogin.service'
+import { Router } from '@angular/router';
 
 
 
@@ -26,6 +27,20 @@ interface LocalPhotoResponseDTO {
   styleUrls: ['./car-details.component.css']
 })
 export class CarDetailsComponent implements OnInit, OnDestroy {
+
+
+
+  showBookingModal = false;
+  selectedCar: any = null;
+
+  showSignInPrompt = false;
+
+  voitures: any[] = []; // Displayed cars for the current page
+
+
+
+
+
   carId: number | null = null;
   car: any;
   otherCars: any[] = [];
@@ -46,8 +61,10 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private voitureService: VoitureService,
     private reviewService: ReviewService,
-    private userLoginService: UserloginService
-  ) {}
+    private userLoginService: UserloginService,
+    private cd: ChangeDetectorRef,
+    private router: Router  // Add this line
+) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -75,6 +92,11 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
 
 
 
+    // Close booking modal
+    closeBookingModal(): void {
+      console.log('Closing modal');
+      this.showBookingModal = false;
+    }
 
 
   private loadUserData(): void {
@@ -90,6 +112,18 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       this.review.email = currentUser.email || '';
 
     }
+  }
+
+
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+    this.closeSignInPrompt();
+  }
+
+  // Close sign-in prompt
+  closeSignInPrompt(): void {
+    this.showSignInPrompt = false;
   }
 
 
@@ -221,4 +255,29 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+
+
+
+  //purchase
+
+  openBookingModal(voiture: any): void {
+    console.log('Is user logged in?', this.isLoggedIn);
+
+    if (this.isLoggedIn) {
+      console.log('Booking car:', voiture);
+      this.selectedCar = voiture; // Store car details
+      this.showBookingModal = true; // Show modal
+    } else {
+      this.showSignInPrompt = true;
+      this.cd.detectChanges(); // Detect changes for modal visibility
+    }
+  }
+
+
+
+  get isLoggedIn(): boolean {
+    return this.userLoginService.isLoggedIn();
+  }
+
 }

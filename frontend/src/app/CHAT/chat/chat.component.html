@@ -59,10 +59,10 @@
 
             <!-- Sent Message -->
             <div class="d-flex justify-content-end mb-4" *ngIf="msg.senderEmail === senderCheck">
-              <div class="msg_cotainer_send">
+              <!--div class="msg_cotainer_send">
                 {{ msg.replymessage }}
                 <span class="msg_time_send">{{ (msg.time || '').substring(11, 16) || '?' }}</span>
-              </div>
+              </div-->
               <div class="img_cont_msg">
                 <span class="rounded-circle user_img_msg text_inside_circle2">
                   {{ (msg.senderEmail || '')[0] || '?' }}
@@ -77,10 +77,10 @@
                   {{ (msg.senderEmail || '')[0] || '?' }}
                 </span>
               </div>
-              <div class="msg_cotainer">
+              <!--div class="msg_cotainer">
                 {{ msg.replymessage }}
                 <span class="msg_time">{{ (msg.time || '').substring(11, 16) || '?' }}</span>
-              </div>
+              </div-->
             </div>
 
           </div>

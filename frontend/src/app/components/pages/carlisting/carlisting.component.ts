@@ -199,4 +199,16 @@ fetchAllVoitures(): void {
       this.updateDisplayedVoitures();
     }
   }
+
+
+
+  //reset the search
+  // Add to listcars.component.ts
+resetFilters(): void {
+  this.filteredVoitures = [...this.allVoitures];
+  this.totalVoitures = this.filteredVoitures.length;
+  this.totalPages = Math.ceil(this.totalVoitures / this.itemsPerPage);
+  this.currentPage = 1;
+  this.updateDisplayedVoitures();
+}
 }

@@ -13,28 +13,47 @@ export class FindCarFormComponent {
   @ViewChild('numPlacesInput') numPlacesInput!: ElementRef;
   @ViewChild('carTypeInput') carTypeInput!: ElementRef;
 
-  @Output() searchFilters = new EventEmitter<any>(); // ✅ Sends filters to ListcarsComponent
+  @Output() searchFilters = new EventEmitter<any>();
+  @Output() resetFilters = new EventEmitter<void>();
+
+
+
 
   searchHandler() {
     const filters: any = {
       local: this.localInput.nativeElement.value.trim(),
       pickupDate: this.pickupDateInput.nativeElement.value || null,
       dropoffDate: this.dropoffDateInput.nativeElement.value || null,
-      numPlaces: this.numPlacesInput.nativeElement.value || null, // ✅ Added in the middle
+      numPlaces: this.numPlacesInput.nativeElement.value || null, // Added in the middle
       carType: this.carTypeInput.nativeElement.value || null
     };
 
-    // ✅ Remove empty filters to avoid unnecessary parameters
+    //  Remove empty filters to avoid unnecessary parameters
     Object.keys(filters).forEach(key => {
       if (!filters[key]) delete filters[key];
     });
 
-    // ✅ Ensure at least one filter is applied
+    //  Ensure at least one filter is applied
     if (Object.keys(filters).length === 0) {
       return alert("Please enter at least one search criteria.");
     }
 
-    // ✅ Emit filters to the parent component (ListcarsComponent)
+    //  Emit filters to the parent component (ListcarsComponent)
     this.searchFilters.emit(filters);
+  }
+
+
+
+
+  resetHandler() {
+    // Clear all inputs
+    this.localInput.nativeElement.value = '';
+    this.pickupDateInput.nativeElement.value = '';
+    this.dropoffDateInput.nativeElement.value = '';
+    this.numPlacesInput.nativeElement.value = '';
+    this.carTypeInput.nativeElement.value = '';
+
+    // Emit reset event
+    this.resetFilters.emit();
   }
 }

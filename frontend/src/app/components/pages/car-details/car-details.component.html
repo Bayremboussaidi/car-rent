@@ -1,7 +1,7 @@
 <div class="car-details-container" *ngIf="car">
   <div class="car-content">
     <div class="car-main-content">
-      <h1>{{ car.carName }}</h1>
+      <h1 class="main-car-title">{{ car.carName }}</h1>
 
       <!-- Car Images -->
       <div class="car-images-container">
@@ -31,7 +31,7 @@
 
       <!-- Car Details -->
       <div class="car__publisher d-flex align-items-center gap-4 mb-4">
-        <span class="car__brand">
+        <span class="d-flex align-items-center gap-1 section__description">
           <i class="ri-car-line"></i> {{ car.brand }}
         </span>
         <span class="d-flex align-items-center gap-1 section__description">
@@ -88,6 +88,11 @@
         <label for="r1">★</label>
       </div>
 
+
+      <button class="purchase-btn" (click)="openBookingModal(car)" >
+        <i class="pi pi-cart-minus"></i> Purchase
+      </button>
+
       <!--  Comment Section (Laisser une commentaire) - Placed Below Star Rating -->
       <div class="leave__comment-form mt-5">
         <h4>Laisser une commentaire</h4>
@@ -133,7 +138,7 @@
   <div class="car-sidebar">
 
     <div class="carousel-container">
-      <h5>Voitures similaires</h5>
+      <h5 style="margin-top: 40px;">Voitures similaires</h5>
 
       <div class="carousel-box" *ngIf="otherCars.length">
         <div
@@ -155,6 +160,46 @@
           </a>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Booking Modal Component -->
+<app-booking
+*ngIf="showBookingModal"
+[showModal]="showBookingModal"
+[voitureId]="selectedCar?.id"
+[carName]="selectedCar?.carName"
+[carPrice]="selectedCar?.price"
+(close)="closeBookingModal()">
+</app-booking>
+
+
+
+
+
+
+
+<!-- Backdrop and Modal -->
+<div class="signin-prompt-backdrop" *ngIf="showSignInPrompt" (click)="closeSignInPrompt()">
+  <div class="signin-prompt-modal" (click)="$event.stopPropagation()">
+    <h3>🔒 Sign In Required</h3>
+    <p>To proceed with booking this vehicle, please sign in to your account. Don't have an account yet? You can create one during the booking process.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" (click)="navigateToLogin()">
+        <i class="ri-login-box-line"></i>
+        Sign In
+      </button>
+      <button class="btn btn-secondary" (click)="closeSignInPrompt()">
+        <i class="ri-close-line"></i>
+        Cancel
+      </button>
     </div>
   </div>
 </div>

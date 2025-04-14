@@ -1,7 +1,10 @@
 <app-common-section [title]="'Car Listing'"></app-common-section>
 
 <div class="form__row" data-aos="fade-left">
-  <app-find-car-form (searchFilters)="applyFilters($event)"></app-find-car-form>
+  <app-find-car-form
+    (searchFilters)="applyFilters($event)"
+    (resetFilters)="resetFilters()"
+  ></app-find-car-form>
 </div>
 
 <section>
@@ -77,13 +80,26 @@
   (click)="closeSignInPrompt()"
 ></div>
 
-<!-- Sign-in Modal -->
-<div class="signin-prompt-modal" *ngIf="showSignInPrompt" (click)="$event.stopPropagation()">
-  <h3>Sign In Required</h3>
-  <p>You need to be logged in to book a car.</p>
-  <div class="modal-actions">
-    <button class="btn btn-primary" (click)="navigateToLogin()">Sign In</button>
-    <button class="btn btn-secondary" (click)="closeSignInPrompt()">Cancel</button>
+
+
+
+
+
+<!-- Backdrop and Modal -->
+<div class="signin-prompt-backdrop" *ngIf="showSignInPrompt" (click)="closeSignInPrompt()">
+  <div class="signin-prompt-modal" (click)="$event.stopPropagation()">
+    <h3>🔒 Sign In Required</h3>
+    <p>To proceed with booking this vehicle, please sign in to your account. Don't have an account yet? You can create one during the booking process.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" (click)="navigateToLogin()">
+        <i class="ri-login-box-line"></i>
+        Sign In
+      </button>
+      <button class="btn btn-secondary" (click)="closeSignInPrompt()">
+        <i class="ri-close-line"></i>
+        Cancel
+      </button>
+    </div>
   </div>
 </div>
 

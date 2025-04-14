@@ -34,7 +34,7 @@ import { AgencelayoutComponent } from './layouts/agencelayout/agencelayout.compo
 import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component';
 
 //CHAT
-import { ChatComponent } from './CHAT/chat/chat.component';
+//import { ChatComponent } from './CHAT/chat/chat.component';
 import { AddCarComponent } from './ADMIN/add-car/add-car.component';
 import { AgenceComponent } from './ADMIN/agence/agence.component';
 import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
@@ -80,7 +80,7 @@ const routes: Routes = [
       { path: 'bookinga', component: BookingAComponent },
       { path: 'carlista', component: CarListAComponent },
       { path: 'carlista/:id', component: CarDetaComponent },
-      { path: 'chat', component: ChatComponent },
+      //{ path: 'chat', component: ChatComponent },
       { path: 'add-car', component: AddCarComponent },
       { path: 'add-agence', component: AgenceComponent },
 

@@ -13,15 +13,19 @@ export class ChatService {
 
   constructor(private http: HttpClient) {}
 
-  getChatById(chatId: string | null): Observable<Chat> {
+  // Changed parameter type to number
+  getChatById(chatId: number): Observable<Chat> {
     return this.http.get<Chat>(`${this.apiUrl}/${chatId}`);
   }
 
   getChatByFirstUserEmailAndSecondUserEmail(first: string, second: string): Observable<Chat[]> {
-    return this.http.get<Chat[]>(`${this.apiUrl}/getChatByFirstUserEmailAndSecondUserEmail?firstUserEmail=${first}&secondUserEmail=${second}`);
+    return this.http.get<Chat[]>(
+      `${this.apiUrl}/getChatByFirstUserEmailAndSecondUserEmail?firstUserEmail=${first}&secondUserEmail=${second}`
+    );
   }
 
-  getChatByFirstUserEmailOrSecondUserEmail(email: string | null): Observable<Chat[]> {
+  // Changed parameter type to string (email can't be null)
+  getChatByFirstUserEmailOrSecondUserEmail(email: string): Observable<Chat[]> {
     return this.http.get<Chat[]>(`${this.apiUrl}/getChatByFirstUserEmailOrSecondUserEmail/${email}`);
   }
 
@@ -29,7 +33,8 @@ export class ChatService {
     return this.http.post<Chat>(`${this.apiUrl}/add`, chat);
   }
 
-  updateChat(message: Message, chatId: string): Observable<Chat> {
+  // Changed chatId type to number
+  updateChat(message: Message, chatId: number): Observable<Chat> {
     return this.http.put<Chat>(`${this.apiUrl}/message/${chatId}`, message);
   }
 
@@ -37,8 +42,7 @@ export class ChatService {
     return this.http.get<Chat[]>(`${this.apiUrl}/all`);
   }
 
-
   getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:8084/api/chats/allUSERS');
+    return this.http.get<any[]>(`${this.apiUrl}/allUSERS`);
   }
 }

@@ -24,72 +24,44 @@ public class Message {
     @Column(name = "message_id")
     private int messageId;
 
-    @Column(name = "sender_email")
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content;
+
+    @Column(name = "sender_email", nullable = false)
     private String senderEmail;
 
-    @Column(name = "time")
+    @Column(name = "time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date time;
 
     @ManyToOne
-    @JoinColumn(name = "reply_message", referencedColumnName = "message_id")
+    @JoinColumn(name = "reply_message")
     private Message replyMessage;
 
-    @JsonBackReference  // Prevent infinite recursion
+    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "chat_id", referencedColumnName = "chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
-    // Default constructor
-    public Message() {
-    }
+    public Message() {}
 
-    // Constructor with parameters
-    public Message(String senderEmail, Date time, Message replyMessage, Chat chat) {
+    public Message(String content, String senderEmail, Date time) {
+        this.content = content;
         this.senderEmail = senderEmail;
         this.time = time;
-        this.replyMessage = replyMessage;
-        this.chat = chat;
     }
 
     // Getters and setters
-    public int getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(int messageId) {
-        this.messageId = messageId;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-
-    public Message getReplyMessage() {
-        return replyMessage;
-    }
-
-    public void setReplyMessage(Message replyMessage) {
-        this.replyMessage = replyMessage;
-    }
-
-    public Chat getChat() {
-        return chat;
-    }
-
-    public void setChat(Chat chat) {
-        this.chat = chat;
-    }
+    public int getMessageId() { return messageId; }
+    public void setMessageId(int messageId) { this.messageId = messageId; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public String getSenderEmail() { return senderEmail; }
+    public void setSenderEmail(String senderEmail) { this.senderEmail = senderEmail; }
+    public Date getTime() { return time; }
+    public void setTime(Date time) { this.time = time; }
+    public Message getReplyMessage() { return replyMessage; }
+    public void setReplyMessage(Message replyMessage) { this.replyMessage = replyMessage; }
+    public Chat getChat() { return chat; }
+    public void setChat(Chat chat) { this.chat = chat; }
 }

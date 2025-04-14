@@ -106,7 +106,7 @@ import { ContactAgenceComponent } from './AGENCE/contact-agence/contact-agence.c
 import { ListAgenceComponent } from './AGENCE/list-agence/list-agence.component';
 import {AgencelayoutComponent} from './layouts/agencelayout/agencelayout.component';
 import { CarDetailsAgenceComponent } from './AGENCE/car-details-agence/car-details-agence.component';
-import { ChatComponent } from './CHAT/chat/chat.component'
+//import { ChatComponent } from './CHAT/chat/chat.component'
 
 
 
@@ -180,7 +180,7 @@ export function kcFactory(kcService: KeycloakService) {
     ContactAgenceComponent,
     ListAgenceComponent,
     CarDetailsAgenceComponent,
-    ChatComponent,
+   // ChatComponent,
     AgenceComponent,
     ShowAgenceComponent,
     AgenceDetailsComponent,
