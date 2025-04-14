@@ -16,13 +16,9 @@ export class CarDetaComponent implements OnInit {
   car: Voiture | null = null; //  Holds the specific car details
   book: any[] = []; // juste pour bookings
 
-  reviews: Review[] = []; // ✅ Holds reviews for the specific car
+  reviews: Review[] = []; //  Holds reviews for the specific car
   selectedFile: File | null = null;
   imageDialogVisible: boolean = false;
-
-
-
-
 
 
 
@@ -53,6 +49,9 @@ export class CarDetaComponent implements OnInit {
   }
 
 
+  goBack(): void {
+    window.history.back();
+  }
 
   toggleDropdown() {
     this.isOpen = !this.isOpen;

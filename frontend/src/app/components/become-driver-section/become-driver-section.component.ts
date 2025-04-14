@@ -81,7 +81,7 @@ export class BecomeDriverSectionComponent implements OnInit {
 
 
   navigateToCars(){
-    this.router.navigate(['/cars']);
+    this.router.navigate(['/listcars']);
 
   }
 

@@ -156,4 +156,13 @@ export class AddCarComponent implements OnInit {
       }
     );
   }
+
+
+
+
+
+
+  goBack(): void {
+    window.history.back();
+  }
 }
