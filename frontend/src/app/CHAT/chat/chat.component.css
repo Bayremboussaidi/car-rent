@@ -1,3 +1,70 @@
+/*go back button*/
+.go-back-btn {
+  position: relative;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(135deg, #4a90e2, #2d6cd9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.go-back-btn::before {
+  content: '←';
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.go-back-btn:hover {
+  background: linear-gradient(135deg, #3b7ccf, #245cb4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.go-back-btn:hover::before {
+  transform: translateX(-4px);
+}
+
+.go-back-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add a subtle animation on page load */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.go-back-btn {
+  animation: slideIn 0.4s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ===== BASE STYLES ===== */
 html, body {
   height: 100%;
@@ -371,4 +438,73 @@ html, body {
   .chat-list-title {
       font-size: 1.2rem;
   }
+}
+/* === Add margin between cards (space between tables) === */
+.chat {
+  margin: 1rem 0;
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add spacing between columns (left - center - right) */
+.chat:not(:last-child) {
+  margin-right: 1rem;
+}
+
+/* === Make boxes slightly bigger and enhance appearance === */
+.card {
+  height: 600px; /* Slightly larger than before */
+  border-radius: 20px !important;
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Soft elegant shadow */
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Slight elevation on hover */
+}
+
+/* === Chat header and footer enhancements === */
+.card-header, .card-footer {
+  background-color: #f8f9fa;
+  border: none;
+  padding: 1rem 1.5rem;
+}
+
+.card-header h1.chat-list-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-footer {
+  border-top: 1px solid #e9ecef;
+}
+
+/* === Contacts list hover style refinement === */
+.contacts li {
+  border: 1px solid #e1e1e1;
+  background-color: #fdfdfd;
+  transition: all 0.3s ease;
+}
+
+.contacts li:hover {
+  background-color: #f0f8ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* === Messages bubble border and spacing refinement === */
+.msg_cotainer,
+.msg_cotainer_send {
+  border: 1px solid #d4eaf7;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* === More space between messages === */
+.msg_card_body > div {
+  margin-bottom: 1.25rem;
 }

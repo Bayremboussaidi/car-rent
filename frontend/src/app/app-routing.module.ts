@@ -41,6 +41,7 @@ import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
 import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.component';
 import { BlogsAComponent } from './ADMIN/blogs-a/blogs-a.component';
 import { BlogDetailsAComponent } from './ADMIN/blog-details/blog-details.component';
+import { ChatComponent } from './CHAT/chat/chat.component';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -80,7 +81,7 @@ const routes: Routes = [
       { path: 'bookinga', component: BookingAComponent },
       { path: 'carlista', component: CarListAComponent },
       { path: 'carlista/:id', component: CarDetaComponent },
-      //{ path: 'chat', component: ChatComponent },
+      { path: 'chat', component: ChatComponent },
       { path: 'add-car', component: AddCarComponent },
       { path: 'add-agence', component: AgenceComponent },
 
