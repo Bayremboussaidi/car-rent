@@ -1,3 +1,38 @@
+/* display the image */
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.image-container {
+  flex: 0 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure all images have the same size */
+.gallery-image {
+  width: 180px; /* Fixed width */
+  height: 140px; /* Fixed height */
+  object-fit: cover; /* Maintains aspect ratio, crops if necessary */
+  border-radius: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*go back button */
 /*go back button*/
 .go-back-btn {

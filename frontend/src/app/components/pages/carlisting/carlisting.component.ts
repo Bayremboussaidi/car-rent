@@ -97,7 +97,7 @@ fetchAllVoitures(): void {
                 voiture.imgUrl = '/assets/default-car.jpg'; // Default image
               }
             },
-            (error) => {
+            (error:any) => {
               console.error(`Error fetching images for voiture ${voiture.id}:`, error);
               voiture.imgUrl = '/assets/default-car.jpg'; // Default on error
             }

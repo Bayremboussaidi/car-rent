@@ -91,7 +91,7 @@
       <!-- Upload Image -->
       <p-fileUpload mode="basic" [customUpload]="true" (onSelect)="onFileSelected($event)" accept="image/*"></p-fileUpload>
       <button pButton type="button" label="Upload" icon="pi pi-upload"
-          (click)="uploadImage()" [disabled]="!selectedFile"></button>
+          (click)="uploadImage()" [disabled]="!selectedFiles"></button>
 
       <!-- View Images Button -->
       <button pButton type="button" label="View Images" icon="pi pi-image"
@@ -190,3 +190,27 @@
     <p class="loading">Loading car details...</p>
   </ng-template>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+<p-dialog header="Car Images" [(visible)]="imageDialogVisible" [modal]="true" [style]="{width: '60vw'}">
+  <div class="image-gallery">
+    <ng-container *ngIf="car?.photos?.length! > 0; else noImages">
+      <div *ngFor="let photo of car?.photos" class="image-container">
+        <img [src]="photo.displayUrl" alt="Car Image" class="gallery-image" />
+      </div>
+    </ng-container>
+
+    <ng-template #noImages>
+      <p>No images available for this car.</p>
+    </ng-template>
+  </div>
+</p-dialog>

@@ -37,12 +37,7 @@ export class VoitureService {
     }
 
 
-  // for admin , photo , reviews ..
-  getCarImageById(id: number): Observable<PhotoResponseDTO[]> {
-    return this.http.get<PhotoResponseDTO[]>(
-      `http://localhost:8084/api/photos/voiture/${id}`
-    );
-  }
+
 
   // Added method for fetching a single voiture by ID
   getOneVoiture(id: number): Observable<any> {
@@ -64,17 +59,7 @@ export class VoitureService {
 
 
 
- //  New method: Update Voiture with or without an image
-  updateVoiture(id: number, voiture: any, file?: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('voiture', new Blob([JSON.stringify(voiture)], { type: 'application/json' }));
 
-    if (file) {
-      formData.append('file', file);
-    }
-
-    return this.http.put(`${this.baseUrl}/${id}`, formData);
-  }
 
 
 
@@ -84,5 +69,25 @@ export class VoitureService {
   }
 
 
+
+//update
+updateVoiture(id: number, voiture: Voiture, file?: File): Observable<any> {
+  const formData = new FormData();
+  formData.append('voiture', new Blob([JSON.stringify(voiture)], {
+    type: 'application/json'
+  }));
+
+  if (file) {
+    formData.append('file', file);
+  }
+
+  return this.http.put(`${this.baseUrl}/${id}`, formData);
+}
+
+getCarImageById(id: number): Observable<PhotoResponseDTO[]> {
+    return this.http.get<PhotoResponseDTO[]>(
+      `http://localhost:8084/api/photos/voiture/${id}`
+    );
+  }
 
 }

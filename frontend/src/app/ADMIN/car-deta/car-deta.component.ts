@@ -5,6 +5,10 @@ import { Voiture } from '../../models/voiture.model';
 import { Review } from '../../models/review.model';
 import { MessageService } from 'primeng/api';
 import { ReviewService } from '../../services/review-service.service';
+import { PhotoService } from '../../services/photo.service';
+
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-car-deta',
@@ -13,89 +17,149 @@ import { ReviewService } from '../../services/review-service.service';
   providers: [MessageService]
 })
 export class CarDetaComponent implements OnInit {
-  car: Voiture | null = null; //  Holds the specific car details
-  book: any[] = []; // juste pour bookings
+  car: Voiture | null = null;
+  sanitizedPhotos: SafeUrl[] = [];
 
-  reviews: Review[] = []; //  Holds reviews for the specific car
-  selectedFile: File | null = null;
-  imageDialogVisible: boolean = false;
+  book: any[] = [];
+  reviews: Review[] = [];
+  selectedFiles: File[] = [];
+  imageDialogVisible = false;
+  isOpen = false;
+  selectedOption: { label: string, value: boolean } | null = null;
+
+  previewUrls: string[] = [];
 
 
-
-    isOpen = false; // Controls dropdown visibility
-    selectedOption: { label: string, value: boolean } | null = null; // Selected option
-
-    // Dropdown options
-    availabilityOptions = [
-      { label: 'Available', value: true },
-      { label: 'Not Available', value: false }
-    ];
-
+  availabilityOptions = [
+    { label: 'Available', value: true },
+    { label: 'Not Available', value: false }
+  ];
 
   constructor(
     private route: ActivatedRoute,
     private voitureService: VoitureService,
     private messageService: MessageService,
-    private reviewService:ReviewService
+    private photoService: PhotoService,
+    private reviewService: ReviewService,
+    private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const carId = Number(params.get('id')); // ✅ Get the car ID from the route
-      if (carId) {
-        this.fetchCarDetails(carId); // ✅ Fetch details for the specific car
-      }
+      const carId = Number(params.get('id'));
+      if (carId) this.fetchCarDetails(carId);
     });
   }
 
-
-  goBack(): void {
-    window.history.back();
-  }
-
-  toggleDropdown() {
-    this.isOpen = !this.isOpen;
-  }
-
-  // Handle option selection
-  selectOption(option: { label: string, value: boolean }) {
-    this.selectedOption = option;
-    this.isOpen = false; // Close dropdown after selection
-  }
-
-  // ✅ Fetch details of a specific car
-  fetchCarDetails(carId: number) {
-    this.voitureService.getVoitureById(carId).subscribe(
-      (response: any) => {
-        console.log("Fetched car details:", response); // ✅ Debugging log
-
-        const voiture = response?.data;
-
-        if (response.success && voiture) {
-          this.car = voiture.voiture;
-
-          this.book = voiture.bookings;
-
-          // ✅ Map reviews (optional, only if reviews exist)
-          this.reviews = (voiture.reviews || []).map((review: any) => ({
+  fetchCarDetails(carId: number): void {
+    this.voitureService.getVoitureById(carId).subscribe({
+      next: (response: any) => {
+        if (response?.success && response.data) {
+          this.car = {
+            ...response.data.voiture,
+            photos: (response.data.photos || []).map((photo: any) => ({
+              ...photo,
+              displayUrl: this.sanitizer.bypassSecurityTrustUrl(
+                `data:${photo.type};base64,${photo.base64Data}`
+              )            }))
+          };
+          this.book = response.data.bookings || [];
+          this.reviews = (response.data.reviews || []).map((review: any) => ({
             id: review.id ?? 0,
             username: review.username || 'Anonymous',
             reviewText: review.reviewText || '',
             rating: review.rating ?? 0,
-            createdAt: review.createdAt ? new Date(review.createdAt).toISOString() : new Date().toISOString(),
-            updatedAt: review.updatedAt ? new Date(review.updatedAt).toISOString() : new Date().toISOString(),
-            carName: voiture.carName || 'Unknown Car'
+            createdAt: review.createdAt ? new Date(review.createdAt) : new Date(),
+            updatedAt: review.updatedAt ? new Date(review.updatedAt) : new Date(),
+            carName: response.data.voiture.carName || 'Unknown Car'
           }));
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching car details:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load car details'
+        });
       }
-    );
+    });
+  }
+
+  onFileSelected(event: any): void {
+    this.selectedFiles = event.files ? Array.from(event.files) : [];
+
+    // Preview selected images
+    this.previewUrls = [];
+    this.selectedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.previewUrls.push(e.target.result);
+      reader.readAsDataURL(file);
+    });
   }
 
 
-  onRowEditSave(car: Voiture) {
+  uploadImage(): void {
+    if (!this.car?.id || this.selectedFiles.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Please select at least one image'
+      });
+      return;
+    }
+
+    const carId = this.car.id;
+    this.photoService.uploadPhotos(carId, null, this.selectedFiles).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Images uploaded successfully'
+        });
+        this.selectedFiles = [];
+        this.fetchCarDetails(carId);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload images: ' + error.message
+        });
+      }
+    });
+  }
+
+  deleteAllImages(): void {
+    if (!this.car?.id) return;
+
+    const carId = this.car.id;
+    this.photoService.deletePhotosByVoitureId(carId).subscribe({
+      next: () => {
+        if (this.car) {
+          this.car.photos = [];
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'All images deleted successfully'
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete images: ' + error.message
+        });
+      }
+    });
+  }
+
+  viewImages(): void {
+    this.imageDialogVisible = true;
+  }
+
+  onRowEditSave(car: Voiture): void {
     if (!car.id) {
       console.error("Car ID is missing!");
       return;
@@ -103,10 +167,18 @@ export class CarDetaComponent implements OnInit {
 
     this.voitureService.updateVoiture(car.id, car).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: `Updated ${car.carName}` });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Updated ${car.carName}`
+        });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not update the car' });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not update the car'
+        });
       }
     });
   }
@@ -115,97 +187,43 @@ export class CarDetaComponent implements OnInit {
     return Array.from({ length: rating }, (_, i) => i + 1);
   }
 
-  // ✅ Handle File Selection
-  onFileSelected(event: any) {
-    if (event.files && event.files.length > 0) {
-      this.selectedFile = event.files[0];
-      console.log("Selected file:", this.selectedFile?.name);
-    } else {
-      this.selectedFile = null;
-    }
-  }
-
-  // ✅ Upload File
-  uploadImage() {
-    if (!this.car || !this.car.id) {
-      console.error("Car ID is missing!");
-      return;
-    }
-
-    if (!this.selectedFile) {
-      console.error("No file selected!");
-      return;
-    }
-
-    this.voitureService.updateVoiture(this.car.id, this.car, this.selectedFile).subscribe({
-      next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Car image updated' });
-        this.selectedFile = null; // ✅ Reset file after successful upload
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not update car image' });
-      }
-    });
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ✅ View Images (Opens Modal)
-viewImages() {
-  this.imageDialogVisible = true;
-}
-
-// ✅ Delete All Images
-deleteAllImages() {
-  if (!this.car || !this.car.id) {
-    console.error("Car ID is missing!");
-    return;
-  }
-
-  /*this.voitureService.deletePhotosForVoiture(this.car.id).subscribe({
-    next: () => {
-      this.messageService.add({ severity: 'warn', summary: 'Deleted', detail: 'All images deleted' });
-      this.fetchCarDetails(this.car.id); // ✅ Refresh after deletion
-    },
-    error: () => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete images' });
-    }
-  });*/
-}
-
-
-
-
-
-
-deleteReview(reviewId: number): void {
-  if (confirm('Are you sure you want to delete this review?')) {
-    this.reviewService.deleteReview(reviewId).subscribe({
-      next: (response) => {
-        console.log('Review deleted successfully:', response);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Review deleted' });
-
-        // After deleting the review, refresh the car details to update the reviews
-        if (this.car && this.car.id) {
-          this.fetchCarDetails(this.car.id);  // Fetch the latest car details with updated reviews
+  deleteReview(reviewId: number): void {
+    if (confirm('Are you sure you want to delete this review?')) {
+      this.reviewService.deleteReview(reviewId).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Review deleted'
+          });
+          if (this.car?.id) {
+            this.fetchCarDetails(this.car.id);
+          }
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to delete review'
+          });
+          console.error('Error deleting review:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error deleting review:', error);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete review' });
-      }
-    });
+      });
+    }
   }
-}
+
+  goBack(): void {
+    window.history.back();
+  }
+
+  toggleDropdown(): void {
+    this.isOpen = !this.isOpen;
+  }
+
+  selectOption(option: { label: string, value: boolean }): void {
+    this.selectedOption = option;
+    this.isOpen = false;
+  }
+
 
 }
