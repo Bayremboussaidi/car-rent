@@ -41,15 +41,44 @@
       <label for="description">Description :</label>
       <textarea id="description" [(ngModel)]="bookingData.description" name="description"></textarea>
 
-      <label for="startDate">Date de début <span style="color: red;">(Doit être aujourd'hui ou plus tard)</span></label>
-      <input type="text" id="startDate" [(ngModel)]="bookingData.startDate" name="startDate"
-        bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        readonly (keydown)="$event.preventDefault()" required (ngModelChange)="calculateDaysAndPrice()"/>
+<!-- Start Date with X button -->
+<div class="datepicker-wrapper">
+  <label for="startDate">Date de début <span style="color: red;">(Doit être aujourd'hui ou plus tard)</span></label>
+  <div class="input-with-x">
+    <input type="text"
+           id="startDate"
+           [(ngModel)]="bookingData.startDate"
+           name="startDate"
+           bsDatepicker
+           #startDp="bsDatepicker"
+           [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
+           readonly
+           (keydown)="$event.preventDefault()"
+           required
+           (ngModelChange)="calculateDaysAndPrice()"/>
+    <button type="button" class="x-btn" (click)="startDp.hide()">✖</button>
+  </div>
+</div>
 
-      <label for="endDate">Date de fin <span style="color: red;">(Doit être après la date de début)</span></label>
-      <input type="text" id="endDate" [(ngModel)]="bookingData.endDate" name="endDate"
-        bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-        readonly (keydown)="$event.preventDefault()" required (ngModelChange)="calculateDaysAndPrice()"/>
+<!-- End Date with X button -->
+<div class="datepicker-wrapper">
+  <label for="endDate">Date de fin <span style="color: red;">(Doit être après la date de début)</span></label>
+  <div class="input-with-x">
+    <input type="text"
+           id="endDate"
+           [(ngModel)]="bookingData.endDate"
+           name="endDate"
+           bsDatepicker
+           #endDp="bsDatepicker"
+           [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
+           readonly
+           (keydown)="$event.preventDefault()"
+           required
+           (ngModelChange)="calculateDaysAndPrice()"/>
+    <button type="button" class="x-btn" (click)="endDp.hide()">✖</button>
+  </div>
+</div>
+
 
       <p><strong>Nombre de jours :</strong> {{ bookingData.nbrJrs }}</p>
 

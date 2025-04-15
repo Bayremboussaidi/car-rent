@@ -45,14 +45,14 @@
             }
         }
     
-        // ✅ Get All Photos by Voiture ID (Returns Base64)
+        //  Get All Photos by Voiture ID (Returns Base64)
         @GetMapping("/voiture/{voitureId}")
         public ResponseEntity<List<PhotoResponseDTO>> getPhotosByVoitureId(@PathVariable Long voitureId) {
             List<PhotoResponseDTO> dtos = photoService.getPhotosByVoitureId(voitureId);
             return ResponseEntity.ok(dtos);
         }
     
-        // ✅ Delete all photos for a voiture
+        // Delete all photos for a voiture
         @DeleteMapping("/voiture/{voitureId}")
         public ResponseEntity<Void> deletePhotosByVoitureId(@PathVariable Long voitureId) {
             photoService.deletePhotosByVoitureId(voitureId);

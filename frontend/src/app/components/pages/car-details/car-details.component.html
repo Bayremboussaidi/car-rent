@@ -89,16 +89,22 @@
       </div>
 
 
-      <button class="purchase-btn" (click)="openBookingModal(car)" >
-        <i class="pi pi-cart-minus"></i> Purchase
-      </button>
+      <div class="purchase-cta">
+        <p class="cta-text">🚗 Don’t miss your opportunity — <strong>purchase now!</strong></p>
+        <button class="purchase-btn" (click)="openBookingModal(car)">
+          <i class="pi pi-cart-minus"></i> Purchase
+        </button>
+      </div>
 
       <!--  Comment Section (Laisser une commentaire) - Placed Below Star Rating -->
       <div class="leave__comment-form mt-5">
-        <h4>Laisser une commentaire</h4>
-        <p class="section__description">
-          Vous devez vous connecter pour créer ou commenter une publication
-        </p>
+        <div class="comment-section mt-4 p-4 rounded shadow-sm bg-light">
+          <h4 class="mb-2 text-primary fw-bold">Laisser un commentaire</h4>
+          <p class="section__description text-muted mb-0">
+            Vous devez vous connecter pour créer ou commenter une publication.
+          </p>
+        </div>
+
 
         <form (submit)="submitReview()">
           <div class="form-group d-flex gap-3">
@@ -119,13 +125,21 @@
             required /-->
           </div>
 
-          <div class="form-group">
-            <textarea rows="5" class="form-control w-100 py-2 px-3" placeholder="Comment..." [(ngModel)]="review.reviewText" name="reviewText" required></textarea>
+          <div class="form-group comment-textarea-group">
+            <textarea
+              rows="5"
+              class="form-control comment-textarea"
+              placeholder="💬 Write your comment here..."
+              [(ngModel)]="review.reviewText"
+              name="reviewText"
+              required>
+            </textarea>
           </div>
 
-          <button type="submit" class="button">
-            Poster un commentaire
+          <button type="submit" class="submit-comment-btn">
+            📝 Poster un commentaire
           </button>
+
         </form>
       </div>
     </div>
