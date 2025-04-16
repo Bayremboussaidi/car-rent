@@ -2,6 +2,7 @@ package com.example.comparateur.Controller.chat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,9 +62,35 @@ public class ChatController {
         return allUsers;
     }
 
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        // First check Admin repository
+        Optional<Admin> adminOptional = adminRepository.findByEmail(email);
+        if (adminOptional.isPresent()) {
+            Admin admin = adminOptional.get();
+            return ResponseEntity.ok(
+                new UserDTO(admin.getEmail(), admin.getUsername())
+            );
+        }
+    
+        // Then check Agence repository
+        Optional<Agence> agenceOptional = agenceRepository.findByEmail(email);
+        if (agenceOptional.isPresent()) {
+            Agence agence = agenceOptional.get();
+            return ResponseEntity.ok(
+                new UserDTO(agence.getEmail(), agence.getAgencyName())
+            );
+        }
+    
+        // If not found in either repository
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<?> createChat(@RequestBody Chat chat) {
-        return new ResponseEntity<>(chatService.addChat(chat), HttpStatus.CREATED);
+    public ResponseEntity<Chat> createChat(@RequestBody Chat chat) {
+        Chat savedChat = chatService.addChat(chat); // should persist and return the full entity
+        return new ResponseEntity<>(savedChat, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -114,18 +141,23 @@ public class ChatController {
     }*/
 
     // Updated to use email instead of username
-    @GetMapping("/getChatByFirstUserEmailAndSecondUserEmail")
-    public ResponseEntity<?> getChatByFirstUserEmailAndSecondUserEmail(
-            @RequestParam("firstUserEmail") String firstUserEmail,
-            @RequestParam("secondUserEmail") String secondUserEmail) {
-
+// ChatController.java
+@GetMapping("/getChatByFirstUserEmailAndSecondUserEmail")
+public ResponseEntity<?> getChatBetweenUsers(
+        @RequestParam("firstUserEmail") String firstUserEmail,
+        @RequestParam("secondUserEmail") String secondUserEmail) {
+    try {
+        List<Chat> chats = chatService.getChatByFirstUserEmailAndSecondUserEmail(firstUserEmail, secondUserEmail);
+        return new ResponseEntity<>(chats, HttpStatus.OK);
+    } catch (Exception e) {
         try {
-            List<Chat> chatByBoth = chatService.getChatByFirstUserEmailAndSecondUserEmail(firstUserEmail, secondUserEmail);
-            return new ResponseEntity<>(chatByBoth, HttpStatus.OK);
-        } catch (ChatNotFoundException e) {
-            return new ResponseEntity<>("Chat not found for given user emails", HttpStatus.NOT_FOUND);
+            Chat newChat = chatService.createNewChatBetweenUsers(firstUserEmail, secondUserEmail);
+            return new ResponseEntity<>(List.of(newChat), HttpStatus.CREATED);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+}
 
     @PutMapping("/message/{chatId}")
     public ResponseEntity<?> addMessage(@RequestBody Message message, @PathVariable int chatId) {

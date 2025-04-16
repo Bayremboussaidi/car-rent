@@ -195,11 +195,17 @@
   background-color: #000d6b;
   color: white;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .formbold-btn:hover {
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+  background-color: #1a2faf; /* lighter blue on hover */
+  color: #fff;
+  font-size: 17px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.01); /* slight zoom effect */
 }
+
 
 
 

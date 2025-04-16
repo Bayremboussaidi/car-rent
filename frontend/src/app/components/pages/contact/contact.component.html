@@ -10,13 +10,15 @@
             <div class="formbold-form-header">
               <h3>Entrer en contact</h3>
               <div class="social-icons">
-                <a href="https://facebook.com/your-page" target="_blank" title="Facebook" class="social-icon">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://instagram.com/your-page" target="_blank" title="Instagram" class="social-icon">
-                  <i class="fab fa-instagram"></i>
+                <a *ngFor="let link of socialLinks"
+                   [href]="link.url"
+                   target="_blank"
+                   class="social-icon"
+                   title="Visit {{ link.url | slice:8:30 }}..."> <!-- optional title -->
+                  <i [class]="link.icon"></i>
                 </a>
               </div>
+
             </div>
             <form (ngSubmit)="sendMessage()" class="formbold-chatbox-form">
               <div class="formbold-mb-5">
@@ -48,14 +50,14 @@
               <div class="formbold-mb-5">
                 <label for="message" class="formbold-form-label">Message</label>
                 <textarea
-                  rows="5"
-                  name="message"
-                  id="message"
-                  [(ngModel)]="message"
-                  placeholder="Votre message"
-                  class="formbold-form-input"
-                  required
-                ></textarea>
+                rows="5"
+                name="message"
+                id="message"
+                [(ngModel)]="message"
+                placeholder="Votre message"
+                class="formbold-form-input"
+                required
+              ></textarea>
               </div>
               <div>
                 <button type="submit" class="formbold-btn w-full">Envoyer un message</button>

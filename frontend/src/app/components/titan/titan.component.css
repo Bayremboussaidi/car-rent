@@ -564,6 +564,8 @@ mat-spinner {
 .nav__menu {
   display: flex;
   margin-right: 220px; /* Pushes the nav menu slightly to the left */
+  transform: translateY(-8px);
+
 
 }
 
@@ -576,6 +578,8 @@ mat-spinner {
   color: rgba(0, 0, 0, 0.988); /* Changed to brighter white with 95% opacity */
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); /* Added glow effect */
   letter-spacing: 0.5px; /* Optional: better readability */
+  transform: translateY(-8px);
+
 }
 
 .nav__logo-img {
@@ -705,7 +709,7 @@ mat-spinner {
   position: absolute;
   right: 25px; /* Moves it to the extreme right */
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-70%);
   z-index: 1001; /* Ensures it appears above other elements */
 }
 
@@ -713,8 +717,8 @@ mat-spinner {
 .animated-menu li {
   position: relative;
   list-style: none;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   background: white;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   border-radius: 60px;

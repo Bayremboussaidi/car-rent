@@ -7,11 +7,46 @@ import { Message } from '../../models/CHAT/Message.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ChatService {
 
   private apiUrl = 'http://localhost:8084/api/chats';
 
   constructor(private http: HttpClient) {}
+
+
+
+  getUserByEmail(email: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user/${email}`);
+  }
+
+
+
+  getCurrentUserEmailFromLocalStorage(): string | null {
+    const adminAuth = localStorage.getItem('admin_auth');
+    const agencyData = localStorage.getItem('agency_data');
+
+    try {
+      if (adminAuth) {
+        const parsedAdmin = JSON.parse(adminAuth);
+        return parsedAdmin.email || null;
+      } else if (agencyData) {
+        const parsedAgency = JSON.parse(agencyData);
+        return parsedAgency.email || null;
+      }
+    } catch (e) {
+      console.error('Failed to parse user data from localStorage:', e);
+      return null;
+    }
+
+    return null; // No user found
+  }
+
+
+
+
+
+
 
   // Changed parameter type to number
   getChatById(chatId: number): Observable<Chat> {

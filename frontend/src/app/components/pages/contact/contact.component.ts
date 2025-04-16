@@ -62,6 +62,12 @@ export class ContactComponent {
         this.emailService.sendEmail(emailRequest).subscribe(
           response => {
             console.log('Email sent successfully', response);
+            this.message = 'success sent';
+
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+              this.message = '';
+            }, 3000);
           },
           error => {
             console.error('Error sending email', error);

@@ -28,17 +28,25 @@ public class Chat {
     @Column(name = "second_user_email", nullable = false)
     private String secondUserEmail;
 
+    @Column(name = "first_user_name")
+    private String firstUserName;
+    
+    @Column(name = "second_user_name")
+    private String secondUserName;
+
     @JsonManagedReference
-    @OneToMany(mappedBy = "chat", 
-              cascade = CascadeType.ALL, 
-              orphanRemoval = true)
+    @OneToMany(mappedBy = "chat",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Message> messageList;
 
     public Chat() {}
 
-    public Chat(String firstUserEmail, String secondUserEmail) {
+    public Chat(String firstUserEmail, String secondUserEmail , String secondUserName  , String firstUserName) {
         this.firstUserEmail = firstUserEmail;
         this.secondUserEmail = secondUserEmail;
+        this.firstUserName = firstUserEmail;
+        this.secondUserName = secondUserName;
     }
 
     // Getters and setters
@@ -50,4 +58,14 @@ public class Chat {
     public void setSecondUserEmail(String secondUserEmail) { this.secondUserEmail = secondUserEmail; }
     public List<Message> getMessageList() { return messageList; }
     public void setMessageList(List<Message> messageList) { this.messageList = messageList; }
+
+
+
+
+    public String getFirstUserName() { return firstUserName; }
+    public void setFirstUserName(String firstUserName) { this.firstUserName = firstUserName; }
+    public String getSecondUserName() { return secondUserName; }
+    public void setSecondUserName(String secondUserName) { this.secondUserName = secondUserName; 
+}
+
 }

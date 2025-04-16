@@ -45,7 +45,7 @@ export class BookingModalComponent implements OnInit {
     this.loadUserData();
 
     if (this.voitureId) {
-      this.bookingData.voitureId = Number(this.voitureId); // ✅ Convert once
+      this.bookingData.voitureId = Number(this.voitureId); //  Convert once
       this.bookingData.carName = this.carName;
       this.fetchUnavailableDates();
     }
@@ -186,8 +186,8 @@ export class BookingModalComponent implements OnInit {
       const end = moment(this.bookingData.endDate, "YYYY-MM-DD");
 
       if (start.isBefore(end)) {
-        this.bookingData.nbrJrs = end.diff(start, "days"); // ✅ Calculate days
-        this.bookingData.price = this.bookingData.nbrJrs * (this.carPrice || 0); // ✅ Use carPrice safely
+        this.bookingData.nbrJrs = end.diff(start, "days"); //  Calculate days
+        this.bookingData.price = this.bookingData.nbrJrs * (this.carPrice || 0); //  Use carPrice safely
       } else {
         this.bookingData.nbrJrs = 0;
         this.bookingData.price = 0;

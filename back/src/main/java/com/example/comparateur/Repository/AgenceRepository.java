@@ -30,8 +30,10 @@ public interface AgenceRepository extends JpaRepository<Agence, Long> {
 
     boolean existsByAgencyName(String agencyName);
     Optional<Agence> findByAgencyName(String agencyName);
-    Optional<Agence> findByEmail(String email);
 
 
     boolean existsByEmail(String email);
+
+
+    Optional<Agence> findByEmail(String email);
 }

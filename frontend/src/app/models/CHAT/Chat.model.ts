@@ -2,6 +2,7 @@ import { Message } from "./Message.model";
 
 
 export interface Chat {
+  chatId?: number;
   firstUserEmail: string;
   secondUserEmail: string;
   // Add any additional properties here
