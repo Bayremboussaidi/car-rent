@@ -132,7 +132,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     this.voitureService.getVoitureById(id).subscribe(
       (response: any) => {
         if (response && response.success) {
-          this.car = response.data.voiture; // ✅ FIXED: access .voiture explicitly
+          this.car = response.data.voiture;
           this.car.reviews = this.car.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
