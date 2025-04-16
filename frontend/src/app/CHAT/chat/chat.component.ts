@@ -5,6 +5,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatService } from '../../services/CHAT/chat.service';
 import { lastValueFrom } from 'rxjs';
 
+import { ChangeDetectorRef } from '@angular/core';
+
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -15,7 +18,7 @@ export class ChatComponent implements OnInit {
   chatList: Chat[] = [];
   messageList: Message[] = [];
   chatForm: FormGroup;
-  senderCheck: string = '';//current user
+  senderCheck: string = '';
   firstUserName: string = '';
   secondUserName: string = '';
   secondUserEmail: string = '';
@@ -35,10 +38,10 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.senderCheck = this.chatService.getCurrentUserEmailFromLocalStorage() || '';
+    console.log('Sender Check (Current User):', this.senderCheck);
     this.loadAllUsers();
     this.loadChatList();
     this.fetchCurrentUserDetails();
-
 
     this.chatForm = this.fb.group({
       messageContent: ['', Validators.required]
@@ -70,6 +73,7 @@ export class ChatComponent implements OnInit {
     this.chatService.getChatByFirstUserEmailOrSecondUserEmail(this.senderCheck).subscribe({
       next: (chats: Chat[]) => {
         this.chatList = chats;
+        console.log('Chat List:', this.chatList);
       },
       error: (error) => console.error('Error loading chats:', error)
     });
@@ -79,6 +83,8 @@ export class ChatComponent implements OnInit {
     this.secondUserEmail = user.email;
     this.secondUserName = user.userName;
 
+    console.log('Navigating to chat with:', this.secondUserName, this.secondUserEmail);
+
     try {
       const existingChats = await lastValueFrom(
         this.chatService.getChatByFirstUserEmailAndSecondUserEmail(
@@ -87,10 +93,11 @@ export class ChatComponent implements OnInit {
         )
       );
 
+      console.log('Existing Chats:', existingChats);
+
       if (existingChats.length > 0) {
         this.handleExistingChat(existingChats[0]);
         this.currentChatId = existingChats[0].chatId ?? null;
-        console.log('currentChatId set to:', this.currentChatId);
       } else {
         await this.createNewChat();
       }
@@ -99,13 +106,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
-
   private handleExistingChat(chat: Chat): void {
     this.currentChatId = chat.chatId!;
-    this.messageList = chat.messages || [];
+    this.messageList = chat.messageList || [];
     this.scrollToBottom();
   }
-
 
   async createNewChat(): Promise<void> {
     try {
@@ -118,25 +123,14 @@ export class ChatComponent implements OnInit {
 
       const createdChat = await lastValueFrom(this.chatService.createChatRoom(newChat));
       this.currentChatId = createdChat.chatId ?? null;
-      console.log('New chat created, currentChatId set to:', this.currentChatId);
-
-      this.messageList = []; // optional: clear previous messages
+      this.messageList = [];
     } catch (error) {
       console.error('Error creating chat:', error);
     }
   }
 
-
   sendMessage(): void {
-    console.log('sendMessage triggered');  // <-- Add this
-
-    if (!this.chatForm.valid) {
-      console.warn('Form invalid');
-      return;
-    }
-
-    if (!this.currentChatId) {
-      console.warn('No currentChatId');
+    if (!this.chatForm.valid || !this.currentChatId) {
       return;
     }
 
@@ -150,15 +144,13 @@ export class ChatComponent implements OnInit {
 
     this.chatService.updateChat(message, this.currentChatId).subscribe({
       next: (updatedChat) => {
-        console.log('Message sent, response:', updatedChat);
-        this.messageList = updatedChat.messages || [];
+        this.messageList = updatedChat.messageList || [];
         this.chatForm.reset();
         this.scrollToBottom();
       },
       error: (error) => console.error('Error sending message:', error)
     });
   }
-
 
 
   loadChatByEmail(firstUserEmail: string, secondUserEmail: string): void {
@@ -168,7 +160,7 @@ export class ChatComponent implements OnInit {
           if (chats.length > 0) {
             const chat = chats[0];
             this.currentChatId = chat.chatId!;
-            this.messageList = chat.messages || [];
+            this.messageList = chat.messageList || [];
 
             if (this.senderCheck === chat.firstUserEmail) {
               this.secondUserEmail = chat.secondUserEmail || '';
@@ -177,6 +169,7 @@ export class ChatComponent implements OnInit {
               this.secondUserEmail = chat.firstUserEmail || '';
               this.secondUserName = chat.firstUserName || '';
             }
+            this.scrollToBottom();
           }
         },
         error: (error) => console.error('Error loading chat:', error)

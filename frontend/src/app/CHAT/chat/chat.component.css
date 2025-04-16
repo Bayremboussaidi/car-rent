@@ -64,7 +64,6 @@
 
 
 
-
 /* ===== BASE STYLES ===== */
 html, body {
   height: 100%;
@@ -103,13 +102,18 @@ html, body {
 }
 
 .card {
-  height: 550px;
-  border-radius: 15px !important;
-  border: 1px solid rgb(140, 200, 253);
+  height: 600px; /* Slightly larger */
+  border-radius: 20px !important;
+  border: 1px solid #e0e0e0;
   width: 100%;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Soft elegant shadow */
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Slight elevation on hover */
 }
 
 /* ===== GRID COLUMN ADJUSTMENTS ===== */
@@ -180,45 +184,52 @@ html, body {
 }
 
 /* ===== MESSAGE BUBBLES ===== */
-.msg_cotainer {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 10px;
-  border-radius: 25px;
-  background-color: #a9ece6;
+.msg_cotainer, .msg_cotainer_send {
+  border: 1px solid #d4eaf7;
+  font-size: 0.95rem;
+  line-height: 1.4;
   padding: 10px 15px;
   position: relative;
-  max-width: 70%;
+  border-radius: 25px;
+  max-width: 70%; /* Slightly adjusted to avoid overflow */
+  margin-top: auto;
+  margin-bottom: auto;
+
+}
+
+.msg_cotainer {
+  background-color: #a9ece6;
+  color: #333;
+  margin-left: 10px;
 }
 
 .msg_cotainer_send {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 10px;
-  border-radius: 25px;
   background-color: #91fea9;
-  padding: 10px 15px;
-  position: relative;
-  max-width: 70%;
+  color: #333;
+  margin-right: 10px;
+}
+
+.msg_time, .msg_time_send {
+  position: absolute;
+  font-size: 10px;
+  color: rgba(23, 18, 35, 0.5);
 }
 
 .msg_time {
-  position: absolute;
   left: 15px;
   bottom: -15px;
-  color: rgba(23, 18, 35, 0.5);
-  font-size: 10px;
 }
 
 .msg_time_send {
-  position: absolute;
   right: 15px;
   bottom: -15px;
-  color: rgba(23, 18, 35, 0.5);
-  font-size: 10px;
 }
 
 /* ===== USER IMAGES ===== */
+.user_img, .img_cont, .img_cont_msg {
+  position: relative;
+}
+
 .user_img {
   height: 70px;
   width: 70px;
@@ -232,7 +243,6 @@ html, body {
 }
 
 .img_cont {
-  position: relative;
   height: 70px;
   width: 70px;
 }
@@ -243,55 +253,36 @@ html, body {
 }
 
 /* ===== TEXT INSIDE CIRCLES ===== */
-.text_inside_circle {
-  background: rgb(140, 200, 253);
+.text_inside_circle, .text_inside_circle1, .text_inside_circle2, .text_inside_circle3 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   text-transform: capitalize;
-  font-size: 1.5rem;
   color: white;
   height: 100%;
   width: 100%;
   border-radius: 50%;
+}
+
+.text_inside_circle {
+  background: rgb(140, 200, 253);
+  font-size: 1.5rem;
 }
 
 .text_inside_circle1 {
   background: rgb(167, 165, 165);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: capitalize;
   font-weight: bold;
   font-size: 1.5rem;
-  color: white;
-  height: 100%;
-  width: 100%;
-  border-radius: 50%;
 }
 
 .text_inside_circle2 {
   background: rgb(77, 190, 203);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: capitalize;
-  color: white;
-  height: 100%;
-  width: 100%;
-  border-radius: 50%;
+  font-size: 1.5rem;
 }
 
 .text_inside_circle3 {
   background: rgb(140, 200, 253);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: capitalize;
-  color: white;
-  height: 100%;
-  width: 100%;
-  border-radius: 50%;
+  font-size: 1.5rem;
 }
 
 /* ===== FORM ELEMENTS ===== */
@@ -438,73 +429,4 @@ html, body {
   .chat-list-title {
       font-size: 1.2rem;
   }
-}
-/* === Add margin between cards (space between tables) === */
-.chat {
-  margin: 1rem 0;
-  padding: 0 10px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Add spacing between columns (left - center - right) */
-.chat:not(:last-child) {
-  margin-right: 1rem;
-}
-
-/* === Make boxes slightly bigger and enhance appearance === */
-.card {
-  height: 600px; /* Slightly larger than before */
-  border-radius: 20px !important;
-  border: 1px solid #e0e0e0;
-  background-color: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Soft elegant shadow */
-  transition: transform 0.2s ease-in-out;
-}
-
-.card:hover {
-  transform: translateY(-5px); /* Slight elevation on hover */
-}
-
-/* === Chat header and footer enhancements === */
-.card-header, .card-footer {
-  background-color: #f8f9fa;
-  border: none;
-  padding: 1rem 1.5rem;
-}
-
-.card-header h1.chat-list-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.card-footer {
-  border-top: 1px solid #e9ecef;
-}
-
-/* === Contacts list hover style refinement === */
-.contacts li {
-  border: 1px solid #e1e1e1;
-  background-color: #fdfdfd;
-  transition: all 0.3s ease;
-}
-
-.contacts li:hover {
-  background-color: #f0f8ff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* === Messages bubble border and spacing refinement === */
-.msg_cotainer,
-.msg_cotainer_send {
-  border: 1px solid #d4eaf7;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-/* === More space between messages === */
-.msg_card_body > div {
-  margin-bottom: 1.25rem;
 }
