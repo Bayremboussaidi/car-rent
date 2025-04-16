@@ -36,6 +36,8 @@ body {
   max-width: 700px;
   width: 90%;
   max-height: 80vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out;
 }
@@ -71,14 +73,15 @@ body {
 
 .close-btn:hover {
   transform: scale(1.2);
-  color: darken(var(--primary-color), 10%);
+  color: red;
 }
 
 .dialog-content {
-  max-height: calc(80vh - 100px);
+  flex: 1;
   overflow-y: auto;
   padding-right: 10px;
 }
+
 
 /* Login Container */
 .login__container {
