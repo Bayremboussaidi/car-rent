@@ -296,7 +296,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
 
     if (this.isLoggedIn) {
       console.log('Booking car:', voiture);
-      this.selectedCar = voiture; // Store car details
+      this.selectedCar = voiture.voiture ; // Store car details
       this.showBookingModal = true; // Show modal
     } else {
       this.showSignInPrompt = true;
