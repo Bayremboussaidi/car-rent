@@ -77,6 +77,8 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
         this.loadCarImage(this.carId);
         this.loadReviews(this.carId);
       }
+
+
     });
   }
 
@@ -132,7 +134,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     this.voitureService.getVoitureById(id).subscribe(
       (response: any) => {
         if (response && response.success) {
-          this.car = response.data.voiture;
+          this.car = response.data;
           this.car.reviews = this.car.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
@@ -245,7 +247,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
     this.voitureService.getReviewsForVoiture(id).subscribe(
       (response: any) => {
         if (response && response.success) {
-          this.car.reviews = response.data; // ✅ Assign reviews to car object
+          this.car.reviews = response.data.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
         }
