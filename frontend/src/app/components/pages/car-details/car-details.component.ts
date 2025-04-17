@@ -5,6 +5,8 @@ import { ReviewService } from '../../../services/review-service.service'; //  Im
 import { Review } from '../../../models/review.model'; //  Import Review Interface
 import {UserloginService} from '../../../services/user_login/userlogin.service'
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
 
 
 
@@ -43,6 +45,7 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
 
   carId: number | null = null;
   car: any;
+  detail:any;
   otherCars: any[] = [];
   currentCarIndex: number = 0;
   carouselInterval: any;
@@ -135,7 +138,8 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response && response.success) {
           this.car = response.data;
-          this.car.reviews = this.car.reviews || [];
+          this.detail = this.car.voiture;
+          this.reviews = this.car.reviews || [];
         } else {
           console.error('Error: Unexpected API response format.');
         }
@@ -223,6 +227,16 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Check if rating is missing or zero
+    if (!this.review.rating || this.review.rating < 1) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Rating Required',
+        text: 'Please provide a rating before submitting your review.'
+      });
+      return;
+    }
+
     const reviewPayload = {
       username: this.review.username,
       email: this.review.email,
@@ -236,9 +250,23 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
           console.log('Review submitted successfully:', newReview);
           this.car.reviews.unshift(newReview);
           this.review = { username: '', email: '', reviewText: '', rating: 0 };
+
+          // Success alert
+          Swal.fire({
+            icon: 'success',
+            title: 'Thank you!',
+            text: 'Your review has been submitted successfully.'
+          });
         },
         (error) => {
           console.error('Error submitting review:', error);
+
+          // Error alert
+          Swal.fire({
+            icon: 'error',
+            title: 'Submission Failed',
+            text: 'There was an error submitting your review. Please try again later.'
+          });
         }
       );
   }

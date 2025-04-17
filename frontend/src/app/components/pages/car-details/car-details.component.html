@@ -1,7 +1,7 @@
 <div class="car-details-container" *ngIf="car">
   <div class="car-content">
     <div class="car-main-content">
-      <h1 class="main-car-title">{{ car.carName }}</h1>
+      <h1 class="main-car-title">{{ detail.carName }}</h1>
 
       <!-- Car Images -->
       <div class="car-images-container">
@@ -32,25 +32,25 @@
       <!-- Car Details -->
       <div class="car__publisher d-flex align-items-center gap-4 mb-4">
         <span class="d-flex align-items-center gap-1 section__description">
-          <i class="ri-car-line"></i> {{ car.brand }}
+          <i class="ri-car-line"></i> {{ detail.brand }}
         </span>
         <span class="d-flex align-items-center gap-1 section__description">
-          <i class="ri-settings-line"></i> Transmission: {{ car.transmission }}
+          <i class="ri-settings-line"></i> Transmission: {{ detail.transmission }}
         </span>
         <span class="d-flex align-items-center gap-1 section__description">
-          <i class="ri-dashboard-line"></i> Category: {{ car.category }}
+          <i class="ri-dashboard-line"></i> Category: {{ detail.category }}
         </span>
         <span class="d-flex align-items-center gap-1 section__description">
-          <i class="ri-building-line"></i> Agence: {{ car.agence }}
+          <i class="ri-building-line"></i> Agence: {{ detail.agence }}
         </span>
       </div>
 
-      <p class="section__description">{{ car.description }}</p>
+      <p class="section__description">{{ detail.description }}</p>
 
       <ul class="car-details-list">
-        <li><strong>Toit:</strong> {{ car.toit }}</li>
-        <li><strong>Carburant:</strong> {{ car.carburant }}</li>
-        <li><strong>Price:</strong> ${{ car.price }}</li>
+        <li><strong>Toit:</strong> {{ detail.toit }}</li>
+        <li><strong>Carburant:</strong> {{ detail.carburant }}</li>
+        <li><strong>Price:</strong> ${{ detail.price }}</li>
       </ul>
 
       <!-- Reviews Section (Les Avis des Clients) -->
@@ -116,13 +116,6 @@
             [disabled]="true"
             required />
 
-          <!--input type="email"
-            class="form-control"
-            placeholder="Email"
-            [(ngModel)]="review.email"
-            name="email"
-            [disabled]="true"
-            required /-->
           </div>
 
           <div class="form-group comment-textarea-group">
