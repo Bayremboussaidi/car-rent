@@ -10,8 +10,11 @@ import { User } from '../../../models/user.model';
 })
 export class RegisterComponent {
   userData: User = {
-    role: 'USER' // Set default role to 'USER'
+    role: 'USER' // Default role
   };
+
+  previewImage: string | null = null;
+  selectedFile: File | null = null;
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -20,8 +23,29 @@ export class RegisterComponent {
     this.userData[id as keyof User] = value;
   }
 
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+        this.userData.photo = this.previewImage; // Assign base64 to userData.photo
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage() {
+    this.previewImage = null;
+    this.selectedFile = null;
+    this.userData.photo = undefined;
+  }
+
   handleClick(event: Event) {
     event.preventDefault();
+
     this.userService.createUser(this.userData).subscribe(
       (response: User) => {
         console.log('User created successfully', response);
