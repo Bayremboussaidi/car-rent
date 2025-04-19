@@ -1,4 +1,4 @@
-import { AgenceService } from './../../../services/agence/agence.service'; // Corrected path
+/*import { AgenceService } from './../../../services/agence/agence.service'; // Corrected path
 import { UserloginService } from './../../../services/user_login/userlogin.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { AdminService } from '../../../services/admin/admin.service';
 export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage: string = '';
-  isRobot = false;
+  isRobot = true;
   isUser = false;
   isAgence = false;
   showRobotError = false;
@@ -231,3 +231,121 @@ export class LoginComponent {
       this.errorMessage = `Keycloak login error: ${error}`;
     }
   }*/
+
+
+
+
+
+    import { AgenceService } from './../../../services/agence/agence.service';
+import { UserloginService } from './../../../services/user_login/userlogin.service';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { AdminService } from '../../../services/admin/admin.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent {
+  credentials = { email: '', password: '' };
+  errorMessage: string = '';
+  isRobot = true;
+  showRobotError = false;
+  showConditions = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userloginService: UserloginService,
+    private adminService: AdminService,
+    private agenceService: AgenceService
+  ) {}
+
+  closeConditions() {
+    this.showConditions = false;
+  }
+
+  handleClick(event: Event) {
+    event.preventDefault();
+    this.errorMessage = '';
+    this.showRobotError = false;
+
+    if (!this.isRobot) {
+      this.showRobotError = true;
+      return;
+    }
+
+    if (!this.validateEmail(this.credentials.email)) {
+      this.errorMessage = 'Veuillez entrer une adresse email valide';
+      return;
+    }
+
+    this.tryAdminLogin();
+  }
+
+  private tryAdminLogin() {
+    this.authService.logout();
+    localStorage.removeItem('admin_auth');
+    localStorage.removeItem('agency_auth');
+    localStorage.removeItem('agency_data');
+
+    this.adminService.login(this.credentials).subscribe({
+      next: (response: any) => {
+        const adminData = {
+          username: response.username,
+          email: response.email,
+          phone: response.phone,
+          workplace: response.workplace,
+          roles: response.roles || "ADMIN"
+        };
+
+        localStorage.setItem('admin_auth', JSON.stringify(adminData));
+        this.router.navigate(['/admin/bookinga']);
+      },
+      error: () => {
+        this.tryUserLogin();
+      }
+    });
+  }
+
+  private tryUserLogin() {
+    this.authService.logout();
+
+    this.userloginService.login(this.credentials).subscribe({
+      next: (response) => {
+        this.userloginService.storeUserDetails(response.token);
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        this.tryAgencyLogin();
+      }
+    });
+  }
+
+  private tryAgencyLogin() {
+    this.authService.logout();
+
+    this.agenceService.login(this.credentials).subscribe({
+      next: (response: any) => {
+        const agencyData = {
+          token: response.token,
+          agencyId: response.id,
+          name: response.agencyName
+        };
+
+        localStorage.setItem('agency_auth', JSON.stringify(agencyData));
+        this.router.navigate(['/agence']);
+      },
+      error: () => {
+        this.errorMessage = 'Email ou mot de passe incorrect pour tous les rôles';
+      }
+    });
+  }
+
+  private validateEmail(email: string): boolean {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+}
