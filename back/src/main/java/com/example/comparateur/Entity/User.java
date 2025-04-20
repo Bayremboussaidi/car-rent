@@ -36,7 +36,7 @@ public class User {
     private String password;
     
     @Lob
-    @Column(name = "photo", columnDefinition = "LONGTEXT") // For MySQL compatibility
+    @Column(name = "photo", columnDefinition = "LONGTEXT")
     private String photo;
 
 

@@ -119,6 +119,58 @@ fetchAllVoitures(): void {
   );
 }
 
+/*
+fetchAllVoitures(): void {
+  this.loading = true;
+  this.voitureService.getVoitures().subscribe(
+    (response: any) => {
+      console.log('API Response:', response);
+      if (response && response.data) {
+        this.allVoitures = response.data;
+        this.filteredVoitures = [...this.allVoitures]; // Initialize filteredVoitures with all cars
+
+        let processedCount = 0; // To track how many images we've fetched
+
+        this.allVoitures.forEach((voiture: any) => {
+          this.voitureService.getCarImageById(voiture.id).subscribe(
+            (photos: any[]) => {
+              if (photos?.length > 0) {
+                voiture.imgUrl = `data:${photos[0].type};base64,${photos[0].base64Data}`;
+              } else {
+                voiture.imgUrl = '/assets/default-car.jpg';
+              }
+              processedCount++;
+              if (processedCount === this.allVoitures.length) {
+                this.updateDisplayedVoitures(); // ✅ Show cars after all images are loaded
+              }
+            },
+            (error: any) => {
+              console.error(`Error fetching images for voiture ${voiture.id}:`, error);
+              voiture.imgUrl = '/assets/default-car.jpg';
+              processedCount++;
+              if (processedCount === this.allVoitures.length) {
+                this.updateDisplayedVoitures(); // ✅ Even on error
+              }
+            }
+          );
+        });
+
+      } else {
+        this.error = 'No data available.';
+        this.allVoitures = [];
+        this.filteredVoitures = [];
+        this.loading = false;
+      }
+    },
+    (error) => {
+      console.error('Error fetching cars:', error);
+      this.error = 'Failed to load cars. Please try again.';
+      this.loading = false;
+    }
+  );
+}*/
+
+
 
   // Update the displayed cars based on the current page
   updateDisplayedVoitures(): void {
@@ -127,78 +179,73 @@ fetchAllVoitures(): void {
     this.voitures = this.filteredVoitures.slice(startIndex, endIndex); // Slice the filtered cars for the current page
   }
 
-  // Apply filters and reset pagination
-  applyFilters(filters: any): void {
-    this.filteredVoitures = this.allVoitures.filter((voiture) => {
+
+
+
+
+  async applyFilters(filters: any): Promise<void> {
+    const pickupDate = filters.pickupDate ? new Date(filters.pickupDate) : null;
+    const dropoffDate = filters.dropoffDate ? new Date(filters.dropoffDate) : null;
+
+    const filtered: any[] = [];
+
+    for (const voiture of this.allVoitures) {
       // Filter by location
       if (filters.local && voiture.local.toLowerCase() !== filters.local.toLowerCase()) {
-        return false;
+        continue;
       }
 
       // Filter by car type
       if (filters.carType && voiture.category.toLowerCase() !== filters.carType.toLowerCase()) {
-        return false;
+        continue;
       }
 
-      // Filter by availability within date range
-      if (filters.pickupDate && filters.dropoffDate) {
-        const startDate = new Date(filters.pickupDate);
-        const endDate = new Date(filters.dropoffDate);
-        const isBooked = voiture.bookings?.some((booking: any) => {
-          const bookingStart = new Date(booking.startDate);
-          const bookingEnd = new Date(booking.endDate);
-          return startDate < bookingEnd && endDate > bookingStart;
-        });
-        if (isBooked) {
-          return false;
+      // Availability check only if both dates exist
+      if (pickupDate && dropoffDate) {
+        try {
+          const unavailableResponse = await this.BookingService.getUnavailableDates(voiture.id).toPromise();
+          const unavailablePeriods = unavailableResponse?.unavailableDates || []; // Safely access array
+
+          // Check for overlap with ANY unavailable period
+          const hasOverlap = unavailablePeriods.some((period: any) => {
+            const periodStart = new Date(period.startDate);
+            const periodEnd = new Date(period.endDate);
+            return pickupDate <= periodEnd && dropoffDate >= periodStart;
+          });
+
+          if (hasOverlap) continue; // Skip car if overlap exists
+
+        } catch (err) {
+          console.error('Error fetching availability for voiture', voiture.id, err);
+          continue; // Skip on error (or include based on your error handling policy)
         }
       }
 
-      return true; // Pass all filters
-    });
+      filtered.push(voiture); // Passed all filters
+    }
 
-    // Recalculate pagination
-    this.filteredVoitures.sort((a, b) => {
-      // Prioritize "mylock" agency
+    // Sorting logic remains unchanged
+    this.filteredVoitures = [...filtered].sort((a, b) => {
       if (a.agence === 'mylock' && b.agence !== 'mylock') return -1;
       if (b.agence === 'mylock' && a.agence !== 'mylock') return 1;
-
-      // Sort by car type
       if (filters.carType) {
         if (a.category === filters.carType && b.category !== filters.carType) return -1;
         if (b.category === filters.carType && a.category !== filters.carType) return 1;
       }
-
-      // Sort by location
       if (filters.local) {
         if (a.local === filters.local && b.local !== filters.local) return -1;
         if (b.local === filters.local && a.local !== filters.local) return 1;
       }
-
-      return 0; // Default sorting
+      return 0;
     });
 
+    // Pagination updates
     this.totalVoitures = this.filteredVoitures.length;
     this.totalPages = Math.ceil(this.totalVoitures / this.itemsPerPage);
-    this.currentPage = 1; // Reset to the first page
+    this.currentPage = 1;
     this.updateDisplayedVoitures();
   }
 
-  // Navigate to the next page
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updateDisplayedVoitures();
-    }
-  }
-
-  // Navigate to the previous page
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updateDisplayedVoitures();
-    }
-  }
 
 
 

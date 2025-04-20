@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-find-car-form',
@@ -16,44 +17,45 @@ export class FindCarFormComponent {
   @Output() searchFilters = new EventEmitter<any>();
   @Output() resetFilters = new EventEmitter<void>();
 
-
-
+  constructor(private bookingService: BookingService) {}
 
   searchHandler() {
     const filters: any = {
       local: this.localInput.nativeElement.value.trim(),
       pickupDate: this.pickupDateInput.nativeElement.value || null,
       dropoffDate: this.dropoffDateInput.nativeElement.value || null,
-      numPlaces: this.numPlacesInput.nativeElement.value || null, // Added in the middle
+      numPlaces: this.numPlacesInput.nativeElement.value || null,
       carType: this.carTypeInput.nativeElement.value || null
     };
 
-    //  Remove empty filters to avoid unnecessary parameters
+    // Clean up empty fields
     Object.keys(filters).forEach(key => {
       if (!filters[key]) delete filters[key];
     });
 
-    //  Ensure at least one filter is applied
-    if (Object.keys(filters).length === 0) {
-      return alert("Please enter at least one search criteria.");
+    // Require pickup and dropoff dates to filter by availability
+   /* if (!filters.pickupDate || !filters.dropoffDate) {
+      alert("Please enter both pickup and dropoff dates to search for available cars.");
+      return;
+    }*/
+    if (filters.pickupDate > filters.dropoffDate ) {
+      alert("Pick up date cannot be later than drop off date.");
+      return;
     }
 
-    //  Emit filters to the parent component (ListcarsComponent)
+    // Emit filters to parent (e.g. ListcarsComponent)
     this.searchFilters.emit(filters);
   }
 
-
-
-
   resetHandler() {
-    // Clear all inputs
+    // Reset all inputs
     this.localInput.nativeElement.value = '';
     this.pickupDateInput.nativeElement.value = '';
     this.dropoffDateInput.nativeElement.value = '';
     this.numPlacesInput.nativeElement.value = '';
     this.carTypeInput.nativeElement.value = '';
 
-    // Emit reset event
+    // Emit reset event to parent
     this.resetFilters.emit();
   }
 }

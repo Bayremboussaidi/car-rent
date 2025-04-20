@@ -32,10 +32,10 @@
               id="phone"
               name="phone"
               [(ngModel)]="bookingData.phone"
-               required
-               pattern="^(\+216[2459]\d{7}|[29]\d{7}|0)$"
-               title="Entrez un numéro Tunisien valide (ex: +21612345678 ou 99123456)"
-               class="form-control">
+              required
+              pattern="^(\+216[2459]\d{7}|[29]\d{7}|0)$"
+              title="Entrez un numéro Tunisien valide (ex: +21612345678 ou 99123456)"
+              class="form-control">
       </div>
 
       <label for="description">Description :</label>
@@ -65,16 +65,16 @@
   <label for="endDate">Date de fin <span style="color: red;">(Doit être après la date de début)</span></label>
   <div class="input-with-x">
     <input type="text"
-           id="endDate"
-           [(ngModel)]="bookingData.endDate"
-           name="endDate"
-           bsDatepicker
-           #endDp="bsDatepicker"
-           [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
-           readonly
-           (keydown)="$event.preventDefault()"
-           required
-           (ngModelChange)="calculateDaysAndPrice()"/>
+          id="endDate"
+          [(ngModel)]="bookingData.endDate"
+          name="endDate"
+          bsDatepicker
+          #endDp="bsDatepicker"
+          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today, datesDisabled: unavailableDates }"
+          readonly
+          (keydown)="$event.preventDefault()"
+          required
+          (ngModelChange)="calculateDaysAndPrice()"/>
     <button type="button" class="x-btn" (click)="endDp.hide()">✖</button>
   </div>
 </div>
