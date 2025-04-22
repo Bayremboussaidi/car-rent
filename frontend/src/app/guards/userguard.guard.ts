@@ -1,19 +1,24 @@
-/*import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { Injectable } from '@angular/core';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { UserloginService } from '../services/user_login/userlogin.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: UserloginService, private router: Router) {}
 
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated() && this.authService.isUser()) {
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.authService.isLoggedIn()) {
       return true;
-    } else {
-      this.router.navigate(['/login']); // Redirect unauthorized users
-      return false;
     }
+
+    // If not logged in, redirect to login page
+    this.router.navigate(['/login']);
+    return false;
   }
-}*/
+}

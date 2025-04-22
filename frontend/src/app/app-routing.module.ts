@@ -42,6 +42,10 @@ import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.co
 import { BlogsAComponent } from './ADMIN/blogs-a/blogs-a.component';
 import { BlogDetailsAComponent } from './ADMIN/blog-details/blog-details.component';
 import { ChatComponent } from './CHAT/chat/chat.component';
+import { UserGuard } from './guards/userguard.guard';
+import { AdminGuard } from './guards/adminguard.guard';
+import { AgenceGuard } from './guards/agence.guard';
+import { SHaredGuard } from './guards/shared.guard';
 
 // Route Guards (Optional)
 //import { AdminGuard } from './guards/admin.guard';
@@ -67,6 +71,7 @@ const routes: Routes = [
       { path: 'footer', component: FooterComponent },
       { path: 'notif', component: NotificationComponent }
     ]
+
   },
 
   // Admin Layout
@@ -77,16 +82,16 @@ const routes: Routes = [
     children: [
       { path: '', component: DashComponent },
       { path: 'usera', component: UserAComponent },
-      { path: 'usera/:id', component: UserADetailsComponent},
-      { path: 'bookinga', component: BookingAComponent },
-      { path: 'carlista', component: CarListAComponent },
-      { path: 'carlista/:id', component: CarDetaComponent },
-      { path: 'chat', component: ChatComponent },
-      { path: 'add-car', component: AddCarComponent },
-      { path: 'add-agence', component: AgenceComponent },
+      { path: 'usera/:id', component: UserADetailsComponent , canActivate: [AdminGuard] },
+      { path: 'bookinga', component: BookingAComponent , canActivate: [AdminGuard] },
+      { path: 'carlista', component: CarListAComponent , canActivate: [AdminGuard] },
+      { path: 'carlista/:id', component: CarDetaComponent , canActivate: [AdminGuard] },
+      { path: 'chat', component: ChatComponent ,canActivate:  [SHaredGuard] },
+      { path: 'add-car', component: AddCarComponent ,canActivate:  [SHaredGuard] },
+      { path: 'add-agence', component: AgenceComponent , canActivate: [AdminGuard] },
 
-      { path: 'show-agence', component: ShowAgenceComponent },
-      { path: 'show-agence/:id', component: AgenceDetailsComponent },
+      { path: 'show-agence', component: ShowAgenceComponent , canActivate: [AdminGuard] },
+      { path: 'show-agence/:id', component: AgenceDetailsComponent , canActivate: [AdminGuard] },
 
 
       { path: 'admin-show-blogs', component: BlogsAComponent },  // Changed path for admin blogs
@@ -100,12 +105,12 @@ const routes: Routes = [
     component: AgencelayoutComponent,
     //canActivate: [AdminGuard],
     children: [
-      { path: '', component: ListAgenceComponent },
-      { path: 'contact', component: ContactAgenceComponent },
+      { path: '', component: ListAgenceComponent, canActivate: [AgenceGuard] } ,
+      { path: 'contact', component: ContactAgenceComponent, canActivate:  [SHaredGuard] },
 
-      { path: 'carlista', component: ListAgenceComponent },
+      { path: 'carlista', component: ListAgenceComponent , canActivate: [AgenceGuard] } ,
 
-      { path: 'carlista/:id', component: CarDetailsAgenceComponent }
+      { path: 'carlista/:id', component: CarDetailsAgenceComponent , canActivate: [AgenceGuard] }
 
     ]
   },

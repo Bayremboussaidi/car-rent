@@ -49,4 +49,9 @@ export class AdminService {
     return null;
   }
 
+
+  isLoggedIn(): boolean {
+    const admin = this.getCurrentAdmin();
+    return !!admin && !!admin.username && !!admin.email;
+  }
 }

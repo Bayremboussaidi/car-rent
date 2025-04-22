@@ -120,6 +120,7 @@ import { ShowAgenceComponent } from './ADMIN/show-agence/show-agence.component';
 import { AgenceDetailsComponent } from './ADMIN/agence-details/agence-details.component';
 import { BlogsAComponent } from './ADMIN/blogs-a/blogs-a.component';
 import { BlogDetailsAComponent } from './ADMIN/blog-details/blog-details.component';
+import { UserGuard } from './guards/userguard.guard';
 
 
 // ✅ Keycloak Initialization Function
@@ -185,7 +186,8 @@ export function kcFactory(kcService: KeycloakService) {
     ShowAgenceComponent,
     AgenceDetailsComponent,
     BlogsAComponent,
-    BlogDetailsAComponent
+    BlogDetailsAComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -219,6 +221,7 @@ export function kcFactory(kcService: KeycloakService) {
   providers: [
     HttpClient,
     KeycloakService,
+    UserGuard,  // <-- Add a comma here
     {
       provide: APP_INITIALIZER,
       useFactory: kcFactory,
@@ -231,6 +234,7 @@ export function kcFactory(kcService: KeycloakService) {
       multi: true
     }
   ],
+
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA], // ✅ Added `NO_ERRORS_SCHEMA`
 })
