@@ -16,7 +16,7 @@ pipeline {
         stage('Install Angular Dependencies') {
             steps {
                 dir(FRONT_DIR) {
-                    sh 'npm install'
+                    sh 'npm install --legacy-peer-deps'
                 }
             }
         }
