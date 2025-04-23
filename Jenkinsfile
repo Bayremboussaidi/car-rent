@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        FRONT_DIR = 'frontend'   // Adjust if your frontend folder is different
-        BACK_DIR = 'back'        // Adjust if your backend folder is different
+        FRONT_DIR = 'frontend'
+        BACK_DIR = 'back'
+        COMPOSE_FILE = 'docker-compose.yml'
     }
 
     stages {
@@ -13,37 +14,21 @@ pipeline {
             }
         }
 
-        stage('Install Angular Dependencies') {
+        stage('Build & Run with Docker Compose') {
             steps {
-                dir(FRONT_DIR) {
-                    sh 'npm install --legacy-peer-deps'
-                }
-            }
-        }
-
-        stage('Run Angular Frontend') {
-            steps {
-                dir(FRONT_DIR) {
-                    sh 'nohup npx ng serve --host 0.0.0.0 --port 4200 &'
-                }
-            }
-        }
-
-        stage('Run Spring Boot Backend') {
-            steps {
-                dir(BACK_DIR) {
-                    sh 'nohup mvn spring-boot:run &'
-                }
+                sh 'docker-compose -f $COMPOSE_FILE down' // Stop old containers if running
+                sh 'docker-compose -f $COMPOSE_FILE build' // Build frontend & backend images
+                sh 'docker-compose -f $COMPOSE_FILE up -d' // Run containers in detached mode
             }
         }
     }
 
     post {
         success {
-            echo 'Frontend and Backend are running in development mode.'
+            echo 'Application built and running via Docker Compose.'
         }
         failure {
-            echo 'Something went wrong.'
+            echo 'Build or deployment failed.'
         }
     }
 }
