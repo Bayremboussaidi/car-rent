@@ -1,25 +1,27 @@
+# Stage 1: Build with Node.js
 FROM node:20 AS build
 
 WORKDIR /app
 
+# Clean cache and upgrade npm first
+RUN npm cache clean --force && \
+    npm install -g npm@latest
+
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with force
+RUN npm install --legacy-peer-deps --force
 
-# Copy the rest of the application code
+# Copy source files
 COPY . .
 
-# Build the Angular application in production mode
-RUN npm run build --configuration=production
+# Build Angular app
+RUN npm run build -- --configuration=production
 
-# Stage 2: Serve the application with Nginx
+# Stage 2: Nginx server
 FROM nginx:alpine
-
-RUN rm -rf /usr/share/nginx/html/*
-
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
-
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
