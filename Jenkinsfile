@@ -8,39 +8,45 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('📥 Checkout Code') {
             steps {
-                echo '📥 Checking out code...'
+                echo 'Checking out the project...'
                 checkout scm
             }
         }
 
-        stage('Build Frontend') {
+        stage('📦 Build Angular Frontend') {
             steps {
                 dir("${FRONT_DIR}") {
-                    echo '📦 Installing dependencies & building Angular...'
-                    sh 'npm ci'
-                    sh 'npm run build -- frontend --configuration production'
+                    echo 'Installing dependencies...'
+                    sh 'npm install --legacy-peer-deps'
+
+                    echo 'Building Angular app in production mode...'
+                    sh 'npm run build -- --configuration=production'
                 }
             }
         }
 
-        stage('Build & Run with Docker Compose') {
+        stage('🐳 Docker Compose Up') {
             steps {
-                echo '🐳 Building and running containers...'
-                sh 'docker-compose -f $COMPOSE_FILE down || true'  // Stop old containers if any
-                sh 'docker-compose -f $COMPOSE_FILE build'
-                sh 'docker-compose -f $COMPOSE_FILE up -d'
+                echo 'Stopping existing containers (if any)...'
+                sh "docker-compose -f ${COMPOSE_FILE} down || true"
+
+                echo 'Building Docker images...'
+                sh "docker-compose -f ${COMPOSE_FILE} build"
+
+                echo 'Starting containers...'
+                sh "docker-compose -f ${COMPOSE_FILE} up -d"
             }
         }
     }
 
     post {
         success {
-            echo ' Application built and running via Docker Compose.'
+            echo '✅ Deployment successful!'
         }
         failure {
-            echo ' Build or deployment failed.'
+            echo '❌ Deployment failed.'
         }
     }
 }
