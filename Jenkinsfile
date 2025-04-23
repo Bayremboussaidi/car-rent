@@ -20,7 +20,7 @@ pipeline {
                 dir("${FRONT_DIR}") {
                     echo '📦 Installing dependencies & building Angular...'
                     sh 'npm ci'
-                    sh 'npm run build -- --configuration production'
+                    sh 'npm run build -- frontend --configuration production'
                 }
             }
         }
