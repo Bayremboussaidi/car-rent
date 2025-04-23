@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         FRONT_DIR = 'frontend'   // Adjust if your frontend folder is different
-        BACK_DIR = 'back'     // Adjust if your backend folder is different
+        BACK_DIR = 'back'        // Adjust if your backend folder is different
     }
 
     stages {
@@ -40,10 +40,10 @@ pipeline {
 
     post {
         success {
-            echo ' Frontend and Backend are running in development mode.'
+            echo 'Frontend and Backend are running in development mode.'
         }
         failure {
-            echo ' Something went wrong.'
+            echo 'Something went wrong.'
         }
     }
 }
