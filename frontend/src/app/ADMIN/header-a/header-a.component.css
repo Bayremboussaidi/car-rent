@@ -111,7 +111,7 @@
   transform: translateY(-2px); /* Lift effect on hover */
 }
 
-/.navmenu .active {
+.navmenu .active {
   color: var(--nav-hover-color); /* Matches hover color */
   font-weight: 700; /* Highlight active link */
 }
