@@ -22,7 +22,7 @@ pipeline {
                     sh 'npm install --legacy-peer-deps'
 
                     echo 'Building Angular app in production mode...'
-                    sh 'npm run build -- --configuration=production'
+                    sh 'sh 'npm run build -- frontend --configuration=production'
                 }
             }
         }
