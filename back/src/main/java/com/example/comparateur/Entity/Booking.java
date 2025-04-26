@@ -1,7 +1,6 @@
 package com.example.comparateur.Entity;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,9 +25,6 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
- /*  @Column(nullable = false)
-    private Long userId;*/
 
     @Column(nullable = false)
     private String username;
@@ -69,5 +65,118 @@ public class Booking {
 
     @Column(nullable = false)
     private String dropoffLocation;
-}
 
+    // Getters and setters (if Lombok wasn't used)
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public int getNbrJrs() {
+        return nbrJrs;
+    }
+
+    public void setNbrJrs(int nbrJrs) {
+        this.nbrJrs = nbrJrs;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Long getVoitureId() {
+        return voitureId;
+    }
+
+    public void setVoitureId(Long voitureId) {
+        this.voitureId = voitureId;
+    }
+
+    public BookingStatus getBookingStatus() {
+        return bookingStatus;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
+    }
+
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    public String getDropoffLocation() {
+        return dropoffLocation;
+    }
+
+    public void setDropoffLocation(String dropoffLocation) {
+        this.dropoffLocation = dropoffLocation;
+    }
+}
