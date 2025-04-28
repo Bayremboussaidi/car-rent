@@ -1,5 +1,3 @@
-image: node:18  # Use Node.js image
-
 stages:
   - checkout
   - build_frontend
@@ -10,6 +8,7 @@ variables:
   FRONT_DIR: "frontend"
   BACK_DIR: "back"
   COMPOSE_FILE: "docker-compose.yml"
+  DOCKER_HOST: tcp://docker:2375  # Ensures Docker client can communicate with Docker-in-Docker
 
 # Checkout code
 checkout_code:
@@ -21,6 +20,7 @@ checkout_code:
 # Build Angular Frontend
 build_angular_frontend:
   stage: build_frontend
+  image: node:18  # Use Node.js image for Angular build
   script:
     - echo "📦 Installing dependencies and building Angular app..."
     - cd $FRONT_DIR
@@ -34,26 +34,31 @@ build_angular_frontend:
     paths:
       - frontend/node_modules/
 
-# Build Backend Docker Image
+# Build Backend (Spring Boot app)
 build_backend:
   stage: build_backend
+  image: maven:3.9.6-eclipse-temurin-21  # Use Maven image for Spring Boot build
   script:
-    - echo "🔧 Building Docker image for the Spring Boot app..."
+    - echo "🔧 Installing backend dependencies and building the Spring Boot app..."
     - cd $BACK_DIR
-    - docker build -t your-backend-image-name .  # Build the backend Docker image using the provided Dockerfile
+    - mvn clean package -DskipTests  # Build the Spring Boot app (adjust command if necessary)
   artifacts:
     paths:
-      - back/target/*.jar  # Optional: Keep track of the JAR if necessary
+      - back/target/
     expire_in: 1 week
 
 # Deploy with Docker Compose
 docker_compose_up:
   stage: deploy
+  image: docker:20.10.16  # Docker image with Docker client
+  services:
+    - name: docker:20.10.16-dind  # Docker-in-Docker service
+      command: ["--host=tcp://0.0.0.0:2375"]  # Make Docker daemon listen on TCP port 2375
   script:
     - echo "🐳 Stopping existing containers (if any)..."
-    - sudo docker-compose -f $COMPOSE_FILE down || true
+    - docker-compose -f $COMPOSE_FILE down || true
     - echo "🐳 Building Docker images..."
-    - sudo docker-compose -f $COMPOSE_FILE build
+    - docker-compose -f $COMPOSE_FILE build
     - echo "🐳 Starting containers..."
-    - sudo docker-compose -f $COMPOSE_FILE up -d
+    - docker-compose -f $COMPOSE_FILE up -d
   when: on_success
