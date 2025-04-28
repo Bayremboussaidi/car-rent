@@ -1,6 +1,7 @@
 # Stage 1: Build Angular App
-FROM node:20-alpine AS build
+FROM node:16-alpine AS build
 
+# Set the working directory inside the container
 WORKDIR /app
 
 # Install Angular CLI globally (specify version if needed)
@@ -19,7 +20,7 @@ RUN npm run build -- --configuration=production
 # Stage 2: Serve with Nginx
 FROM nginx:1.25.3-alpine
 
-# Copy built Angular app to Nginx's public directory
+# Copy the built Angular app to Nginx's public directory
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
 # Copy custom Nginx configuration
