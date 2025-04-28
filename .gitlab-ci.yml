@@ -1,5 +1,7 @@
-image: node:18
+image: docker:20.10.16
 
+services:
+  - docker:20.10.16-dind
 
 stages:
   - checkout
