@@ -1,0 +1,39 @@
+stages:
+  - checkout
+  - build_frontend
+  - deploy
+
+variables:
+  FRONT_DIR: "frontend"
+  BACK_DIR: "back"
+  COMPOSE_FILE: "docker-compose.yml"
+
+checkout_code:
+  stage: checkout
+  script:
+    - echo "📥 Checking out the project..."
+  
+    - echo "Code is already checked out by GitLab Runner."
+
+build_angular_frontend:
+  stage: build_frontend
+  script:
+    - echo "📦 Installing dependencies and building Angular app..."
+    - cd $FRONT_DIR
+    - npm install --legacy-peer-deps
+    - npm run build -- --configuration=production
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 week
+
+docker_compose_up:
+  stage: deploy
+  script:
+    - echo "🐳 Stopping existing containers (if any)..."
+    - docker-compose -f $COMPOSE_FILE down || true
+    - echo "🐳 Building Docker images..."
+    - docker-compose -f $COMPOSE_FILE build
+    - echo "🐳 Starting containers..."
+    - docker-compose -f $COMPOSE_FILE up -d
+  when: on_success
