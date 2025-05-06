@@ -222,6 +222,18 @@ export class CarDetailsComponent implements OnInit, OnDestroy {
   }
 
   submitReview() {
+
+    if (!this.isLoggedIn) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not Logged In',
+        text: 'You must be logged in to submit a review.'
+      });
+      return;
+    }
+
+
+
     if (!this.carId) {
       console.error('Error: No car ID found');
       return;

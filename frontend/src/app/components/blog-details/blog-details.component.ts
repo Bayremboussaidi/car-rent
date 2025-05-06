@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../services/blog/blog.service';
 import { UserloginService } from '../../services/user_login/userlogin.service';
+import Swal from 'sweetalert2';
+
+
 
 @Component({
   selector: 'app-blog-details',
@@ -65,6 +68,17 @@ export class BlogDetailsComponent implements OnInit {
   }
 
   submitComment(): void {
+
+    if (!this.isLoggedIn) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not Logged In',
+        text: 'You must be logged in to submit a comment.'
+      });
+      return;
+    }
+
+
     if (!this.review.commentText) return;
 
     const commentPayload = {
@@ -86,6 +100,15 @@ export class BlogDetailsComponent implements OnInit {
         }
       );
     }
+  }
+
+
+
+
+
+
+  get isLoggedIn(): boolean {
+    return this.userLoginService.isLoggedIn();
   }
 
 }
