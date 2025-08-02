@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: comparateur
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: comparateur
+        component: backend
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8084"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+      - name: backend
+        # Replace with your actual backend image
+        image: comparateur-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8084
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_DATASOURCE_PASSWORD
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        - name: SPRING_JPA_DATABASE_PLATFORM
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_JPA_DATABASE_PLATFORM
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SERVER_PORT
+        - name: SPRING_WEB_CORS_ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_WEB_CORS_ALLOWED_ORIGINS
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8084
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+        resources:
+          requests:
+            memory: "768Mi"
+            cpu: "500m"
+          limits:
+            memory: "1.5Gi"
+            cpu: "1000m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - >
+            until nc -z mysql 3306;
+            do echo waiting for mysql;
+            sleep 2;
+            done;

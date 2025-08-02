@@ -1,0 +1,624 @@
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: comparateur-app
+  labels:
+    app: comparateur
+    version: v1.0.0
+
+---
+# MySQL ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
+data:
+  MYSQL_DATABASE: "comparateur"
+  MYSQL_USER: "root"
+
+---
+# MySQL Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
+type: Opaque
+data:
+  # Base64 encoded "root" - Change this in production!
+  MYSQL_ROOT_PASSWORD: cm9vdA==
+  # Base64 encoded empty string
+  MYSQL_PASSWORD: ""
+
+---
+# MySQL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # storageClassName: fast-ssd  # Uncomment for production
+
+---
+# MySQL StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
+spec:
+  replicas: 1
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app: comparateur
+      component: mysql
+  template:
+    metadata:
+      labels:
+        app: comparateur
+        component: mysql
+        version: v1.0.0
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+          fsGroup: 999
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - -h
+            - localhost
+            - -e
+            - "SELECT 1"
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+
+---
+# MySQL Service (Headless)
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
+spec:
+  selector:
+    app: comparateur
+    component: mysql
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+    protocol: TCP
+  type: ClusterIP
+  clusterIP: None
+
+---
+# Backend ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
+data:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/comparateur?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true"
+  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQL8Dialect"
+  SPRING_JPA_SHOW_SQL: "false"
+  SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+  SERVER_PORT: "8084"
+  SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://comparateur.local,https://comparateur.local"
+  SPRING_PROFILES_ACTIVE: "production"
+  LOGGING_LEVEL_ROOT: "INFO"
+  LOGGING_LEVEL_COM_COMPARATEUR: "DEBUG"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics,prometheus"
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "always"
+
+---
+# Backend Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
+type: Opaque
+data:
+  # Base64 encoded empty string for database password
+  SPRING_DATASOURCE_PASSWORD: ""
+
+---
+# Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: comparateur
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: comparateur
+        component: backend
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8084"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+      - name: backend
+        image: comparateur-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8084
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_DATASOURCE_PASSWORD
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        - name: SPRING_JPA_DATABASE_PLATFORM
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_JPA_DATABASE_PLATFORM
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SERVER_PORT
+        - name: SPRING_WEB_CORS_ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_WEB_CORS_ALLOWED_ORIGINS
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8084
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+        resources:
+          requests:
+            memory: "768Mi"
+            cpu: "500m"
+          limits:
+            memory: "1.5Gi"
+            cpu: "1000m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - >
+            until nc -z mysql 3306;
+            do echo waiting for mysql;
+            sleep 2;
+            done;
+
+---
+# Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
+spec:
+  selector:
+    app: comparateur
+    component: backend
+  ports:
+  - name: http
+    port: 8084
+    targetPort: 8084
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: frontend
+    version: v1.0.0
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: comparateur
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: comparateur
+        component: frontend
+        version: v1.0.0
+    spec:
+      containers:
+      - name: frontend
+        image: comparateur-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 101
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        volumeMounts:
+        - name: nginx-cache
+          mountPath: /var/cache/nginx
+        - name: nginx-run
+          mountPath: /var/run
+      volumes:
+      - name: nginx-cache
+        emptyDir: {}
+      - name: nginx-run
+        emptyDir: {}
+
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: frontend
+    version: v1.0.0
+spec:
+  selector:
+    app: comparateur
+    component: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  type: LoadBalancer
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: comparateur-ingress
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    version: v1.0.0
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    nginx.ingress.kubernetes.io/client-max-body-size: "50m"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: comparateur.local  # Change this to your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 8084
+      - path: /actuator
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 8084
+  tls:
+  - hosts:
+    - comparateur.local
+    secretName: comparateur-tls
+
+---
+# Backend HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# Frontend HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: frontend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 3
+  maxReplicas: 8
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70
+
+---
+# Backend PDB
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: backend-pdb
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: comparateur
+      component: backend
+
+---
+# Frontend PDB
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: frontend
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: comparateur
+      component: frontend
