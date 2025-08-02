@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-metrics
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    monitoring: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: comparateur
+      component: backend
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 30s
+    scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+    - comparateur-app
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-metrics
+  namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    monitoring: prometheus
+spec:
+  selector:
+    app: comparateur
+    component: backend
+  ports:
+  - name: metrics
+    port: 8080
+    targetPort: 8084
+    protocol: TCP
+  type: ClusterIP

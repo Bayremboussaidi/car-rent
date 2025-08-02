@@ -4,12 +4,23 @@ metadata:
   name: backend
   namespace: comparateur-app
   labels:
-    app: backend
+    app: comparateur
+    component: backend
+    version: v1.0.0
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
 spec:
   selector:
-    app: backend
+    app: comparateur
+    component: backend
   ports:
-  - port: 8084
+  - name: http
+    port: 8084
+    targetPort: 8084
+    protocol: TCP
+  - name: actuator
+    port: 8080
     targetPort: 8084
     protocol: TCP
   type: ClusterIP
+  sessionAffinity: None

@@ -3,11 +3,22 @@ kind: ConfigMap
 metadata:
   name: backend-config
   namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: backend
+    version: v1.0.0
 data:
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/comparateur?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/comparateur?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true"
   SPRING_DATASOURCE_USERNAME: "root"
   SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
   SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQL8Dialect"
+  SPRING_JPA_SHOW_SQL: "false"
+  SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
   SERVER_PORT: "8084"
-  SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200"
+  SPRING_WEB_CORS_ALLOWED_ORIGINS: "http://localhost:4200,http://comparateur.local,https://comparateur.local"
+  SPRING_PROFILES_ACTIVE: "production"
+  LOGGING_LEVEL_ROOT: "INFO"
+  LOGGING_LEVEL_COM_COMPARATEUR: "DEBUG"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics,prometheus"
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "always"

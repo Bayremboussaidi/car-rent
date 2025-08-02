@@ -4,12 +4,17 @@ metadata:
   name: mysql
   namespace: comparateur-app
   labels:
-    app: mysql
+    app: comparateur
+    component: mysql
+    version: v1.0.0
 spec:
   selector:
-    app: mysql
+    app: comparateur
+    component: mysql
   ports:
-  - port: 3306
+  - name: mysql
+    port: 3306
     targetPort: 3306
     protocol: TCP
   type: ClusterIP
+  clusterIP: None  # Headless service for StatefulSet

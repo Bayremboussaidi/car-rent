@@ -4,16 +4,26 @@ metadata:
   name: frontend
   namespace: comparateur-app
   labels:
-    app: frontend
+    app: comparateur
+    component: frontend
+    version: v1.0.0
 spec:
-  replicas: 2
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
-      app: frontend
+      app: comparateur
+      component: frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: comparateur
+        component: frontend
+        version: v1.0.0
     spec:
       containers:
       - name: frontend
@@ -36,8 +46,26 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
             memory: "256Mi"
             cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 101
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        volumeMounts:
+        - name: nginx-cache
+          mountPath: /var/cache/nginx
+        - name: nginx-run
+          mountPath: /var/run
+      volumes:
+      - name: nginx-cache
+        emptyDir: {}
+      - name: nginx-run
+        emptyDir: {}

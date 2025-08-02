@@ -3,11 +3,18 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc
   namespace: comparateur-app
+  labels:
+    app: comparateur
+    component: mysql
+    version: v1.0.0
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
   # Uncomment and modify based on your storage class
-  # storageClassName: standard
+  # storageClassName: fast-ssd
+  # For AWS EKS, use: gp2, gp3, or io1
+  # For GKE, use: standard, ssd, or regional-pd-ssd
+  # For AKS, use: default, managed-premium
